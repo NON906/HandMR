@@ -334,9 +334,8 @@ public class HandMRSceneInitializer
         PlayerSettings.SetVirtualRealitySDKs(BuildTargetGroup.iOS, new string[] { "None", "cardboard" });
     }
 
-    [MenuItem("HandMR/Android/Initialize Scene with VR")]
-    [MenuItem("HandMR/iOS/Initialize Scene with VR")]
-    static void InitSceneForVR()
+    [MenuItem("HandMR/Android/Initialize Prefabs with VR")]
+    static void InitPrefabsForVRARCore()
     {
 #if DOWNLOADED_ARCORE
         string prefabPath = "Assets/HandMR/SubAssets/ARVR/ARCore/Prefabs/ARCoreDeviceVR.prefab";
@@ -347,7 +346,11 @@ public class HandMRSceneInitializer
         PrefabUtility.SaveAsPrefabAsset(contentsRoot, prefabPath);
         PrefabUtility.UnloadPrefabContents(contentsRoot);
 #endif
+    }
 
+    [MenuItem("HandMR/iOS/Initialize Prefabs with VR")]
+    static void InitPrefabsForVRARKit()
+    {
 #if DOWNLOADED_ARKIT
         string prefabPath = "Assets/HandMR/SubAssets/ARVR/ARKit/Prefabs/CameraParent.prefab";
         GameObject contentsRoot = PrefabUtility.LoadPrefabContents(prefabPath);
@@ -356,7 +359,12 @@ public class HandMRSceneInitializer
         PrefabUtility.SaveAsPrefabAsset(contentsRoot, prefabPath);
         PrefabUtility.UnloadPrefabContents(contentsRoot);
 #endif
+    }
 
+    [MenuItem("HandMR/Android/Initialize Scene with VR")]
+    [MenuItem("HandMR/iOS/Initialize Scene with VR")]
+    static void InitSceneForVR()
+    {
         if (Camera.main != null)
         {
             GameObject mainCamera = Camera.main.gameObject;

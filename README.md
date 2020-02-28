@@ -24,6 +24,7 @@ Android
 - HandMR→Android→Download Assets and Init Project with MR
 - Hologla→ARCore→Initialize Project with ARCore
 - （VRも使用する場合）HandMR→Android→Download Assets and Init Project with VR
+- （VRも使用する場合）HandMR→Android→Initialize Prefabs with VR
 - （MR用のシーン上で）Hologla→ARCore→Initialize Scene with ARCore
 - （MR用のシーン上で）HandMR→Android→Initialize Scene with MR
 - （VR用のシーン上で）HandMR→Android→Initialize Scene with VR
@@ -33,6 +34,7 @@ iOS
 - HandMR→iOS→Download Assets and Init Project with MR
 - Hologla→ARKit→Initialize Project with ARKit
 - （VRも使用する場合）HandMR→iOS→Download Assets and Init Project with VR
+- （VRも使用する場合）HandMR→iOS→Initialize Prefabs with VR
 - （MR用のシーン上で）Hologla→ARKit→Initialize Scene with ARKit
 - （MR用のシーン上で）HandMR→iOS→Initialize Scene with MR
 - （VR用のシーン上で）HandMR→iOS→Initialize Scene with VR
