@@ -16,6 +16,8 @@ public class Menu : MonoBehaviour
     public InputField HandPositionXInputField;
     public Slider HandPositionYSlider;
     public InputField HandPositionYInputField;
+    public Slider HandSizeSlider;
+    public InputField HandSizeInputField;
     public Canvas MenuCanvas;
 
     int googleModeDefault_;
@@ -24,6 +26,7 @@ public class Menu : MonoBehaviour
     int screenSizeDefault_;
     float HandPositionXDefault_;
     float HandPositionYDefault_;
+    float HandSizeDefault_;
 
     void settingDefaultValues()
     {
@@ -33,6 +36,7 @@ public class Menu : MonoBehaviour
         screenSizeDefault_ = ScreenSizeDropdown.value;
         HandPositionXDefault_ = HandPositionXSlider.value;
         HandPositionYDefault_ = HandPositionYSlider.value;
+        HandSizeDefault_ = HandSizeSlider.value;
     }
 
     void saveValues()
@@ -43,6 +47,7 @@ public class Menu : MonoBehaviour
         PlayerPrefs.SetInt("HandMR_ScreenSize", ScreenSizeDropdown.value);
         PlayerPrefs.SetFloat("HandMR_HandPositionX", HandPositionXSlider.value);
         PlayerPrefs.SetFloat("HandMR_HandPositionY", HandPositionYSlider.value);
+        PlayerPrefs.SetFloat("HandMR_HandSize", HandSizeSlider.value);
         PlayerPrefs.Save();
     }
 
@@ -119,6 +124,9 @@ public class Menu : MonoBehaviour
         float posYValue = PlayerPrefs.GetFloat("HandMR_HandPositionY", HandPositionYDefault_);
         HandPositionYSlider.value = posYValue;
         HandPositionYInputField.text = "" + (int)posYValue;
+        float handSizeValue = PlayerPrefs.GetFloat("HandMR_HandSize", HandSizeDefault_);
+        HandSizeSlider.value = handSizeValue;
+        HandSizeInputField.text = "" + (int)handSizeValue;
 
         settingEnabled();
     }
@@ -170,6 +178,9 @@ public class Menu : MonoBehaviour
         float posYValue = HandPositionYDefault_;
         HandPositionYSlider.value = posYValue;
         HandPositionYInputField.text = "" + (int)posYValue;
+        float handSizeValue = HandSizeDefault_;
+        HandSizeSlider.value = handSizeValue;
+        HandSizeInputField.text = "" + (int)handSizeValue;
 
         settingEnabled();
     }
@@ -230,5 +241,20 @@ public class Menu : MonoBehaviour
     public void HandPositionYInputFieldEndEdit(string val)
     {
         endEditInputField(HandPositionYInputField, HandPositionYSlider);
+    }
+
+    public void HandSizeSliderChanged(float val)
+    {
+        changeSlider(HandSizeInputField, val);
+    }
+
+    public void HandSizeInputFieldChanged(string val)
+    {
+        changeInputField(HandSizeSlider, val);
+    }
+
+    public void HandSizeInputFieldEndEdit(string val)
+    {
+        endEditInputField(HandSizeInputField, HandSizeSlider);
     }
 }

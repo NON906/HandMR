@@ -89,7 +89,7 @@ public class HandMRSceneInitializer
     {
         addPackageManager("com.unity.xr.legacyinputhelpers");
         addPackageManager("com.unity.multiplayer-hlapi");
-        addPackageManager("com.unity.xr.googlevr.android");
+        addPackageManager("com.unity.xr.googlevr.android@2.0.0");
 
         if (!Directory.Exists(Application.dataPath + "/../../downloads"))
         {
@@ -97,8 +97,8 @@ public class HandMRSceneInitializer
         }
         if (!Directory.Exists(Application.dataPath + "/GoogleARCore"))
         {
-            download("https://github.com/google-ar/arcore-unity-sdk/releases/download/v1.15.0/arcore-unity-sdk-1.15.0.unitypackage", Application.dataPath + "/../../downloads/arcore-unity-sdk-1.15.0.unitypackage");
-            AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/arcore-unity-sdk-1.15.0.unitypackage", false);
+            download("https://github.com/google-ar/arcore-unity-sdk/releases/download/v1.16.0/arcore-unity-sdk-1.16.0.unitypackage", Application.dataPath + "/../../downloads/arcore-unity-sdk-1.16.0.unitypackage");
+            AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/arcore-unity-sdk-1.16.0.unitypackage", false);
         }
         if (!Directory.Exists(Application.dataPath + "/Hologla"))
         {

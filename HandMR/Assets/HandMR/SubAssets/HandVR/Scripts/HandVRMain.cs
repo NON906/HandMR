@@ -11,6 +11,7 @@ public class HandVRMain : MonoBehaviour
     public RenderTexture InputRenderTexture;
     public float ShiftX = 0f;
     public float ShiftY = 0f;
+    public float HandSize = 0.13f;
 
 #if UNITY_ANDROID
     AndroidJavaObject multiHandMain_;
@@ -114,12 +115,22 @@ public class HandVRMain : MonoBehaviour
     public float[] GetLandmark(int id, int index)
     {
         float[] posVecArray = null;
+        float[][] handSizePosVecArray = new float[5][];
 
 #if UNITY_ANDROID
         posVecArray = multiHandMain_.Call<float[]>("getLandmark", id, index);
         if (posVecArray == null)
         {
             return null;
+        }
+
+        for (int loop = 0; loop < 5; loop++)
+        {
+            handSizePosVecArray[loop] = multiHandMain_.Call<float[]>("getLandmark", id, loop);
+            if (handSizePosVecArray[loop] == null)
+            {
+                return null;
+            }
         }
 #endif
 
@@ -133,11 +144,42 @@ public class HandVRMain : MonoBehaviour
         {
             posVecArray[loop] = multiHandGetLandmark(id, index, loop);
         }
-#endif
 
-        posVecArray[0] = (posVecArray[0] - 0.5f) * 0.15f * Screen.width / Screen.height + ShiftX;
-        posVecArray[1] = (posVecArray[1] - 0.5f) * -0.15f + ShiftY;
-        posVecArray[2] = posVecArray[2] * 0.001f + 0.3f;
+        for (int loop2 = 0; loop2 < 5; loop2++)
+        {
+            handSizePosVecArray[loop2] = new float[3];
+            for (int loop = 0; loop < 3; loop++)
+            {
+                handSizePosVecArray[loop2][loop] = multiHandGetLandmark(id, loop2, loop);
+            }
+        }
+#endif
+        for (int loop = 0; loop < 5; loop++)
+        {
+            handSizePosVecArray[loop][0] = (handSizePosVecArray[loop][0] - 0.5f) * 0.15f * Screen.width / Screen.height;
+            handSizePosVecArray[loop][1] = (handSizePosVecArray[loop][1] - 0.5f) * -0.15f;
+            handSizePosVecArray[loop][2] = handSizePosVecArray[loop][2] * 0.0005f + 0.2f;//handSizePosVecArray[loop][2] * 0.001f + 0.3f;
+        }
+        float handSizeRaw = 0f;
+        for (int loop = 0; loop < 4; loop++)
+        {
+            float xLen = handSizePosVecArray[loop][0] - handSizePosVecArray[loop + 1][0];
+            float yLen = handSizePosVecArray[loop][1] - handSizePosVecArray[loop + 1][1];
+            float zLen = handSizePosVecArray[loop][2] - handSizePosVecArray[loop + 1][2];
+
+            handSizeRaw += Mathf.Sqrt(xLen * xLen + yLen * yLen + zLen * zLen);
+        }
+
+        posVecArray[0] = (posVecArray[0] - 0.5f) * 0.15f * Screen.width / Screen.height;
+        posVecArray[1] = (posVecArray[1] - 0.5f) * -0.15f;
+        posVecArray[2] = posVecArray[2] * 0.0005f + 0.2f;//posVecArray[2] * 0.001f + 0.3f;
+
+        for (int loop = 0; loop < 3; loop++)
+        {
+            posVecArray[loop] = HandSize * posVecArray[loop] / handSizeRaw;
+        }
+        posVecArray[0] += ShiftX;
+        posVecArray[1] += ShiftY;
 
         return posVecArray;
     }

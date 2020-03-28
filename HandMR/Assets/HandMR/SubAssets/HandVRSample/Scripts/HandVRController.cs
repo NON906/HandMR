@@ -92,6 +92,11 @@ public class HandVRController : MonoBehaviour
                             opened = false;
                         }
                     }
+                    if (Vector3.Distance(sphereHand.GetFinger(4).position, sphereHand.GetFinger(8).position) < 0.03f)
+                    {
+                        grabed = true;
+                        opened = false;
+                    }
 
                     if (!isGrab_[handId] && grabed)
                     {

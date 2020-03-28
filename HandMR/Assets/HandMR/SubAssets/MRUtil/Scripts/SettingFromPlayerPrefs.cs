@@ -16,6 +16,7 @@ public class SettingFromPlayerPrefs : MonoBehaviour
     {
         HandVRMainObj.ShiftX = PlayerPrefs.GetFloat("HandMR_HandPositionX", 0f) * 0.001f;
         HandVRMainObj.ShiftY = PlayerPrefs.GetFloat("HandMR_HandPositionY", 0f) * 0.001f;
+        HandVRMainObj.HandSize = PlayerPrefs.GetFloat("HandMR_HandSize", 130f) * 0.001f;
 
         if (PlayerPrefs.GetInt("HandMR_PhonePosition", 0) == 1)
         {
