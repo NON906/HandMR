@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if UNITY_IOS
+#if UNITY_IOS && DOWNLOADED_ARKIT
 using UnityEngine.XR.iOS;
 #endif
 
@@ -23,7 +23,7 @@ public class ARKitCameraTarget : MonoBehaviour
         set
         {
             trackingCamera_ = value;
-#if UNITY_IOS
+#if UNITY_IOS && DOWNLOADED_ARKIT
             trackingCamera_.GetComponent<Camera>().enabled = plane_ != null;
 #endif
         }
@@ -34,7 +34,7 @@ public class ARKitCameraTarget : MonoBehaviour
     Vector3 poseCenter_ = Vector3.zero;
     Quaternion poseCenterRotation_ = Quaternion.identity;
 
-#if UNITY_IOS
+#if UNITY_IOS && DOWNLOADED_ARKIT
     // 認識した床
     ARPlaneAnchorGameObject plane_ = null;
 
@@ -106,7 +106,7 @@ public class ARKitCameraTarget : MonoBehaviour
     // 位置のリセット
     public void ResetPosition()
     {
-#if UNITY_IOS
+#if UNITY_IOS && DOWNLOADED_ARKIT
         if (CameraObject == null)
         {
             return;

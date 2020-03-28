@@ -34,6 +34,7 @@ iOS
 
 - HandMR→iOS→Download Assets and Init Project with MR
 - Hologla→ARKit→Initialize Project with ARKit
+- HandMR→iOS→Initialize Prefabs with MR
 - （VRも使用する場合）HandMR→iOS→Download Assets and Init Project with VR
 - （VRも使用する場合）HandMR→iOS→Initialize Prefabs with VR
 - （MR用のシーン上で）Hologla→ARKit→Initialize Scene with ARKit

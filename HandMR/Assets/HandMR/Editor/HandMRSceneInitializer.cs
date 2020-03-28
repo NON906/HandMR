@@ -26,7 +26,7 @@ public class HandMRSceneInitializer
         var request = UnityEditor.PackageManager.Client.Add(packageName);
         do
         {
-            System.Threading.Thread.Sleep(0);
+            System.Threading.Thread.Sleep(16);
         } while (request.Status == UnityEditor.PackageManager.StatusCode.InProgress);
         if (request.Status != UnityEditor.PackageManager.StatusCode.Success)
         {
@@ -44,6 +44,7 @@ public class HandMRSceneInitializer
             while (!request.isDone)
             {
                 EditorUtility.DisplayProgressBar("Download Assets", "Downloading: " + url, request.progress);
+                System.Threading.Thread.Sleep(16);
             }
             if (webRequest.error != null)
             {
@@ -118,6 +119,19 @@ public class HandMRSceneInitializer
     static void InitProjectForARCore()
     {
         initARCore();
+    }
+
+    [MenuItem("HandMR/Android/Initialize Prefabs with MR")]
+    static void InitPrefabsForMRARCore()
+    {
+#if DOWNLOADED_ARCORE
+        string prefabPath = "Assets/HandMR/SubAssets/MRUtil/Prefabs/HandMRARCore.prefab";
+        GameObject contentsRoot = PrefabUtility.LoadPrefabContents(prefabPath);
+        ARCoreBackgroundRenderer arcoreBackground = contentsRoot.GetComponentInChildren<ARCoreBackgroundRenderer>();
+        arcoreBackground.BackgroundMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/GoogleARCore/SDK/Materials/ARBackground.mat");
+        PrefabUtility.SaveAsPrefabAsset(contentsRoot, prefabPath);
+        PrefabUtility.UnloadPrefabContents(contentsRoot);
+#endif
     }
 
 #if DOWNLOADED_HOLOGLA && DOWNLOADED_ARCORE
@@ -199,19 +213,6 @@ public class HandMRSceneInitializer
     }
 #endif
 
-    [MenuItem("HandMR/Android/Initialize Prefabs with MR")]
-    static void InitPrefabsForMRARCore()
-    {
-#if DOWNLOADED_ARCORE
-        string prefabPath = "Assets/HandMR/SubAssets/MRUtil/Prefabs/HandMRARCore.prefab";
-        GameObject contentsRoot = PrefabUtility.LoadPrefabContents(prefabPath);
-        ARCoreBackgroundRenderer arcoreBackground = contentsRoot.GetComponentInChildren<ARCoreBackgroundRenderer>();
-        arcoreBackground.BackgroundMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/GoogleARCore/SDK/Materials/ARBackground.mat");
-        PrefabUtility.SaveAsPrefabAsset(contentsRoot, prefabPath);
-        PrefabUtility.UnloadPrefabContents(contentsRoot);
-#endif
-    }
-
     [MenuItem("HandMR/Android/Download Assets and Init Project with VR")]
     static void InitProjectForARCoreVR()
     {
@@ -253,6 +254,19 @@ public class HandMRSceneInitializer
     static void InitProjectForARKit()
     {
         initARKit();
+    }
+
+    [MenuItem("HandMR/iOS/Initialize Prefabs with MR")]
+    static void InitPrefabsForMRARKit()
+    {
+#if DOWNLOADED_ARKIT
+        string prefabPath = "Assets/HandMR/SubAssets/MRUtil/Prefabs/HandMRARKit.prefab";
+        GameObject contentsRoot = PrefabUtility.LoadPrefabContents(prefabPath);
+        UnityARVideo video = contentsRoot.GetComponentInChildren<UnityARVideo>();
+        video.m_ClearMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/UnityARKitPlugin/Plugins/iOS/UnityARKit/Materials/YUVMaterial.mat");
+        PrefabUtility.SaveAsPrefabAsset(contentsRoot, prefabPath);
+        PrefabUtility.UnloadPrefabContents(contentsRoot);
+#endif
     }
 
 #if DOWNLOADED_HOLOGLA && DOWNLOADED_ARKIT
@@ -367,7 +381,7 @@ public class HandMRSceneInitializer
 #if DOWNLOADED_ARKIT
         string prefabPath = "Assets/HandMR/SubAssets/ARVR/ARKit/Prefabs/CameraParent.prefab";
         GameObject contentsRoot = PrefabUtility.LoadPrefabContents(prefabPath);
-        UnityARVideo video = contentsRoot.GetComponent<UnityARVideo>();
+        UnityARVideo video = contentsRoot.GetComponentInChildren<UnityARVideo>();
         video.m_ClearMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/UnityARKitPlugin/Plugins/iOS/UnityARKit/Materials/YUVMaterial.mat");
         PrefabUtility.SaveAsPrefabAsset(contentsRoot, prefabPath);
         PrefabUtility.UnloadPrefabContents(contentsRoot);
