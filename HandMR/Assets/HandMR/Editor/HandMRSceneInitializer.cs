@@ -199,6 +199,19 @@ public class HandMRSceneInitializer
     }
 #endif
 
+    [MenuItem("HandMR/Android/Initialize Prefabs with MR")]
+    static void InitPrefabsForMRARCore()
+    {
+#if DOWNLOADED_ARCORE
+        string prefabPath = "Assets/HandMR/SubAssets/MRUtil/Prefabs/HandMRARCore.prefab";
+        GameObject contentsRoot = PrefabUtility.LoadPrefabContents(prefabPath);
+        ARCoreBackgroundRenderer arcoreBackground = contentsRoot.GetComponentInChildren<ARCoreBackgroundRenderer>();
+        arcoreBackground.BackgroundMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/GoogleARCore/SDK/Materials/ARBackground.mat");
+        PrefabUtility.SaveAsPrefabAsset(contentsRoot, prefabPath);
+        PrefabUtility.UnloadPrefabContents(contentsRoot);
+#endif
+    }
+
     [MenuItem("HandMR/Android/Download Assets and Init Project with VR")]
     static void InitProjectForARCoreVR()
     {
@@ -220,7 +233,7 @@ public class HandMRSceneInitializer
         }
         if (!Directory.Exists(Application.dataPath + "/UnityARKitPlugin"))
         {
-            download("https://github.com/NON906/HandVR/releases/download/0.1/HandMR_iOS_plugin_for_projects_0.1.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.1.unitypackage");
+            download("https://github.com/NON906/HandMR/releases/download/0.1/HandMR_iOS_plugin_for_projects_0.1.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.1.unitypackage");
             AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.1.unitypackage", false);
         }
         if (!Directory.Exists(Application.dataPath + "/Hologla"))

@@ -23,6 +23,7 @@ Android
 
 - HandMR→Android→Download Assets and Init Project with MR
 - Hologla→ARCore→Initialize Project with ARCore
+- HandMR→Android→Initialize Prefabs with MR
 - （VRも使用する場合）HandMR→Android→Download Assets and Init Project with VR
 - （VRも使用する場合）HandMR→Android→Initialize Prefabs with VR
 - （MR用のシーン上で）Hologla→ARCore→Initialize Scene with ARCore
