@@ -4,21 +4,19 @@ using UnityEngine;
 
 public class SetParentMainCamera : MonoBehaviour
 {
-    public Transform MainCameraTransform = null;
-
-    IEnumerator Start()
+    Transform mainCameraTransform_ = null;
+    public Transform MainCameraTransform
     {
-        if (MainCameraTransform == null)
+        get
         {
-            while (Camera.main == null)
-            {
-                yield return null;
-            }
-            MainCameraTransform = Camera.main.transform;
+            return mainCameraTransform_;
         }
-
-        transform.parent = MainCameraTransform;
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
+        set
+        {
+            mainCameraTransform_ = value;
+            transform.parent = MainCameraTransform;
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+        }
     }
 }

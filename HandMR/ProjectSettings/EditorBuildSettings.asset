@@ -12,12 +12,6 @@ EditorBuildSettings:
     path: Assets/HandMR/Scenes/License.unity
     guid: cbf575724187b4d638afcac13488c2b5
   - enabled: 1
-    path: Assets/HandMR/Scenes/MainMRARCore.unity
-    guid: 49cd245c805434d15b701ed31596a398
-  - enabled: 1
-    path: Assets/HandMR/Scenes/MainMRARKit.unity
-    guid: d341fed1bb109487b825cfea7189b447
-  - enabled: 1
-    path: Assets/HandMR/Scenes/MainVR.unity
-    guid: b1ab73e55f2f54dcd96a568da31ee712
+    path: Assets/HandMR/Scenes/Main.unity
+    guid: 24d4eebdf20e94a4699c665e58d3dbbb
   m_configObjects: {}

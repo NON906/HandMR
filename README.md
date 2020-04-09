@@ -10,38 +10,18 @@ ARM64でARCoreに対応したAndroid上やARKitに対応したiOS上で動作し
 
 unitypackageファイルは[こちら](https://github.com/NON906/HandMR/releases)からダウンロードできます。
 
-このプロジェクトには各アセットを自動でダウンロードする機能があります。
-ライセンスなどについては、個々のアセットごとに確認するよう、お願いいたします。
-
 ## アセットの使用方法
 
 1. プロジェクトをgitでclone、もしくはunitypackageファイルをインポート
 
-2. メニューバーから以下を順番に実行（サンプルシーンの場合、Initialize Sceneは不要です）
+2. （iOSのみ）メニューバーから「HandMR→Download iOS Plugins」を実行
 
-Android
+3. 用途に応じていずれかを実行
 
-- HandMR→Android→Download Assets and Init Project with MR
-- Hologla→ARCore→Initialize Project with ARCore
-- HandMR→Android→Initialize Prefabs with MR
-- （VRも使用する場合）HandMR→Android→Download Assets and Init Project with VR
-- （VRも使用する場合）HandMR→Android→Initialize Prefabs with VR
-- （MR用のシーン上で）Hologla→ARCore→Initialize Scene with ARCore
-- （MR用のシーン上で）HandMR→Android→Initialize Scene with MR
-- （VR用のシーン上で）HandMR→Android→Initialize Scene with VR
+- サンプルシーンを開く
+- Assets/HandMR/PrefabsにあるHandMRManagerをシーン上に配置
 
-iOS
-
-- HandMR→iOS→Download Assets and Init Project with MR
-- Hologla→ARKit→Initialize Project with ARKit
-- HandMR→iOS→Initialize Prefabs with MR
-- （VRも使用する場合）HandMR→iOS→Download Assets and Init Project with VR
-- （VRも使用する場合）HandMR→iOS→Initialize Prefabs with VR
-- （MR用のシーン上で）Hologla→ARKit→Initialize Scene with ARKit
-- （MR用のシーン上で）HandMR→iOS→Initialize Scene with MR
-- （VR用のシーン上で）HandMR→iOS→Initialize Scene with VR
-
-3. （iOSのみ）プロジェクトのビルド後、「Unity-iPhone.xcworkspace」を開き、XCodeから以下を設定してアプリのビルドを実行
+4. （iOSのみ）プロジェクトのビルド後、「Unity-iPhone.xcworkspace」を開き、XCodeから以下を設定してアプリのビルドを実行
 
 - Unity-iPhoneをクリックすると出てくる設定画面のGeneral→Frameworks, Libraries, and Embedded Contentから「MultiHandAppLib-fl.a」を削除
 - 同画面のBuild Settings→Linking→Other Linker Flagsに``-force_load`` ``Libraries/HandMR/SubAssets/HandVR/Plugins/iOS/MultiHandAppLib-fl.a``の2つを追加

@@ -14,18 +14,24 @@ public class HandVRController : MonoBehaviour
     Coroutine[] startGrabCoroutineRunning_ = new Coroutine[2];
     Coroutine[] endGrabCoroutineRunning_ = new Coroutine[2];
 
-    void Start()
+    IEnumerator Start()
     {
         sphereHands_ = FindObjectsOfType<HandVRSphereHand>();
 
-        if (MainCameraTransform == null)
+        while (MainCameraTransform == null)
         {
-            MainCameraTransform = Camera.main.transform;
+            MainCameraTransform = sphereHands_[0].GetComponent<SetParentMainCamera>().MainCameraTransform;
+            yield return null;
         }
     }
 
     void Update()
     {
+        if (MainCameraTransform == null)
+        {
+            return;
+        }
+
         bool[] isDetected = new bool[2];
 
         foreach (HandVRSphereHand sphereHand in sphereHands_)

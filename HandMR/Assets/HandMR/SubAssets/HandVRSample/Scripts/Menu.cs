@@ -141,6 +141,7 @@ public class Menu : MonoBehaviour
     {
         saveValues();
 
+        /*
         switch (GoogleModeDropdown.value)
         {
             case 0:
@@ -156,6 +157,9 @@ public class Menu : MonoBehaviour
                 SceneManager.LoadScene("MainVR");
                 break;
         }
+        */
+
+        SceneManager.LoadScene("Main");
     }
 
     public void LicenseButton()
