@@ -5,6 +5,7 @@ using UnityEngine;
 public class ResetButton : MonoBehaviour, IControlObject
 {
     public Color FocusedColor = Color.yellow;
+    public Color DetectColor = Color.red;
     public Transform[] Resetables;
 
     Material material_;
@@ -66,7 +67,7 @@ public class ResetButton : MonoBehaviour, IControlObject
             detect();
 
             focusHands_.Remove(hand);
-            material_.color = defaultColor_;
+            material_.color = DetectColor;
         }
     }
 

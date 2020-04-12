@@ -51,8 +51,8 @@ public class HandVRController : MonoBehaviour
 
             RaycastHit hit;
             IControlObject newObject = null;
-            if (Physics.Raycast(sphereHand.HandCenterPosition,
-                (sphereHand.HandCenterPosition - MainCameraTransform.position).normalized,
+            if (Physics.Raycast(sphereHand.GetFinger(8).position,
+                (sphereHand.GetFinger(8).position - MainCameraTransform.position).normalized,
                 out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Collide))
             {
                 newObject = hit.transform.GetComponent<IControlObject>();
@@ -106,14 +106,14 @@ public class HandVRController : MonoBehaviour
 
                     if (!isGrab_[handId] && grabed)
                     {
-                        startGrabCoroutineRunning_[handId] = StartCoroutine(startGrabCoroutine(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.HandCenterPosition)));
+                        startGrabCoroutineRunning_[handId] = StartCoroutine(startGrabCoroutine(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position)));
                         isGrab_[handId] = true;
                     }
                     else if (isGrab_[handId] && grabed)
                     {
                         if (startGrabCoroutineRunning_[handId] == null)
                         {
-                            focusedObjects_[handId].StayGrab(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.HandCenterPosition));
+                            focusedObjects_[handId].StayGrab(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position));
                         }
                         if (endGrabCoroutineRunning_[handId] != null)
                         {
