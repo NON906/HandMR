@@ -45,14 +45,6 @@ public class Exporter
     [MenuItem("HandMR/Develop/Export with settings")]
     static void Export()
     {
-        string symbols;
-        symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android);
-        symbols = symbols.Replace(";DOWNLOADED_ARFOUNDATION", "");
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, symbols);
-        symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS);
-        symbols = symbols.Replace(";DOWNLOADED_ARFOUNDATION", "");
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, symbols);
-
         AssetDatabase.ExportPackage(getPathsExcept("Assets", "HandMR/SubAssets/HandVR/Plugins/iOS"),
             "HandMR_0.x.unitypackage",
             ExportPackageOptions.Interactive | ExportPackageOptions.Recurse | ExportPackageOptions.IncludeLibraryAssets);

@@ -7,8 +7,44 @@ using System.IO;
 
 public class PackagesPostprocessor : AssetPostprocessor
 {
-    static bool addPackageManager(string packageName)
+    static bool isLoading_ = false;
+    static bool isLoaded_ = false;
+
+    List<string> packageLists_ = new List<string>();
+
+    void listPackageManager()
     {
+        if (packageLists_.Count > 0)
+        {
+            return;
+        }
+
+        var listRequest = UnityEditor.PackageManager.Client.List();
+        while (listRequest.Status == UnityEditor.PackageManager.StatusCode.InProgress)
+        {
+            System.Threading.Thread.Sleep(16);
+        }
+
+        if (listRequest.Status == UnityEditor.PackageManager.StatusCode.Success)
+        {
+            foreach (var package in listRequest.Result)
+            {
+                packageLists_.Add(package.packageId);
+            }
+        }
+    }
+
+    bool addPackageManager(string packageName)
+    {
+        listPackageManager();
+        foreach (string name in packageLists_)
+        {
+            if (name.Contains(packageName))
+            {
+                return false;
+            }
+        }
+
         var request = UnityEditor.PackageManager.Client.Add(packageName);
         do
         {
@@ -19,56 +55,49 @@ public class PackagesPostprocessor : AssetPostprocessor
             EditorUtility.DisplayDialog("エラー", packageName + "を追加できませんでした", "OK");
             return false;
         }
+
+        packageLists_.Add(packageName);
+
         return true;
     }
 
-    static void setScriptingDefineSymbol(string symbol)
+    void OnPreprocessAsset()
     {
-        string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android);
-        if (!symbols.Contains(symbol))
+        if (isLoaded_)
         {
-            if (symbols == null || symbols == "")
-            {
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, symbol);
-            }
-            else
-            {
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, symbols + ";" + symbol);
-            }
+            return;
         }
 
-        symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS);
-        if (!symbols.Contains(symbol))
+        if (isLoading_)
         {
-            if (symbols == null || symbols == "")
+            while (isLoading_)
             {
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, symbol);
+                System.Threading.Thread.Sleep(16);
             }
-            else
-            {
-                PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, symbols + ";" + symbol);
-            }
+            return;
         }
-    }
 
-    static void OnPostprocessAllAssets(string[] importedAssets, string[] deletedAssets, string[] movedAssets, string[] movedFromAssetPaths)
-    {
-        if (importedAssets.ToList().Contains("Assets/HandMR/Editor/PackagesPostprocessor.cs"))
+        isLoading_ = true;
+
+        bool isChange = false;
+
+        isChange |= addPackageManager("com.unity.xr.arfoundation");
+        isChange |= addPackageManager("com.unity.xr.arsubsystems");
+        isChange |= addPackageManager("com.unity.inputsystem");
+        isChange |= addPackageManager("com.unity.xr.management");
+
+        isChange |= addPackageManager("com.unity.xr.arcore@3.0.1");
+        isChange |= addPackageManager("com.unity.xr.arkit@3.0.1");
+
+        isChange |= addPackageManager("com.unity.xr.googlevr.android@2.0.0");
+        isChange |= addPackageManager("com.unity.xr.googlevr.ios@2.0.1");
+
+        if (isChange)
         {
-            addPackageManager("com.unity.xr.arfoundation");
-            addPackageManager("com.unity.xr.arsubsystems");
-            addPackageManager("com.unity.inputsystem");
-            addPackageManager("com.unity.xr.management");
-
-            addPackageManager("com.unity.xr.arcore@3.0.1");
-            addPackageManager("com.unity.xr.arkit@3.0.1");
-
-            addPackageManager("com.unity.xr.googlevr.android@2.0.0");
-            addPackageManager("com.unity.xr.googlevr.ios@2.0.1");
-
             Debug.Log("パッケージを更新しました");
-
-            setScriptingDefineSymbol("DOWNLOADED_ARFOUNDATION");
         }
+
+        isLoaded_ = true;
+        isLoading_ = false;
     }
 }
