@@ -94,6 +94,7 @@ public class PackagesPostprocessor : AssetPostprocessor
 
         if (isChange)
         {
+            AssetDatabase.Refresh();
             Debug.Log("パッケージを更新しました");
         }
 
