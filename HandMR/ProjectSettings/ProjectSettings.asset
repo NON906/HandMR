@@ -4,7 +4,7 @@
 PlayerSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 18
-  productGUID: b0d3df4a579a6490d9b9293e2e013813
+  productGUID: 2a52fb0ce88b44c2ebaa849ad3650bae
   AndroidProfiler: 0
   AndroidFilterTouchesWhenObscured: 0
   AndroidEnableSustainedPerformanceMode: 0
@@ -686,8 +686,8 @@ PlayerSettings:
   webGLThreadsSupport: 0
   webGLWasmStreaming: 0
   scriptingDefineSymbols:
-    4: UNITY_INPUT_SYSTEM;DOWNLOADED_HOLOGLA;DOWNLOADED_ARFOUNDATION
-    7: UNITY_INPUT_SYSTEM;DOWNLOADED_HOLOGLA;DOWNLOADED_ARFOUNDATION
+    4: UNITY_INPUT_SYSTEM;DOWNLOADED_HOLOGLA;DOWNLOADED_ARFOUNDATION;SETTING_PREFAB
+    7: UNITY_INPUT_SYSTEM;DOWNLOADED_HOLOGLA;DOWNLOADED_ARFOUNDATION;SETTING_PREFAB
   platformArchitecture:
     iPhone: 1
   scriptingBackend:

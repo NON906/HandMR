@@ -181,34 +181,34 @@ MonoBehaviour:
   m_TrackingType: 0
   m_UpdateType: 0
   m_PositionAction:
-    m_Name: Position
+    m_Name: BackGroundCamera - TPD - Position
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 1249b46b-d93b-4049-b64a-6fd9c22abf60
+    m_Id: 
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 310762c1-1f38-4cef-9d27-a774d7d9d6f4
+      m_Id: 
       m_Path: <HandheldARInputDevice>/devicePosition
       m_Interactions: 
       m_Processors: 
       m_Groups: 
-      m_Action: Position
+      m_Action: BackGroundCamera - TPD - Position
       m_Flags: 0
   m_RotationAction:
-    m_Name: Rotation
+    m_Name: BackGroundCamera - TPD - Rotation
     m_Type: 0
     m_ExpectedControlType: 
-    m_Id: 9ddf66d3-1975-4a4b-8b10-521fcaaffaf4
+    m_Id: 
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings:
     - m_Name: 
-      m_Id: 96b5caad-65f9-432b-a574-f4ceda7006d3
+      m_Id: 
       m_Path: <HandheldARInputDevice>/deviceRotation
       m_Interactions: 
       m_Processors: 
       m_Groups: 
-      m_Action: Rotation
+      m_Action: BackGroundCamera - TPD - Rotation
       m_Flags: 0
