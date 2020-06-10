@@ -42,7 +42,7 @@ public class ResetButton : MonoBehaviour, IControlObject
         yield return null;
         if (focusStartHands_.Remove(hand))
         {
-            if (focusHands_.Count == 0)
+            if (focusHands_.Count == 0 && material_.color != DetectColor)
             {
                 material_.color = FocusedColor;
             }
@@ -60,7 +60,7 @@ public class ResetButton : MonoBehaviour, IControlObject
         }
     }
 
-    public void StartGrab(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
+    void touch(HandVRSphereHand.EitherHand hand)
     {
         if (focusHands_.Contains(hand))
         {
@@ -71,12 +71,32 @@ public class ResetButton : MonoBehaviour, IControlObject
         }
     }
 
+    public void StartTouch(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
+    {
+        touch(hand);
+    }
+
+    public void StartGrab(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
+    {
+
+    }
+
     public void StayGrab(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
     {
 
     }
 
     public void EndGrab(HandVRSphereHand.EitherHand hand)
+    {
+
+    }
+
+    public void StayTouch(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
+    {
+        touch(hand);
+    }
+
+    public void EndTouch(HandVRSphereHand.EitherHand hand)
     {
 
     }

@@ -39,6 +39,13 @@ public class HandVRMain : MonoBehaviour
 
     bool isStart_ = false;
     Texture2D texture2D_;
+    public Texture2D Texture2DRaw
+    {
+        get
+        {
+            return texture2D_;
+        }
+    }
 
     void Start()
     {
@@ -158,7 +165,7 @@ public class HandVRMain : MonoBehaviour
         {
             handSizePosVecArray[loop][0] = (handSizePosVecArray[loop][0] - 0.5f) * 0.15f * Screen.width / Screen.height;
             handSizePosVecArray[loop][1] = (handSizePosVecArray[loop][1] - 0.5f) * -0.15f;
-            handSizePosVecArray[loop][2] = handSizePosVecArray[loop][2] * 0.0005f + 0.2f;//handSizePosVecArray[loop][2] * 0.001f + 0.3f;
+            handSizePosVecArray[loop][2] = handSizePosVecArray[loop][2] * 0.001f;
         }
         float handSizeRaw = 0f;
         for (int loop = 0; loop < 4; loop++)
@@ -172,7 +179,7 @@ public class HandVRMain : MonoBehaviour
 
         posVecArray[0] = (posVecArray[0] - 0.5f) * 0.15f * Screen.width / Screen.height;
         posVecArray[1] = (posVecArray[1] - 0.5f) * -0.15f;
-        posVecArray[2] = posVecArray[2] * 0.0005f + 0.2f;//posVecArray[2] * 0.001f + 0.3f;
+        posVecArray[2] = posVecArray[2] * 0.0015f; //0.001f;
 
         for (int loop = 0; loop < 3; loop++)
         {
@@ -180,6 +187,7 @@ public class HandVRMain : MonoBehaviour
         }
         posVecArray[0] += ShiftX;
         posVecArray[1] += ShiftY;
+        posVecArray[2] += 0.3f;
 
         return posVecArray;
     }

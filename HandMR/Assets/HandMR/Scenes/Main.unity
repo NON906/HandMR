@@ -510,7 +510,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 654501016}
   m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 1.2, y: 0.3, z: -0}
+  m_LocalPosition: {x: 1.2, y: 1.2, z: -0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children:
   - {fileID: 234962887}
@@ -531,6 +531,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FocusedColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  DetectColor: {r: 1, g: 0, b: 0, a: 1}
   Resetables:
   - {fileID: 110345550}
 --- !u!1001 &1503241283
@@ -920,6 +921,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75db040ca0e4c47559861848a0a4b193, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TouchSize: 0.25
   MainCameraTransform: {fileID: 0}
 --- !u!4 &1730094051
 Transform:

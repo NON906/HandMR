@@ -91,6 +91,21 @@ public class CanCarryObject : MonoBehaviour, IControlObject
         }
     }
 
+    public void StartTouch(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
+    {
+
+    }
+
+    public void StayTouch(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
+    {
+
+    }
+
+    public void EndTouch(HandVRSphereHand.EitherHand hand)
+    {
+
+    }
+
     void FixedUpdate()
     {
         if (grabHands_.Count > 0)

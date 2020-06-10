@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class HandVRController : MonoBehaviour
 {
+    public float TouchSize = 0.25f;
     public Transform MainCameraTransform = null;
 
     HandVRSphereHand[] sphereHands_;
 
     IControlObject[] focusedObjects_ = new IControlObject[2];
     bool[] isGrab_ = new bool[2];
+    bool[] isTouch_ = new bool[2];
 
     Coroutine[] startGrabCoroutineRunning_ = new Coroutine[2];
     Coroutine[] endGrabCoroutineRunning_ = new Coroutine[2];
@@ -51,9 +53,10 @@ public class HandVRController : MonoBehaviour
 
             RaycastHit hit;
             IControlObject newObject = null;
-            if (Physics.Raycast(sphereHand.GetFinger(8).position,
+            bool rayIsHit = Physics.Raycast(sphereHand.GetFinger(8).position - (sphereHand.GetFinger(8).position - MainCameraTransform.position).normalized * 2f,
                 (sphereHand.GetFinger(8).position - MainCameraTransform.position).normalized,
-                out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Collide))
+                out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Collide);
+            if (rayIsHit)
             {
                 newObject = hit.transform.GetComponent<IControlObject>();
             }
@@ -74,6 +77,35 @@ public class HandVRController : MonoBehaviour
 
             if (focusedObjects_[handId] != null)
             {
+                Collider col = null;
+                if (rayIsHit && hit.distance < 2f + TouchSize)
+                {
+                    col = hit.collider;
+                }
+
+                if (!isTouch_[handId])
+                {
+                    if (col != null && col.GetComponent<IControlObject>() == focusedObjects_[handId])
+                    {
+                        focusedObjects_[handId].StartTouch(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position));
+                        isTouch_[handId] = true;
+                    }
+                }
+                else
+                {
+                    isTouch_[handId] = false;
+
+                    if (col != null && col.GetComponent<IControlObject>() == focusedObjects_[handId])
+                    {
+                        focusedObjects_[handId].StayTouch(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position));
+                        isTouch_[handId] = true;
+                    }
+                    if (!isTouch_[handId])
+                    {
+                        focusedObjects_[handId].EndTouch(sphereHand.ThisEitherHand);
+                    }
+                }
+
                 bool grabCountrol = true;
                 for (int loop = 0; loop < 2; loop++)
                 {
