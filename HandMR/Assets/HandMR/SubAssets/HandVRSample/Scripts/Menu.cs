@@ -60,6 +60,8 @@ public class Menu : MonoBehaviour
                 InterpupillaryDistanceSlider.interactable = true;
                 InterpupillaryDistanceInputField.interactable = true;
                 ScreenSizeDropdown.interactable = true;
+                HandPositionXSlider.interactable = true;
+                HandPositionXInputField.interactable = true;
                 HandPositionYSlider.interactable = true;
                 HandPositionYInputField.interactable = true;
                 break;
@@ -68,6 +70,8 @@ public class Menu : MonoBehaviour
                 InterpupillaryDistanceSlider.interactable = false;
                 InterpupillaryDistanceInputField.interactable = false;
                 ScreenSizeDropdown.interactable = true;
+                HandPositionXSlider.interactable = true;
+                HandPositionXInputField.interactable = true;
                 HandPositionYSlider.interactable = true;
                 HandPositionYInputField.interactable = true;
                 break;
@@ -77,6 +81,18 @@ public class Menu : MonoBehaviour
                 InterpupillaryDistanceSlider.interactable = false;
                 InterpupillaryDistanceInputField.interactable = false;
                 ScreenSizeDropdown.interactable = false;
+                HandPositionXSlider.interactable = true;
+                HandPositionXInputField.interactable = true;
+                HandPositionYSlider.interactable = false;
+                HandPositionYInputField.interactable = false;
+                break;
+            case 4:
+                PhonePositionDropdown.interactable = false;
+                InterpupillaryDistanceSlider.interactable = false;
+                InterpupillaryDistanceInputField.interactable = false;
+                ScreenSizeDropdown.interactable = false;
+                HandPositionXSlider.interactable = false;
+                HandPositionXInputField.interactable = false;
                 HandPositionYSlider.interactable = false;
                 HandPositionYInputField.interactable = false;
                 break;
@@ -140,24 +156,6 @@ public class Menu : MonoBehaviour
     public void StartButton()
     {
         saveValues();
-
-        /*
-        switch (GoogleModeDropdown.value)
-        {
-            case 0:
-            case 1:
-#if UNITY_ANDROID
-                SceneManager.LoadScene("MainMRARCore");
-#elif UNITY_IOS
-                SceneManager.LoadScene("MainMRARKit");
-#endif
-                break;
-            case 2:
-            case 3:
-                SceneManager.LoadScene("MainVR");
-                break;
-        }
-        */
 
         SceneManager.LoadScene("Main");
     }

@@ -64,9 +64,20 @@ public class SettingFromPlayerPrefs : MonoBehaviour
             hologlaCameraManager.SwitchViewSize((HologlaCameraManager.ViewSize)PlayerPrefs.GetInt("HandMR_ScreenSize", 0));
 #endif
         }
-        else
+        else if (mode == 2)
         {
             HandMRManagerObj.ViewModeChange(HandMRManager.Mode.VR);
+        }
+        else if (mode == 3)
+        {
+            HandVRMainObj.HandSize *= 2f;
+            HandMRManagerObj.ViewModeChange(HandMRManager.Mode.VR);
+        }
+        else
+        {
+            HandVRMainObj.ShiftX = 0f;
+            HandVRMainObj.HandSize *= 2f;
+            HandMRManagerObj.ViewModeChange(HandMRManager.Mode.AR);
         }
     }
 }

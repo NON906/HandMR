@@ -2427,7 +2427,9 @@ MonoBehaviour:
       m_Image: {fileID: 0}
     - m_Text: "VR\u30B4\u30FC\u30B0\u30EB"
       m_Image: {fileID: 0}
-    - m_Text: "VR\u30B4\u30FC\u30B0\u30EB\uFF08\u5358\u773C\uFF09"
+    - m_Text: "\u5358\u773C\uFF08\u5358\u773CVR\u30B4\u30FC\u30B0\u30EBor\u306A\u3057\uFF09"
+      m_Image: {fileID: 0}
+    - m_Text: "AR\uFF08\u30B4\u30FC\u30B0\u30EB\u306A\u3057\uFF09"
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:

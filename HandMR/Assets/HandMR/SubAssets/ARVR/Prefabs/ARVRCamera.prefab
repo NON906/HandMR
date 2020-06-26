@@ -47,6 +47,7 @@ MonoBehaviour:
   PoseDriverTrans: {fileID: 0}
   Cameras: []
   TouchReset: 1
+  BackgroundObjAutoDisable: 1
 --- !u!1 &4776025826752919300
 GameObject:
   m_ObjectHideFlags: 0

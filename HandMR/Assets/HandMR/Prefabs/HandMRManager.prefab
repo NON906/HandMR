@@ -48,7 +48,9 @@ MonoBehaviour:
   Cameras:
   - {fileID: 7742919326321464965}
   - {fileID: 7743793647420266503}
+  - {fileID: 7743662236486198301}
   TouchReset: 0
+  BackgroundObjAutoDisable: 1
 --- !u!1 &1739868430521908024
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,6 +505,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8618147743317159187, guid: def53970deada674084bfb1efb26a17a,
+        type: 3}
+      propertyPath: m_CullingMask.m_Bits
+      value: 2097207
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: def53970deada674084bfb1efb26a17a, type: 3}
 --- !u!1 &8031789857909747851 stripped
@@ -812,6 +819,12 @@ Transform:
 --- !u!1 &7726775221663944683 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1722241947097298, guid: 3a50cbb25f06c4f4e8b51f2edbe41672,
+    type: 3}
+  m_PrefabInstance: {fileID: 7727362765931190073}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &7743662236486198301 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 20856328099820324, guid: 3a50cbb25f06c4f4e8b51f2edbe41672,
     type: 3}
   m_PrefabInstance: {fileID: 7727362765931190073}
   m_PrefabAsset: {fileID: 0}

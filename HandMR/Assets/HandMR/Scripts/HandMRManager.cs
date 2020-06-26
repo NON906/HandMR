@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 
 public class HandMRManager : MonoBehaviour
 {
@@ -8,6 +9,7 @@ public class HandMRManager : MonoBehaviour
     {
         MR,
         VR,
+        AR
     };
 
     [SerializeField]
@@ -65,6 +67,30 @@ public class HandMRManager : MonoBehaviour
                         }
                     }
                 }
+                VRObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = true;
+                VRObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = !XRSettings.enabled;
+                VRCamera.GetComponent<Camera>().clearFlags = CameraClearFlags.SolidColor;
+                break;
+            case Mode.AR:
+                MRObject.SetActive(false);
+                VRObject.SetActive(true);
+                foreach (SetParentMainCamera hand in Hands)
+                {
+                    hand.MainCameraTransform = VRCamera;
+                }
+                foreach (GameObject obj in VRBackgroundObjects)
+                {
+                    if (obj != null)
+                    {
+                        foreach (Renderer renderer in obj.GetComponentsInChildren<Renderer>())
+                        {
+                            renderer.enabled = false;
+                        }
+                    }
+                }
+                VRObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = false;
+                VRObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = true;
+                VRCamera.GetComponent<Camera>().clearFlags = CameraClearFlags.Depth;
                 break;
         }
     }

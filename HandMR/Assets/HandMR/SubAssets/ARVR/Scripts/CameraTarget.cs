@@ -11,6 +11,7 @@ public class CameraTarget : MonoBehaviour
     public Transform PoseDriverTrans;
     public Camera[] Cameras;
     public bool TouchReset;
+    public bool BackgroundObjAutoDisable = true;
 
     // トラッキングの位置中心
     Vector3 poseCenter_ = Vector3.zero;
@@ -71,10 +72,20 @@ public class CameraTarget : MonoBehaviour
                 // カメラ画像の切り替え
                 if (BackgroundObj != null)
                 {
-                    StartCoroutine(delayedSubCameraDisable());
-                    for (int loop = 0; loop < Cameras.Length; loop++)
+                    if (BackgroundObjAutoDisable)
                     {
-                        Cameras[loop].cullingMask = cameraMasks_[loop];
+                        StartCoroutine(delayedSubCameraDisable());
+                        for (int loop = 0; loop < Cameras.Length; loop++)
+                        {
+                            Cameras[loop].cullingMask = cameraMasks_[loop];
+                        }
+                    }
+                    else
+                    {
+                        BackgroundObj.GetComponent<Camera>().depth = -51;
+                        BackgroundObj.GetComponentInChildren<ResizeBackGroundQuad>().FieldOfView =
+                            FindObjectOfType<ARCameraManager>().GetComponent<Camera>().fieldOfView;
+                        BackgroundObj.GetComponentInChildren<ResizeBackGroundQuad>().Resize();
                     }
                 }
 
@@ -91,6 +102,7 @@ public class CameraTarget : MonoBehaviour
                     {
                         Cameras[loop].cullingMask = 1 << LayerMask.NameToLayer("BackGround");
                     }
+                    BackgroundObj.GetComponent<Camera>().depth = 0;
                 }
 
                 IsTracking = false;
