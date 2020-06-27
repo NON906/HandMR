@@ -32,6 +32,11 @@ public class CameraTarget : MonoBehaviour
 
     void Start()
     {
+        if (Cameras == null)
+        {
+            Cameras = new Camera[0];
+        }
+
         cameraMasks_ = new int[Cameras.Length];
         for (int loop = 0; loop < Cameras.Length; loop++)
         {
@@ -50,6 +55,10 @@ public class CameraTarget : MonoBehaviour
             ARPlane newPlane = null;
             float newPlaneDistance = float.PositiveInfinity;
             ARPlane[] planes = FindObjectsOfType<ARPlane>();
+            if (planes == null)
+            {
+                planes = new ARPlane[0];
+            }
             foreach (ARPlane plane in planes)
             {
                 if (plane.gameObject.activeSelf)
@@ -83,9 +92,14 @@ public class CameraTarget : MonoBehaviour
                     else
                     {
                         BackgroundObj.GetComponent<Camera>().depth = -51;
-                        BackgroundObj.GetComponentInChildren<ResizeBackGroundQuad>().FieldOfView =
-                            FindObjectOfType<ARCameraManager>().GetComponent<Camera>().fieldOfView;
-                        BackgroundObj.GetComponentInChildren<ResizeBackGroundQuad>().Resize();
+
+                        ResizeBackGroundQuad resizeBackGroundQuad = BackgroundObj.GetComponentInChildren<ResizeBackGroundQuad>();
+                        if (resizeBackGroundQuad != null)
+                        {
+                            resizeBackGroundQuad.FieldOfView =
+                                FindObjectOfType<ARCameraManager>().GetComponent<Camera>().fieldOfView;
+                            resizeBackGroundQuad.Resize();
+                        }
                     }
                 }
 
@@ -102,7 +116,10 @@ public class CameraTarget : MonoBehaviour
                     {
                         Cameras[loop].cullingMask = 1 << LayerMask.NameToLayer("BackGround");
                     }
-                    BackgroundObj.GetComponent<Camera>().depth = 0;
+                    if (!BackgroundObjAutoDisable)
+                    {
+                        BackgroundObj.GetComponent<Camera>().depth = 0;
+                    }
                 }
 
                 IsTracking = false;

@@ -131,7 +131,13 @@ public class CanCarryObject : MonoBehaviour, IControlObject
 
     void OnDestroy()
     {
-        Destroy(targetTransform_.gameObject);
-        Destroy(targetTransformParent_.gameObject);
+        if (targetTransform_ != null)
+        {
+            Destroy(targetTransform_.gameObject);
+        }
+        if (targetTransformParent_ != null)
+        {
+            Destroy(targetTransformParent_.gameObject);
+        }
     }
 }
