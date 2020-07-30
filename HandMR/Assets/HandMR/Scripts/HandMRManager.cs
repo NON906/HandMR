@@ -22,6 +22,7 @@ public class HandMRManager : MonoBehaviour
     public Transform MRCamera;
     public GameObject VRObject;
     public Transform VRCamera;
+    public Camera BackGroundCamera;
 
     void Start()
     {
@@ -69,7 +70,7 @@ public class HandMRManager : MonoBehaviour
                 }
                 VRObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = true;
                 VRObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = !XRSettings.enabled;
-                VRCamera.GetComponent<Camera>().clearFlags = CameraClearFlags.SolidColor;
+                StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.SolidColor));
                 break;
             case Mode.AR:
                 MRObject.SetActive(false);
@@ -90,9 +91,37 @@ public class HandMRManager : MonoBehaviour
                 }
                 VRObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = false;
                 VRObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = true;
-                VRCamera.GetComponent<Camera>().clearFlags = CameraClearFlags.Depth;
+                StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.Depth));
                 break;
         }
+    }
+
+    IEnumerator vrCameraSettingCoroutine(CameraClearFlags cameraClearFlags)
+    {
+        yield return null;
+
+        vrCameraSetting(cameraClearFlags);
+    }
+
+    void vrCameraSetting(CameraClearFlags cameraClearFlags)
+    {
+        Camera cam = VRCamera.GetComponent<Camera>();
+        var background = cam.backgroundColor;
+        var cullingMask = cam.cullingMask;
+        var depth = cam.depth;
+        var targetEye = cam.stereoTargetEye;
+        cam.CopyFrom(BackGroundCamera);
+        cam.clearFlags = cameraClearFlags;
+        cam.targetTexture = null;
+        cam.backgroundColor = background;
+        cam.cullingMask = cullingMask;
+        cam.depth = depth;
+        cam.stereoTargetEye = targetEye;
+
+        float degRad = cam.fieldOfView * Mathf.Deg2Rad;
+        float newDegRad = Mathf.Atan(Mathf.Tan(degRad * 0.5f) * 0.5f) * 2f;
+        float newDeg = newDegRad * Mathf.Rad2Deg;
+        cam.fieldOfView = newDeg;
     }
 
     public void ViewModeChange(Mode mode)

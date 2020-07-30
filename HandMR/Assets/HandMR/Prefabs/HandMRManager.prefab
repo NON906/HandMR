@@ -110,6 +110,7 @@ MonoBehaviour:
   MRCamera: {fileID: 7722973871231965609}
   VRObject: {fileID: 8031789857909747851}
   VRCamera: {fileID: 7401033909599164939}
+  BackGroundCamera: {fileID: 456686753298890540}
 --- !u!54 &112435210272643077
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -338,6 +339,12 @@ Transform:
 --- !u!4 &8809913538011188944 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8240003584979381061, guid: 120e476f9cbe44d3b96cabcdf106a2f4,
+    type: 3}
+  m_PrefabInstance: {fileID: 583574824222975381}
+  m_PrefabAsset: {fileID: 0}
+--- !u!20 &456686753298890540 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 1031108927588817593, guid: 120e476f9cbe44d3b96cabcdf106a2f4,
     type: 3}
   m_PrefabInstance: {fileID: 583574824222975381}
   m_PrefabAsset: {fileID: 0}

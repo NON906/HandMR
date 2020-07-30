@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Linq;
 using System.IO;
+using System.Threading.Tasks;
 #if DOWNLOADED_ARFOUNDATION
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.InputSystem.XR;
@@ -14,9 +15,17 @@ public class PackagesPostprocessor : AssetPostprocessor
 {
     class LoadPackages
     {
-        List<string> packageLists_ = new List<string>();
+        class Package
+        {
+            public string PackageId;
+            public bool Installed = false;
+            public string Version;
+            public string[] Versions = null;
+        }
 
-        void listPackageManager()
+        List<Package> packageLists_ = new List<Package>();
+
+        async void listPackageManager()
         {
             if (packageLists_.Count > 0)
             {
@@ -26,33 +35,140 @@ public class PackagesPostprocessor : AssetPostprocessor
             var listRequest = UnityEditor.PackageManager.Client.List();
             while (listRequest.Status == UnityEditor.PackageManager.StatusCode.InProgress)
             {
-                System.Threading.Thread.Sleep(16);
+                await Task.Delay(16);
             }
 
             if (listRequest.Status == UnityEditor.PackageManager.StatusCode.Success)
             {
                 foreach (var package in listRequest.Result)
                 {
-                    packageLists_.Add(package.packageId);
+                    Package listPackage = new Package();
+                    listPackage.PackageId = package.packageId.Split('@')[0];
+                    listPackage.Version = package.version;
+                    listPackage.Versions = package.versions.all;
+                    packageLists_.Add(listPackage);
                 }
             }
         }
 
-        public bool addPackageManager(string packageName)
+        public async Task<bool> addPackageManager(string packageName, string version = "")
         {
             listPackageManager();
-            foreach (string name in packageLists_)
+
+            Package newPackage = null;
+            foreach (var package in packageLists_)
             {
-                if (name.Contains(packageName))
+                if (package.PackageId == packageName)
                 {
-                    return false;
+                    if (package.Version == version || package.Installed)
+                    {
+                        return false;
+                    }
+
+                    newPackage = package;
+                    break;
+                }
+            }
+            if (newPackage == null)
+            {
+                newPackage = new Package();
+                newPackage.PackageId = packageName;
+
+                var searchRequest = UnityEditor.PackageManager.Client.Search(packageName);
+                do
+                {
+                    await Task.Delay(16);
+                } while (searchRequest.Status == UnityEditor.PackageManager.StatusCode.InProgress);
+                var searchResult = searchRequest.Result;
+
+                newPackage.Version = "0";
+                if (searchResult != null && searchResult.Length > 0 && searchResult[0].versions != null && searchResult[0].versions.all != null)
+                {
+                    newPackage.Versions = searchResult[0].versions.all;
+                }
+                else
+                {
+                    newPackage.Versions = new string[0];
                 }
             }
 
-            var request = UnityEditor.PackageManager.Client.Add(packageName);
+            string[] targetVersionStrings = version.Replace("-preview.", ".-1.").Split('.');
+            int[] targetVersion = new int[targetVersionStrings.Length];
+            for (int loop = 0; loop < targetVersionStrings.Length; loop++)
+            {
+                if (!int.TryParse(targetVersionStrings[loop], out targetVersion[loop]))
+                {
+                    targetVersion[loop] = -2;
+                }
+            }
+
+            int[] newVersion = new int[0];
+            string newVersionString = "";
+            foreach (string newVersionStringInLoop in newPackage.Versions)
+            {
+                string[] versionStrings = newVersionStringInLoop.Replace("-preview.", ".-1.").Split('.');
+                int[] versions = new int[versionStrings.Length];
+                for (int loop = 0; loop < versionStrings.Length; loop++)
+                {
+                    if (!int.TryParse(versionStrings[loop], out versions[loop]))
+                    {
+                        versions[loop] = -2;
+                    }
+                }
+                bool breakFlag = false;
+                bool checkTarget = true;
+                bool checkNew = true;
+                for (int loop = 0; loop < versions.Length; loop++)
+                {
+                    if ((targetVersion.Length > loop && versions[loop] > targetVersion[loop] && checkTarget)
+                        || (newVersion.Length > loop && newVersion[loop] > versions[loop] && checkNew))
+                    {
+                        breakFlag = true;
+                        break;
+                    }
+                    if (targetVersion.Length > loop && versions[loop] < targetVersion[loop])
+                    {
+                        checkTarget = false;
+                    }
+                    if (newVersion.Length > loop && newVersion[loop] < versions[loop])
+                    {
+                        checkNew = false;
+                    }
+                }
+                if (!breakFlag)
+                {
+                    newVersion = versions;
+                    newVersionString = newVersionStringInLoop;
+                }
+            }
+
+            if (newVersion.Length == 0)
+            {
+                return false;
+            }
+
+            if (newPackage.Version == newVersionString)
+            {
+                return false;
+            }
+
+            if (packageLists_.Contains(newPackage))
+            {
+                packageLists_.Remove(newPackage);
+                var removeRequest = UnityEditor.PackageManager.Client.Remove(newPackage.PackageId + "@" + newPackage.Version);
+                do
+                {
+                    await Task.Delay(16);
+                } while (removeRequest.Status == UnityEditor.PackageManager.StatusCode.InProgress);
+            }
+
+            newPackage.Version = newVersionString;
+
+            UnityEditor.PackageManager.Requests.AddRequest request;
+            request = UnityEditor.PackageManager.Client.Add(newPackage.PackageId + "@" + newPackage.Version);
             do
             {
-                System.Threading.Thread.Sleep(16);
+                await Task.Delay(16);
             } while (request.Status == UnityEditor.PackageManager.StatusCode.InProgress);
             if (request.Status != UnityEditor.PackageManager.StatusCode.Success)
             {
@@ -60,7 +176,8 @@ public class PackagesPostprocessor : AssetPostprocessor
                 return false;
             }
 
-            packageLists_.Add(packageName);
+            newPackage.Installed = true;
+            packageLists_.Add(newPackage);
 
             return true;
         }
@@ -99,27 +216,27 @@ public class PackagesPostprocessor : AssetPostprocessor
     }
 
     [MenuItem("HandMR/Add Packages to PackageManager")]
-    static void loadPackages()
+    static async void loadPackages()
     {
         LoadPackages loadPackage = new LoadPackages();
 
         bool isChange = false;
 
-        isChange |= loadPackage.addPackageManager("com.unity.xr.arfoundation");
-        isChange |= loadPackage.addPackageManager("com.unity.xr.arsubsystems");
-        isChange |= loadPackage.addPackageManager("com.unity.inputsystem");
-        isChange |= loadPackage.addPackageManager("com.unity.xr.management");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.arfoundation", "3.0");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.arsubsystems", "3.0");
+        isChange |= await loadPackage.addPackageManager("com.unity.inputsystem", "1");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.management", "3.0.3");
 
-        isChange |= loadPackage.addPackageManager("com.unity.xr.arcore@3.0.1");
-        isChange |= loadPackage.addPackageManager("com.unity.xr.arkit@3.0.1");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.arcore", "3.0");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.arkit", "3.0");
 
-        isChange |= loadPackage.addPackageManager("com.unity.xr.googlevr.android@2.0.0");
-        isChange |= loadPackage.addPackageManager("com.unity.xr.googlevr.ios@2.0.1");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.googlevr.android", "2.0.0");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.googlevr.ios", "2.0.1");
 
         AssetDatabase.Refresh();
         while (string.IsNullOrEmpty(AssetDatabase.AssetPathToGUID("ProjectSettings/ProjectSettings.asset")))
         {
-            System.Threading.Thread.Sleep(16);
+            await Task.Delay(16);
             AssetDatabase.Refresh();
         }
         setScriptingDefineSymbol("DOWNLOADED_ARFOUNDATION");
@@ -130,7 +247,7 @@ public class PackagesPostprocessor : AssetPostprocessor
         }
     }
 
-    void OnPreprocessAsset()
+    async void OnPreprocessAsset()
     {
         if (assetPath == "ProjectSettings/ProjectSettings.asset")
         {
@@ -146,7 +263,7 @@ public class PackagesPostprocessor : AssetPostprocessor
         {
             while (isLoading_)
             {
-                System.Threading.Thread.Sleep(16);
+                await Task.Delay(16);
             }
             return;
         }
@@ -170,6 +287,7 @@ public class PackagesPostprocessor : AssetPostprocessor
         ARPlaneManager aRPlaneManager = contentsRoot.GetComponent<ARPlaneManager>();
         aRPlaneManager.planePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/HandMR/SubAssets/ARVR/Prefabs/Sub/ARPlane.prefab");
         aRPlaneManager.detectionMode = UnityEngine.XR.ARSubsystems.PlaneDetectionMode.Horizontal;
+        //aRPlaneManager.requestedDetectionMode = UnityEngine.XR.ARSubsystems.PlaneDetectionMode.Horizontal;
 
         TrackedPoseDriver trackedPoseDriver = contentsRoot.GetComponentInChildren<TrackedPoseDriver>();
         trackedPoseDriver.positionAction = new InputAction(binding: "<HandheldARInputDevice>/devicePosition");
