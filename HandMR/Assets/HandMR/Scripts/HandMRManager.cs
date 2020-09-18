@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
+#if DOWNLOADED_HOLOGLA
+using Hologla;
+#endif
 
 public class HandMRManager : MonoBehaviour
 {
@@ -9,7 +12,8 @@ public class HandMRManager : MonoBehaviour
     {
         MR,
         VR,
-        AR
+        AR,
+        VRSingle
     };
 
     [SerializeField]
@@ -20,12 +24,20 @@ public class HandMRManager : MonoBehaviour
     public SetParentMainCamera[] Hands;
     public GameObject MRObject;
     public Transform MRCamera;
-    public GameObject VRObject;
-    public Transform VRCamera;
+    public GameObject ARObject;
+    public Transform ARCamera;
     public Camera BackGroundCamera;
+    public GameObject VRSubCamera;
+    public GameObject LeftEyeFrame;
+    public GameObject RightEyeFrame;
+    public Color VRBackColor;
+
+    Fisheye[] fisheyes_;
 
     void Start()
     {
+        fisheyes_ = MRObject.GetComponentsInChildren<Fisheye>();
+
         viewModeChange();
     }
 
@@ -34,64 +46,112 @@ public class HandMRManager : MonoBehaviour
         switch (ViewMode)
         {
             case Mode.MR:
-                MRObject.SetActive(true);
-                VRObject.SetActive(false);
-                foreach (SetParentMainCamera hand in Hands)
                 {
-                    hand.MainCameraTransform = MRCamera;
-                }
-                foreach (GameObject obj in VRBackgroundObjects)
-                {
-                    if (obj != null)
+                    MRObject.SetActive(true);
+                    ARObject.SetActive(false);
+                    foreach (SetParentMainCamera hand in Hands)
                     {
-                        foreach (Renderer renderer in obj.GetComponentsInChildren<Renderer>())
+                        hand.MainCameraTransform = MRCamera;
+                    }
+                    foreach (GameObject obj in VRBackgroundObjects)
+                    {
+                        if (obj != null)
                         {
-                            renderer.enabled = false;
+                            foreach (Renderer renderer in obj.GetComponentsInChildren<Renderer>())
+                            {
+                                renderer.enabled = false;
+                            }
                         }
                     }
+                    CameraTarget cameraTarget = MRObject.GetComponentInChildren<CameraTarget>();
+                    cameraTarget.BackgroundObj.SetActive(true);
+                    VRSubCamera.SetActive(false);
                 }
                 break;
             case Mode.VR:
-                MRObject.SetActive(false);
-                VRObject.SetActive(true);
-                foreach (SetParentMainCamera hand in Hands)
                 {
-                    hand.MainCameraTransform = VRCamera;
-                }
-                foreach (GameObject obj in VRBackgroundObjects)
-                {
-                    if (obj != null)
+                    MRObject.SetActive(true);
+#if DOWNLOADED_HOLOGLA
+                    MRObject.GetComponentInChildren<HologlaCameraManager>().SwitchViewMode(HologlaCameraManager.ViewMode.VR);
+#endif
+                    ARObject.SetActive(false);
+                    foreach (SetParentMainCamera hand in Hands)
                     {
-                        foreach (Renderer renderer in obj.GetComponentsInChildren<Renderer>())
+                        hand.MainCameraTransform = MRCamera;
+                    }
+                    foreach (GameObject obj in VRBackgroundObjects)
+                    {
+                        if (obj != null)
                         {
-                            renderer.enabled = true;
+                            foreach (Renderer renderer in obj.GetComponentsInChildren<Renderer>())
+                            {
+                                renderer.enabled = true;
+                            }
                         }
                     }
+                    CameraTarget cameraTarget = MRObject.GetComponentInChildren<CameraTarget>();
+                    cameraTarget.BackgroundObjAutoDisable = true;
+                    cameraTarget.BackgroundObj.SetActive(false);
+                    VRSubCamera.SetActive(true);
+                    cameraTarget.BackgroundObj = VRSubCamera;
+                    ResizeBackGroundQuad resizeBackGroundQuad = MRObject.GetComponentInChildren<ResizeBackGroundQuad>();
+                    resizeBackGroundQuad.NoticeTextCenter = false;
+                    Fisheye[] fisheyes = MRObject.GetComponentsInChildren<Fisheye>();
+                    foreach (Fisheye fisheye in fisheyes)
+                    {
+                        fisheye.enabled = true;
+                        Camera camera = fisheye.GetComponent<Camera>();
+                        camera.fieldOfView = 90f;
+                    }
+                    LeftEyeFrame.SetActive(false);
+                    RightEyeFrame.SetActive(false);
                 }
-                VRObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = true;
-                VRObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = !XRSettings.enabled;
-                StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.SolidColor));
+                break;
+            case Mode.VRSingle:
+                {
+                    MRObject.SetActive(false);
+                    ARObject.SetActive(true);
+                    foreach (SetParentMainCamera hand in Hands)
+                    {
+                        hand.MainCameraTransform = ARCamera;
+                    }
+                    foreach (GameObject obj in VRBackgroundObjects)
+                    {
+                        if (obj != null)
+                        {
+                            foreach (Renderer renderer in obj.GetComponentsInChildren<Renderer>())
+                            {
+                                renderer.enabled = false;
+                            }
+                        }
+                    }
+                    ARObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = true;
+                    ARObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = true;
+                    StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.SolidColor));
+                }
                 break;
             case Mode.AR:
-                MRObject.SetActive(false);
-                VRObject.SetActive(true);
-                foreach (SetParentMainCamera hand in Hands)
                 {
-                    hand.MainCameraTransform = VRCamera;
-                }
-                foreach (GameObject obj in VRBackgroundObjects)
-                {
-                    if (obj != null)
+                    MRObject.SetActive(false);
+                    ARObject.SetActive(true);
+                    foreach (SetParentMainCamera hand in Hands)
                     {
-                        foreach (Renderer renderer in obj.GetComponentsInChildren<Renderer>())
+                        hand.MainCameraTransform = ARCamera;
+                    }
+                    foreach (GameObject obj in VRBackgroundObjects)
+                    {
+                        if (obj != null)
                         {
-                            renderer.enabled = false;
+                            foreach (Renderer renderer in obj.GetComponentsInChildren<Renderer>())
+                            {
+                                renderer.enabled = false;
+                            }
                         }
                     }
+                    ARObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = false;
+                    ARObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = true;
+                    StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.Depth));
                 }
-                VRObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = false;
-                VRObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = true;
-                StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.Depth));
                 break;
         }
     }
@@ -100,12 +160,12 @@ public class HandMRManager : MonoBehaviour
     {
         yield return null;
 
-        vrCameraSetting(cameraClearFlags);
+        arCameraSetting(cameraClearFlags);
     }
 
-    void vrCameraSetting(CameraClearFlags cameraClearFlags)
+    void arCameraSetting(CameraClearFlags cameraClearFlags)
     {
-        Camera cam = VRCamera.GetComponent<Camera>();
+        Camera cam = ARCamera.GetComponent<Camera>();
         var background = cam.backgroundColor;
         var cullingMask = cam.cullingMask;
         var depth = cam.depth;
@@ -128,5 +188,25 @@ public class HandMRManager : MonoBehaviour
     {
         ViewMode = mode;
         viewModeChange();
+    }
+
+    void LateUpdate()
+    {
+        if (ViewMode == Mode.VR)
+        {
+            foreach (Fisheye fisheye in fisheyes_)
+            {
+                Camera camera = fisheye.GetComponent<Camera>();
+                camera.clearFlags = CameraClearFlags.SolidColor;
+                if (!VRSubCamera.activeInHierarchy)
+                {
+                    camera.backgroundColor = VRBackColor;
+                }
+                else
+                {
+                    camera.backgroundColor = Color.black;
+                }
+            }
+        }
     }
 }

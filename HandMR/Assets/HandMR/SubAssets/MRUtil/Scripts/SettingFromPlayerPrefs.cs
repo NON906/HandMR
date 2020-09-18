@@ -6,6 +6,7 @@ using Hologla;
 #endif
 using UnityEngine.XR;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SettingFromPlayerPrefs : MonoBehaviour
 {
@@ -15,28 +16,15 @@ public class SettingFromPlayerPrefs : MonoBehaviour
     public Transform LeftButton;
     public Transform RightButton;
 
-    IEnumerator Start()
+    Fisheye[] fisheyes_;
+    float fieldOfView_;
+
+    void Start()
     {
         HandVRMainObj.ShiftX = PlayerPrefs.GetFloat("HandMR_HandPositionX", 0f) * 0.001f;
         HandVRMainObj.HandSize = PlayerPrefs.GetFloat("HandMR_HandSize", 130f) * 0.001f;
 
         int mode = PlayerPrefs.GetInt("HandMR_GoogleMode", 0);
-        if (mode == 2)
-        {
-            if (XRSettings.loadedDeviceName != XRSettings.supportedDevices[1] || !XRSettings.enabled)
-            {
-                XRSettings.LoadDeviceByName(XRSettings.supportedDevices[1]);
-                yield return null;
-                XRSettings.enabled = true;
-                yield return null;
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-            }
-        }
-        else
-        {
-            XRSettings.enabled = false;
-        }
-
         if (mode <= 1)
         {
             HandMRManagerObj.ViewModeChange(HandMRManager.Mode.MR);
@@ -55,7 +43,7 @@ public class SettingFromPlayerPrefs : MonoBehaviour
 #if DOWNLOADED_HOLOGLA
             HologlaCameraManager hologlaCameraManager = HologlaCameraManagerObj.GetComponent<HologlaCameraManager>();
 
-            if (PlayerPrefs.GetInt("HandMR_GoogleMode", 0) == 1)
+            if (mode == 1)
             {
                 hologlaCameraManager.SwitchEyeMode(HologlaCameraManager.EyeMode.SingleEye);
             }
@@ -64,14 +52,43 @@ public class SettingFromPlayerPrefs : MonoBehaviour
             hologlaCameraManager.SwitchViewSize((HologlaCameraManager.ViewSize)PlayerPrefs.GetInt("HandMR_ScreenSize", 0));
 #endif
         }
-        else if (mode == 2 || mode == 3)
+        else if (mode == 2)
         {
             HandMRManagerObj.ViewModeChange(HandMRManager.Mode.VR);
+
+            fisheyes_ = HandMRManagerObj.MRObject.GetComponentsInChildren<Fisheye>();
+            foreach (Fisheye fisheye in fisheyes_)
+            {
+                fisheye.Rate = PlayerPrefs.GetFloat("HandMR_FisheyeRate", 58f) * 0.01f;
+                fisheye.Center = PlayerPrefs.GetFloat("HandMR_FisheyeCenter", 50f) * 0.01f;
+            }
+            fieldOfView_ = PlayerPrefs.GetFloat("HandMR_FisheyeFieldOfView", 90f);
+
+            LeftButton.GetChild(0).GetComponent<Image>().enabled = false;
+            RightButton.GetChild(0).GetComponent<Image>().enabled = false;
+
+#if DOWNLOADED_HOLOGLA
+            HologlaCameraManager hologlaCameraManager = HologlaCameraManagerObj.GetComponent<HologlaCameraManager>();
+            hologlaCameraManager.ApplyIPD(PlayerPrefs.GetFloat("HandMR_InterpupillaryDistance", 64f));
+            hologlaCameraManager.SwitchViewSize((HologlaCameraManager.ViewSize)PlayerPrefs.GetInt("HandMR_ScreenSize", 0));
+#endif
+        }
+        else if (mode == 3)
+        {
+            HandMRManagerObj.ViewModeChange(HandMRManager.Mode.VRSingle);
         }
         else
         {
             HandVRMainObj.ShiftX = 0f;
             HandMRManagerObj.ViewModeChange(HandMRManager.Mode.AR);
+        }
+    }
+
+    void LateUpdate()
+    {
+        foreach (Fisheye fisheye in fisheyes_)
+        {
+            fisheye.GetComponent<Camera>().fieldOfView = fieldOfView_;
         }
     }
 }

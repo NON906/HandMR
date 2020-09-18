@@ -15,5 +15,9 @@ EditorBuildSettings:
     path: Assets/HandMR/Scenes/Main.unity
     guid: 24d4eebdf20e94a4699c665e58d3dbbb
   m_configObjects:
+    UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 5eb7396d7be554686bd034dd82e7cc1b,
+      type: 2}
+    UnityEditor.XR.ARKit.ARKitSettings: {fileID: 11400000, guid: c0e972291b58e440e924a28302a32a75,
+      type: 2}
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 3f6d2d0c7611f4b5c9aff86d39ab4341,
       type: 2}

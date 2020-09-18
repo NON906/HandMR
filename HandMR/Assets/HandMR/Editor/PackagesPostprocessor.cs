@@ -222,16 +222,16 @@ public class PackagesPostprocessor : AssetPostprocessor
 
         bool isChange = false;
 
-        isChange |= await loadPackage.addPackageManager("com.unity.xr.arfoundation", "3.0");
-        isChange |= await loadPackage.addPackageManager("com.unity.xr.arsubsystems", "3.0");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.arfoundation", "4.0");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.arsubsystems", "4.0");
         isChange |= await loadPackage.addPackageManager("com.unity.inputsystem", "1");
-        isChange |= await loadPackage.addPackageManager("com.unity.xr.management", "3.0.3");
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.management", "3.2");
 
-        isChange |= await loadPackage.addPackageManager("com.unity.xr.arcore", "3.0");
-        isChange |= await loadPackage.addPackageManager("com.unity.xr.arkit", "3.0");
-
-        isChange |= await loadPackage.addPackageManager("com.unity.xr.googlevr.android", "2.0.0");
-        isChange |= await loadPackage.addPackageManager("com.unity.xr.googlevr.ios", "2.0.1");
+#if UNITY_ANDROID
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.arcore", "4.0");
+#else
+        isChange |= await loadPackage.addPackageManager("com.unity.xr.arkit", "4.0");
+#endif
 
         AssetDatabase.Refresh();
         while (string.IsNullOrEmpty(AssetDatabase.AssetPathToGUID("ProjectSettings/ProjectSettings.asset")))
@@ -286,8 +286,8 @@ public class PackagesPostprocessor : AssetPostprocessor
         aRSessionOrigin.camera = contentsRoot.GetComponentInChildren<Camera>();
         ARPlaneManager aRPlaneManager = contentsRoot.GetComponent<ARPlaneManager>();
         aRPlaneManager.planePrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/HandMR/SubAssets/ARVR/Prefabs/Sub/ARPlane.prefab");
-        aRPlaneManager.detectionMode = UnityEngine.XR.ARSubsystems.PlaneDetectionMode.Horizontal;
-        //aRPlaneManager.requestedDetectionMode = UnityEngine.XR.ARSubsystems.PlaneDetectionMode.Horizontal;
+        //aRPlaneManager.detectionMode = UnityEngine.XR.ARSubsystems.PlaneDetectionMode.Horizontal;
+        aRPlaneManager.requestedDetectionMode = UnityEngine.XR.ARSubsystems.PlaneDetectionMode.Horizontal;
 
         TrackedPoseDriver trackedPoseDriver = contentsRoot.GetComponentInChildren<TrackedPoseDriver>();
         trackedPoseDriver.positionAction = new InputAction(binding: "<HandheldARInputDevice>/devicePosition");

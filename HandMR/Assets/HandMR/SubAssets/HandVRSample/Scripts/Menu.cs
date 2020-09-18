@@ -18,15 +18,24 @@ public class Menu : MonoBehaviour
     public InputField HandPositionYInputField;
     public Slider HandSizeSlider;
     public InputField HandSizeInputField;
+    public Slider FisheyeFieldOfViewSlider;
+    public InputField FisheyeFieldOfViewInputField;
+    public Slider FisheyeRateSlider;
+    public InputField FisheyeRateInputField;
+    public Slider FisheyeCenterSlider;
+    public InputField FisheyeCenterInputField;
     public Canvas MenuCanvas;
 
     int googleModeDefault_;
     int phonePositionDefault_;
     float interpupillaryDistanceDefault_;
     int screenSizeDefault_;
-    float HandPositionXDefault_;
-    float HandPositionYDefault_;
-    float HandSizeDefault_;
+    float handPositionXDefault_;
+    float handPositionYDefault_;
+    float handSizeDefault_;
+    float fisheyeFieldOfViewDefault_;
+    float fisheyeRateDefault_;
+    float fisheyeCenterDefault_;
 
     void settingDefaultValues()
     {
@@ -34,9 +43,12 @@ public class Menu : MonoBehaviour
         phonePositionDefault_ = PhonePositionDropdown.value;
         interpupillaryDistanceDefault_ = InterpupillaryDistanceSlider.value;
         screenSizeDefault_ = ScreenSizeDropdown.value;
-        HandPositionXDefault_ = HandPositionXSlider.value;
-        HandPositionYDefault_ = HandPositionYSlider.value;
-        HandSizeDefault_ = HandSizeSlider.value;
+        handPositionXDefault_ = HandPositionXSlider.value;
+        handPositionYDefault_ = HandPositionYSlider.value;
+        handSizeDefault_ = HandSizeSlider.value;
+        fisheyeFieldOfViewDefault_ = FisheyeFieldOfViewSlider.value;
+        fisheyeRateDefault_ = FisheyeRateSlider.value;
+        fisheyeCenterDefault_ = FisheyeCenterSlider.value;
     }
 
     void saveValues()
@@ -48,6 +60,9 @@ public class Menu : MonoBehaviour
         PlayerPrefs.SetFloat("HandMR_HandPositionX", HandPositionXSlider.value);
         PlayerPrefs.SetFloat("HandMR_HandPositionY", HandPositionYSlider.value);
         PlayerPrefs.SetFloat("HandMR_HandSize", HandSizeSlider.value);
+        PlayerPrefs.SetFloat("HandMR_FisheyeFieldOfView", FisheyeFieldOfViewSlider.value);
+        PlayerPrefs.SetFloat("HandMR_FisheyeRate", FisheyeRateSlider.value);
+        PlayerPrefs.SetFloat("HandMR_FisheyeCenter", FisheyeCenterSlider.value);
         PlayerPrefs.Save();
     }
 
@@ -64,6 +79,12 @@ public class Menu : MonoBehaviour
                 HandPositionXInputField.interactable = true;
                 HandPositionYSlider.interactable = true;
                 HandPositionYInputField.interactable = true;
+                FisheyeFieldOfViewSlider.interactable = false;
+                FisheyeFieldOfViewInputField.interactable = false;
+                FisheyeRateSlider.interactable = false;
+                FisheyeRateInputField.interactable = false;
+                FisheyeCenterSlider.interactable = false;
+                FisheyeCenterInputField.interactable = false;
                 break;
             case 1:
                 PhonePositionDropdown.interactable = true;
@@ -74,8 +95,29 @@ public class Menu : MonoBehaviour
                 HandPositionXInputField.interactable = true;
                 HandPositionYSlider.interactable = true;
                 HandPositionYInputField.interactable = true;
+                FisheyeFieldOfViewSlider.interactable = false;
+                FisheyeFieldOfViewInputField.interactable = false;
+                FisheyeRateSlider.interactable = false;
+                FisheyeRateInputField.interactable = false;
+                FisheyeCenterSlider.interactable = false;
+                FisheyeCenterInputField.interactable = false;
                 break;
             case 2:
+                PhonePositionDropdown.interactable = false;
+                InterpupillaryDistanceSlider.interactable = true;
+                InterpupillaryDistanceInputField.interactable = true;
+                ScreenSizeDropdown.interactable = true;
+                HandPositionXSlider.interactable = true;
+                HandPositionXInputField.interactable = true;
+                HandPositionYSlider.interactable = false;
+                HandPositionYInputField.interactable = false;
+                FisheyeFieldOfViewSlider.interactable = true;
+                FisheyeFieldOfViewInputField.interactable = true;
+                FisheyeRateSlider.interactable = true;
+                FisheyeRateInputField.interactable = true;
+                FisheyeCenterSlider.interactable = true;
+                FisheyeCenterInputField.interactable = true;
+                break;
             case 3:
                 PhonePositionDropdown.interactable = false;
                 InterpupillaryDistanceSlider.interactable = false;
@@ -85,6 +127,12 @@ public class Menu : MonoBehaviour
                 HandPositionXInputField.interactable = true;
                 HandPositionYSlider.interactable = false;
                 HandPositionYInputField.interactable = false;
+                FisheyeFieldOfViewSlider.interactable = false;
+                FisheyeFieldOfViewInputField.interactable = false;
+                FisheyeRateSlider.interactable = false;
+                FisheyeRateInputField.interactable = false;
+                FisheyeCenterSlider.interactable = false;
+                FisheyeCenterInputField.interactable = false;
                 break;
             case 4:
                 PhonePositionDropdown.interactable = false;
@@ -95,6 +143,12 @@ public class Menu : MonoBehaviour
                 HandPositionXInputField.interactable = false;
                 HandPositionYSlider.interactable = false;
                 HandPositionYInputField.interactable = false;
+                FisheyeFieldOfViewSlider.interactable = false;
+                FisheyeFieldOfViewInputField.interactable = false;
+                FisheyeRateSlider.interactable = false;
+                FisheyeRateInputField.interactable = false;
+                FisheyeCenterSlider.interactable = false;
+                FisheyeCenterInputField.interactable = false;
                 break;
         }
     }
@@ -134,15 +188,24 @@ public class Menu : MonoBehaviour
         InterpupillaryDistanceSlider.value = iDistanceValue;
         InterpupillaryDistanceInputField.text = "" + (int)iDistanceValue;
         ScreenSizeDropdown.value = PlayerPrefs.GetInt("HandMR_ScreenSize", screenSizeDefault_);
-        float posXValue = PlayerPrefs.GetFloat("HandMR_HandPositionX", HandPositionXDefault_);
+        float posXValue = PlayerPrefs.GetFloat("HandMR_HandPositionX", handPositionXDefault_);
         HandPositionXSlider.value = posXValue;
         HandPositionXInputField.text = "" + (int)posXValue;
-        float posYValue = PlayerPrefs.GetFloat("HandMR_HandPositionY", HandPositionYDefault_);
+        float posYValue = PlayerPrefs.GetFloat("HandMR_HandPositionY", handPositionYDefault_);
         HandPositionYSlider.value = posYValue;
         HandPositionYInputField.text = "" + (int)posYValue;
-        float handSizeValue = PlayerPrefs.GetFloat("HandMR_HandSize", HandSizeDefault_);
+        float handSizeValue = PlayerPrefs.GetFloat("HandMR_HandSize", handSizeDefault_);
         HandSizeSlider.value = handSizeValue;
         HandSizeInputField.text = "" + (int)handSizeValue;
+        float fisheyeFieldOfView = PlayerPrefs.GetFloat("HandMR_FisheyeFieldOfView", fisheyeFieldOfViewDefault_);
+        FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
+        FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
+        float fisheyeRate = PlayerPrefs.GetFloat("HandMR_FisheyeRate", fisheyeRateDefault_);
+        FisheyeRateSlider.value = fisheyeRate;
+        FisheyeRateInputField.text = "" + (int)fisheyeRate;
+        float fisheyeCenter = PlayerPrefs.GetFloat("HandMR_FisheyeCenter", fisheyeCenterDefault_);
+        FisheyeCenterSlider.value = fisheyeCenter;
+        FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
 
         settingEnabled();
     }
@@ -174,15 +237,24 @@ public class Menu : MonoBehaviour
         InterpupillaryDistanceSlider.value = iDistanceValue;
         InterpupillaryDistanceInputField.text = "" + (int)iDistanceValue;
         ScreenSizeDropdown.value = screenSizeDefault_;
-        float posXValue = HandPositionXDefault_;
+        float posXValue = handPositionXDefault_;
         HandPositionXSlider.value = posXValue;
         HandPositionXInputField.text = "" + (int)posXValue;
-        float posYValue = HandPositionYDefault_;
+        float posYValue = handPositionYDefault_;
         HandPositionYSlider.value = posYValue;
         HandPositionYInputField.text = "" + (int)posYValue;
-        float handSizeValue = HandSizeDefault_;
+        float handSizeValue = handSizeDefault_;
         HandSizeSlider.value = handSizeValue;
         HandSizeInputField.text = "" + (int)handSizeValue;
+        float fisheyeFieldOfView = fisheyeFieldOfViewDefault_;
+        FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
+        FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
+        float fisheyeRate = fisheyeRateDefault_;
+        FisheyeRateSlider.value = fisheyeRate;
+        FisheyeRateInputField.text = "" + (int)fisheyeRate;
+        float fisheyeCenter = fisheyeCenterDefault_;
+        FisheyeCenterSlider.value = fisheyeCenter;
+        FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
 
         settingEnabled();
     }
@@ -258,5 +330,50 @@ public class Menu : MonoBehaviour
     public void HandSizeInputFieldEndEdit(string val)
     {
         endEditInputField(HandSizeInputField, HandSizeSlider);
+    }
+
+    public void FisheyeFieldOfViewSliderChanged(float val)
+    {
+        changeSlider(FisheyeFieldOfViewInputField, val);
+    }
+
+    public void FisheyeFieldOfViewInputFieldChanged(string val)
+    {
+        changeInputField(FisheyeFieldOfViewSlider, val);
+    }
+
+    public void FisheyeFieldOfViewInputFieldEndEdit(string val)
+    {
+        endEditInputField(FisheyeFieldOfViewInputField, FisheyeFieldOfViewSlider);
+    }
+
+    public void FisheyeRateSliderChanged(float val)
+    {
+        changeSlider(FisheyeRateInputField, val);
+    }
+
+    public void FisheyeRateInputFieldChanged(string val)
+    {
+        changeInputField(FisheyeRateSlider, val);
+    }
+
+    public void FisheyeRateInputFieldEndEdit(string val)
+    {
+        endEditInputField(FisheyeRateInputField, FisheyeRateSlider);
+    }
+
+    public void FisheyeCenterSliderChanged(float val)
+    {
+        changeSlider(FisheyeCenterInputField, val);
+    }
+
+    public void FisheyeCenterInputFieldChanged(string val)
+    {
+        changeInputField(FisheyeCenterSlider, val);
+    }
+
+    public void FisheyeCenterInputFieldEndEdit(string val)
+    {
+        endEditInputField(FisheyeCenterInputField, FisheyeCenterSlider);
     }
 }
