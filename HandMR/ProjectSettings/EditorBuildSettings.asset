@@ -17,9 +17,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/HandMR/Scenes/HandSizeCalib.unity
     guid: 6ee2d3cf73e784432a2e8e3766ca7458
-  - enabled: 0
-    path: Assets/HandMR/Scenes/Test/Main.unity
-    guid: d6e89dded3c40418ca3b1590fb6b70e4
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 5eb7396d7be554686bd034dd82e7cc1b,
       type: 2}
