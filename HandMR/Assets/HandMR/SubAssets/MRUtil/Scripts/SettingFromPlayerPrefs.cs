@@ -17,12 +17,11 @@ public class SettingFromPlayerPrefs : MonoBehaviour
     public Transform RightButton;
 
     Fisheye[] fisheyes_;
-    float fieldOfView_;
 
     void Start()
     {
         HandVRMainObj.ShiftX = PlayerPrefs.GetFloat("HandMR_HandPositionX", 0f) * 0.001f;
-        HandVRMainObj.HandSize = PlayerPrefs.GetFloat("HandMR_HandSize", 130f) * 0.001f;
+        //HandVRMainObj.HandSize = PlayerPrefs.GetFloat("HandMR_HandSize", 130f) * 0.001f;
 
         int mode = PlayerPrefs.GetInt("HandMR_GoogleMode", 0);
         if (mode <= 1)
@@ -62,7 +61,7 @@ public class SettingFromPlayerPrefs : MonoBehaviour
                 fisheye.Rate = PlayerPrefs.GetFloat("HandMR_FisheyeRate", 58f) * 0.01f;
                 fisheye.Center = PlayerPrefs.GetFloat("HandMR_FisheyeCenter", 50f) * 0.01f;
             }
-            fieldOfView_ = PlayerPrefs.GetFloat("HandMR_FisheyeFieldOfView", 90f);
+            HandMRManagerObj.FieldOfView = PlayerPrefs.GetFloat("HandMR_FisheyeFieldOfView", 90f);
 
             LeftButton.GetChild(0).GetComponent<Image>().enabled = false;
             RightButton.GetChild(0).GetComponent<Image>().enabled = false;
@@ -81,14 +80,6 @@ public class SettingFromPlayerPrefs : MonoBehaviour
         {
             HandVRMainObj.ShiftX = 0f;
             HandMRManagerObj.ViewModeChange(HandMRManager.Mode.AR);
-        }
-    }
-
-    void LateUpdate()
-    {
-        foreach (Fisheye fisheye in fisheyes_)
-        {
-            fisheye.GetComponent<Camera>().fieldOfView = fieldOfView_;
         }
     }
 }

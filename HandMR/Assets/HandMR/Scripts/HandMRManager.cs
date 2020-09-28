@@ -33,6 +33,11 @@ public class HandMRManager : MonoBehaviour
     public Color VRBackColor;
 
     Fisheye[] fisheyes_;
+    public float FieldOfView
+    {
+        get;
+        set;
+    }
 
     void Start()
     {
@@ -206,6 +211,8 @@ public class HandMRManager : MonoBehaviour
                 {
                     camera.backgroundColor = Color.black;
                 }
+
+                camera.fieldOfView = FieldOfView;
             }
         }
     }

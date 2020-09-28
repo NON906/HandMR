@@ -43,8 +43,8 @@ public class HandMRSceneInitializer
                 Directory.CreateDirectory(Application.dataPath + "/../../downloads");
             }
 
-            download("https://github.com/NON906/HandMR/releases/download/0.8/HandMR_iOS_plugin_for_projects_0.8.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.8.unitypackage");
-            AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.8.unitypackage", false);
+            download("https://github.com/NON906/HandMR/releases/download/0.9/HandMR_iOS_plugin_for_projects_0.9.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.9.unitypackage");
+            AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.9.unitypackage", false);
         }
     }
 

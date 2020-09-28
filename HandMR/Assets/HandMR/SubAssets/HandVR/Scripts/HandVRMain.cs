@@ -11,30 +11,75 @@ public class HandVRMain : MonoBehaviour
     public RenderTexture InputRenderTexture;
     public float ShiftX = 0f;
     public float ShiftY = 0f;
-    public float HandSize = 0.13f;
+    //public float HandSize = 0.13f;
+    public float FieldOfView = 60f;
+
+    float[,][] landmarkArray_ = new float[2, 21][];
+    double focalLength_;
+    float[] fingerLengthArray_ = new float[16];
+    Quaternion[] rotationQuaternions_ = new Quaternion[2];
 
 #if UNITY_ANDROID
     AndroidJavaObject multiHandMain_;
+
+    [DllImport("hand3d")]
+    static extern void hand3dInit([In]string filePath);
+    [DllImport("hand3d")]
+    static extern void hand3dGetCameraValues(out double fx, out double fy, out double cx, out double cy);
+    [DllImport("hand3d")]
+    static extern void hand3dInitWithValues(double fx, double fy, double cx, double cy);
+    [DllImport("hand3d")]
+    static extern void hand3dExec(out double rx, out double ry, out double rz, out double x, out double y, out double z,
+        double x0, double y0,
+        double x1, double y1,
+        double x2, double y2,
+        double x3, double y3,
+        double x4, double y4);
+    [DllImport("hand3d")]
+    static extern void hand3dGet3dPosition(out double x, out double y, out double z, int pointId);
+    [DllImport("hand3d")]
+    static extern void hand3dSetHandPoint(int pointId, float x, float y, float z);
+    [DllImport("hand3d")]
+    static extern void hand3dReset();
 #endif
 
 #if UNITY_IOS
     [DllImport("__Internal")]
     static extern void multiHandCleanup();
-
     [DllImport("__Internal")]
     static extern void multiHandSetup(IntPtr graphName, int width, int height);
-
     [DllImport("__Internal")]
     static extern void multiHandSetFrame(IntPtr frameSource, int frameSourceSize);
-
     [DllImport("__Internal")]
     static extern void multiHandStartRunningGraph();
-
     [DllImport("__Internal")]
     static extern int multiHandGetHandCount();
-
     [DllImport("__Internal")]
     static extern float multiHandGetLandmark(int id, int index, int axis);
+    [DllImport("__Internal")]
+    static extern bool multiHandGetIsUpdated();
+    [DllImport("__Internal")]
+    static extern int multiHandGetHandednesses(int id);
+
+    [DllImport("__Internal")]
+    static extern void hand3dInit([In]string filePath);
+    [DllImport("__Internal")]
+    static extern void hand3dGetCameraValues(out double fx, out double fy, out double cx, out double cy);
+    [DllImport("__Internal")]
+    static extern void hand3dInitWithValues(double fx, double fy, double cx, double cy);
+    [DllImport("__Internal")]
+    static extern void hand3dExec(out double rx, out double ry, out double rz, out double x, out double y, out double z,
+        double x0, double y0,
+        double x1, double y1,
+        double x2, double y2,
+        double x3, double y3,
+        double x4, double y4);
+    [DllImport("__Internal")]
+    static extern void hand3dGet3dPosition(out double x, out double y, out double z, int pointId);
+    [DllImport("__Internal")]
+    static extern void hand3dSetHandPoint(int pointId, float x, float y, float z);
+    [DllImport("__Internal")]
+    static extern void hand3dReset();
 #endif
 
     bool isStart_ = false;
@@ -64,6 +109,41 @@ public class HandVRMain : MonoBehaviour
         multiHandSetup(graphName, texture2D_.width, texture2D_.height);
         Marshal.FreeHGlobal(graphName);
 #endif
+
+        focalLength_ = 0.5 / Mathf.Tan(FieldOfView * Mathf.Deg2Rad * 0.5f);
+        hand3dInitWithValues(focalLength_, focalLength_, 0.5, 0.5);
+
+        resetHandValues();
+    }
+
+    void resetHandValues()
+    {
+        if (PlayerPrefs.HasKey("HandMR_PointLength_15"))
+        {
+            for (int loop = 0; loop < 5; loop++)
+            {
+                hand3dSetHandPoint(loop, PlayerPrefs.GetFloat("HandMR_PointPosX_" + loop), PlayerPrefs.GetFloat("HandMR_PointPosY_" + loop), 0f);
+            }
+
+            for (int loop = 0; loop < fingerLengthArray_.Length; loop++)
+            {
+                fingerLengthArray_[loop] = PlayerPrefs.GetFloat("HandMR_PointLength_" + loop);
+            }
+        }
+        else
+        {
+            fingerLengthArray_ = new float[]
+            {
+                0.03f, 0.03f, 0.02f, 0.015f, 0.035f, 0.02f, 0.015f, 0.035f, 0.025f, 0.015f,
+                0.035f, 0.025f, 0.015f, 0.03f, 0.015f, 0.015f
+            };
+        }
+    }
+
+    public void ResetHandValues()
+    {
+        hand3dReset();
+        resetHandValues();
     }
 
     void Update()
@@ -119,77 +199,233 @@ public class HandVRMain : MonoBehaviour
 #endif
     }
 
-    public float[] GetLandmark(int id, int index)
+    float[] calcLandmarkPoint(float[] target, float[] parent, float[] parentReal, float length, float mulSize)
     {
-        float[] posVecArray = null;
-        float[][] handSizePosVecArray = new float[5][];
+        float baseX = target[0] - parent[0];
+        float baseY = target[1] - parent[1];
+        int zSign = target[2] - parent[2] > 0f ? 1 : -1;
+        float[] ret = new float[] {
+            mulSize * baseX + parentReal[0],
+            mulSize * baseY + parentReal[1],
+            Mathf.Sqrt(length * length - mulSize * mulSize * baseX * baseX - mulSize * mulSize * baseY * baseY) * zSign + parentReal[2],
+        };
+        if (float.IsNaN(ret[2]))
+        {
+            ret[2] = parentReal[2];
+        }
+        return ret;
+    }
+
+    float calcLength(float[] pos0, float[] pos1)
+    {
+        return Mathf.Sqrt((pos0[0] - pos1[0]) * (pos0[0] - pos1[0]) + (pos0[1] - pos1[1]) * (pos0[1] - pos1[1]));
+    }
+
+    public float[] GetLandmarkOnImage(int id, int index)
+    {
+        float[] ret;
 
 #if UNITY_ANDROID
-        posVecArray = multiHandMain_.Call<float[]>("getLandmark", id, index);
-        if (posVecArray == null)
-        {
-            return null;
-        }
-
-        for (int loop = 0; loop < 5; loop++)
-        {
-            handSizePosVecArray[loop] = multiHandMain_.Call<float[]>("getLandmark", id, loop);
-            if (handSizePosVecArray[loop] == null)
-            {
-                return null;
-            }
-        }
-#endif
-
-#if UNITY_IOS
+        ret = multiHandMain_.Call<float[]>("getLandmark", id, index);
+#elif UNITY_IOS
         if (multiHandGetHandCount() <= id)
         {
             return null;
         }
-        posVecArray = new float[3];
+        ret = new float[3];
         for (int loop = 0; loop < 3; loop++)
         {
-            posVecArray[loop] = multiHandGetLandmark(id, index, loop);
+            ret[loop] = multiHandGetLandmark(id, index, loop);
+        }
+#else
+        return null;
+#endif
+
+        if (ret == null)
+        {
+            return null;
         }
 
-        for (int loop2 = 0; loop2 < 5; loop2++)
+        ret[0] = (ret[0] - 0.5f) * Screen.width / Screen.height + 0.5f;
+
+        return ret;
+    }
+
+    Quaternion rotationQuaternion(float x, float y, float z)
+    {
+        float angle = Mathf.Sqrt(x * x + y * y + z * z);
+
+        float qx, qy, qz, qw;
+        if (angle > 0.0)
         {
-            handSizePosVecArray[loop2] = new float[3];
-            for (int loop = 0; loop < 3; loop++)
+            qx = x * Mathf.Sin(angle / 2f) / angle;
+            qy = y * Mathf.Sin(angle / 2f) / angle;
+            qz = z * Mathf.Sin(angle / 2f) / angle;
+            qw = Mathf.Cos(angle / 2f);
+        }
+        else
+        {
+            qx = qy = qz = 0f;
+            qw = 1f;
+        }
+
+        return new Quaternion(qx, qy, qz, qw);
+    }
+
+    void calcLandmark()
+    {
+        for (int id = 0; id < 2; id++)
+        {
+            float[][] landmarkArrayRaw = new float[21][];
+
+            for (int index = 0; index < 21; index++)
             {
-                handSizePosVecArray[loop2][loop] = multiHandGetLandmark(id, loop2, loop);
+                landmarkArrayRaw[index] = GetLandmarkOnImage(id, index);
+                if (landmarkArrayRaw[index] == null)
+                {
+                    break;
+                }
+            }
+
+            if (landmarkArrayRaw[20] == null)
+            {
+                for (int index = 0; index < 21; index++)
+                {
+                    landmarkArray_[id, index] = null;
+                }
+                continue;
+            }
+
+            double rx, ry, rz, x, y, z;
+            hand3dExec(out rx, out ry, out rz, out x, out y, out z,
+                landmarkArrayRaw[0][0], landmarkArrayRaw[0][1],
+                landmarkArrayRaw[5][0], landmarkArrayRaw[5][1],
+                landmarkArrayRaw[9][0], landmarkArrayRaw[9][1],
+                landmarkArrayRaw[13][0], landmarkArrayRaw[13][1],
+                landmarkArrayRaw[17][0], landmarkArrayRaw[17][1]);
+
+            if (x * x + y * y + z * z > 0.75 * 0.75)
+            {
+                for (int index = 0; index < 21; index++)
+                {
+                    landmarkArray_[id, index] = null;
+                }
+                continue;
+            }
+
+            rotationQuaternions_[id] = Quaternion.Euler(0f, 0f, 180f) * rotationQuaternion((float)rx, (float)ry, (float)rz);
+
+            landmarkArray_[id, 0] = new float[] { (float)x, (float)y, (float)z };
+
+            hand3dGet3dPosition(out x, out y, out z, 1);
+            landmarkArray_[id, 5] = new float[] { (float)x, (float)y, (float)z };
+            hand3dGet3dPosition(out x, out y, out z, 2);
+            landmarkArray_[id, 9] = new float[] { (float)x, (float)y, (float)z };
+            hand3dGet3dPosition(out x, out y, out z, 3);
+            landmarkArray_[id, 13] = new float[] { (float)x, (float)y, (float)z };
+            hand3dGet3dPosition(out x, out y, out z, 4);
+            landmarkArray_[id, 17] = new float[] { (float)x, (float)y, (float)z };
+
+            float mulSize = (calcLength(landmarkArray_[id, 0], landmarkArray_[id, 5]) / calcLength(landmarkArrayRaw[0], landmarkArrayRaw[5])
+                + calcLength(landmarkArray_[id, 0], landmarkArray_[id, 9]) / calcLength(landmarkArrayRaw[0], landmarkArrayRaw[9])
+                + calcLength(landmarkArray_[id, 0], landmarkArray_[id, 13]) / calcLength(landmarkArrayRaw[0], landmarkArrayRaw[13])
+                + calcLength(landmarkArray_[id, 0], landmarkArray_[id, 17]) / calcLength(landmarkArrayRaw[0], landmarkArrayRaw[17]))
+                / 4f;
+
+            landmarkArray_[id, 1] = calcLandmarkPoint(landmarkArrayRaw[1], landmarkArrayRaw[0], landmarkArray_[id, 0],
+                fingerLengthArray_[0], mulSize);
+            landmarkArray_[id, 2] = calcLandmarkPoint(landmarkArrayRaw[2], landmarkArrayRaw[1], landmarkArray_[id, 1],
+                fingerLengthArray_[1], mulSize);
+            landmarkArray_[id, 3] = calcLandmarkPoint(landmarkArrayRaw[3], landmarkArrayRaw[2], landmarkArray_[id, 2],
+                fingerLengthArray_[2], mulSize);
+            landmarkArray_[id, 4] = calcLandmarkPoint(landmarkArrayRaw[4], landmarkArrayRaw[3], landmarkArray_[id, 3],
+                fingerLengthArray_[3], mulSize);
+
+            landmarkArray_[id, 6] = calcLandmarkPoint(landmarkArrayRaw[6], landmarkArrayRaw[5], landmarkArray_[id, 5],
+                fingerLengthArray_[4], mulSize);
+            landmarkArray_[id, 7] = calcLandmarkPoint(landmarkArrayRaw[7], landmarkArrayRaw[6], landmarkArray_[id, 6],
+                fingerLengthArray_[5], mulSize);
+            landmarkArray_[id, 8] = calcLandmarkPoint(landmarkArrayRaw[8], landmarkArrayRaw[7], landmarkArray_[id, 7],
+                fingerLengthArray_[6], mulSize);
+
+            landmarkArray_[id, 10] = calcLandmarkPoint(landmarkArrayRaw[10], landmarkArrayRaw[9], landmarkArray_[id, 9],
+                fingerLengthArray_[7], mulSize);
+            landmarkArray_[id, 11] = calcLandmarkPoint(landmarkArrayRaw[11], landmarkArrayRaw[10], landmarkArray_[id, 10],
+                fingerLengthArray_[8], mulSize);
+            landmarkArray_[id, 12] = calcLandmarkPoint(landmarkArrayRaw[12], landmarkArrayRaw[11], landmarkArray_[id, 11],
+                fingerLengthArray_[9], mulSize);
+
+            landmarkArray_[id, 14] = calcLandmarkPoint(landmarkArrayRaw[14], landmarkArrayRaw[13], landmarkArray_[id, 13],
+                fingerLengthArray_[10], mulSize);
+            landmarkArray_[id, 15] = calcLandmarkPoint(landmarkArrayRaw[15], landmarkArrayRaw[14], landmarkArray_[id, 14],
+                fingerLengthArray_[11], mulSize);
+            landmarkArray_[id, 16] = calcLandmarkPoint(landmarkArrayRaw[16], landmarkArrayRaw[15], landmarkArray_[id, 15],
+                fingerLengthArray_[12], mulSize);
+
+            landmarkArray_[id, 18] = calcLandmarkPoint(landmarkArrayRaw[18], landmarkArrayRaw[17], landmarkArray_[id, 17],
+                fingerLengthArray_[13], mulSize);
+            landmarkArray_[id, 19] = calcLandmarkPoint(landmarkArrayRaw[19], landmarkArrayRaw[18], landmarkArray_[id, 18],
+                fingerLengthArray_[14], mulSize);
+            landmarkArray_[id, 20] = calcLandmarkPoint(landmarkArrayRaw[20], landmarkArrayRaw[19], landmarkArray_[id, 19],
+                fingerLengthArray_[15], mulSize);
+
+            for (int index = 0; index < 21; index++)
+            {
+                landmarkArray_[id, index][0] = landmarkArray_[id, index][0] + ShiftX;
+                landmarkArray_[id, index][1] = (landmarkArray_[id, index][1] + ShiftY) * -1f;
+                landmarkArray_[id, index][2] += (float)(focalLength_ * mulSize);
             }
         }
+    }
+
+    public float[] GetLandmark(int id, int index)
+    {
+#if UNITY_ANDROID
+        if (multiHandMain_.Call<bool>("getIsUpdated"))
+        {
+            calcLandmark();
+        }
 #endif
-        for (int loop = 0; loop < 5; loop++)
+
+#if UNITY_IOS
+        if (multiHandGetIsUpdated())
         {
-            handSizePosVecArray[loop][0] = (handSizePosVecArray[loop][0] - 0.5f) * 0.15f * Screen.width / Screen.height;
-            handSizePosVecArray[loop][1] = (handSizePosVecArray[loop][1] - 0.5f) * -0.15f;
-            handSizePosVecArray[loop][2] = handSizePosVecArray[loop][2] * 0.001f;
+            calcLandmark();
         }
-        float handSizeRaw = 0f;
-        for (int loop = 0; loop < 4; loop++)
+#endif
+
+        return landmarkArray_[id, index];
+    }
+
+    public int GetHandednesses(int id)
+    {
+#if UNITY_ANDROID
+        return multiHandMain_.Call<int>("getHandednesses", id);
+#elif UNITY_IOS
+        return multiHandGetHandednesses(id);
+#else
+        return -1;
+#endif
+    }
+
+    public Vector3 GetHandDirection(int id)
+    {
+        Vector3 ret = rotationQuaternions_[id] * Vector3.forward;
+        if (GetHandednesses(id) != 0)
         {
-            float xLen = handSizePosVecArray[loop][0] - handSizePosVecArray[loop + 1][0];
-            float yLen = handSizePosVecArray[loop][1] - handSizePosVecArray[loop + 1][1];
-            float zLen = handSizePosVecArray[loop][2] - handSizePosVecArray[loop + 1][2];
-
-            handSizeRaw += Mathf.Sqrt(xLen * xLen + yLen * yLen + zLen * zLen);
+            ret = Quaternion.Euler(0f, 180f, 0f) * ret;
         }
+        return ret;
+    }
 
-        posVecArray[0] = (posVecArray[0] - 0.5f) * 0.15f * Screen.width / Screen.height;
-        posVecArray[1] = (posVecArray[1] - 0.5f) * -0.15f;
-        posVecArray[2] = posVecArray[2] * 0.0015f; //0.001f;
-
-        for (int loop = 0; loop < 3; loop++)
+    public Quaternion GetHandRotation(int id)
+    {
+        Quaternion ret = rotationQuaternions_[id];
+        if (GetHandednesses(id) != 0)
         {
-            posVecArray[loop] = HandSize * posVecArray[loop] / handSizeRaw;
+            ret = Quaternion.Euler(0f, 180f, 0f) * ret;
         }
-        posVecArray[0] += ShiftX;
-        posVecArray[1] += ShiftY;
-        posVecArray[2] += 0.3f;
-
-        return posVecArray;
+        return ret;
     }
 
     void OnDestroy()
@@ -204,5 +440,7 @@ public class HandVRMain : MonoBehaviour
 #if UNITY_IOS
         multiHandCleanup();
 #endif
+
+        hand3dReset();
     }
 }

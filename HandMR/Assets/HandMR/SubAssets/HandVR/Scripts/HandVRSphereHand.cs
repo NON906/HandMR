@@ -15,6 +15,7 @@ public class HandVRSphereHand : MonoBehaviour
     Transform[] fingers_ = new Transform[21];
     bool[] fingerTracking_ = new bool[5];
     bool[] fingerOpened_ = new bool[5];
+    HandVRMain handVRMain_;
 
     public Vector3 HandCenterPosition
     {
@@ -63,6 +64,8 @@ public class HandVRSphereHand : MonoBehaviour
 
     void Start()
     {
+        handVRMain_ = FindObjectOfType<HandVRMain>();
+
         foreach (Transform child in transform)
         {
             HandVRPosition posObj = child.GetComponent<HandVRPosition>();
@@ -105,12 +108,10 @@ public class HandVRSphereHand : MonoBehaviour
             fingerOpened_[loop] = opened;
         }
 
-        HandDirection = Vector3.Cross(fingers_[5].position - fingers_[0].position, fingers_[17].position - fingers_[0].position).normalized;
-        ThisEitherHand = EitherHand.Left;
-        if (Camera.main != null && Vector3.Dot(HandDirection, Camera.main.transform.forward.normalized) < 0f)
+        if (IsTrackingHand)
         {
-            HandDirection *= -1f;
-            ThisEitherHand = EitherHand.Right;
+            HandDirection = handVRMain_.GetHandDirection(Id);
+            ThisEitherHand = handVRMain_.GetHandednesses(Id) == 0 ? EitherHand.Left : EitherHand.Right;
         }
     }
 

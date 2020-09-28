@@ -16,14 +16,15 @@ public class Menu : MonoBehaviour
     public InputField HandPositionXInputField;
     public Slider HandPositionYSlider;
     public InputField HandPositionYInputField;
-    public Slider HandSizeSlider;
-    public InputField HandSizeInputField;
+    //public Slider HandSizeSlider;
+    //public InputField HandSizeInputField;
     public Slider FisheyeFieldOfViewSlider;
     public InputField FisheyeFieldOfViewInputField;
     public Slider FisheyeRateSlider;
     public InputField FisheyeRateInputField;
     public Slider FisheyeCenterSlider;
     public InputField FisheyeCenterInputField;
+    public Button HandSizeCalibResetButton;
     public Canvas MenuCanvas;
 
     int googleModeDefault_;
@@ -32,7 +33,7 @@ public class Menu : MonoBehaviour
     int screenSizeDefault_;
     float handPositionXDefault_;
     float handPositionYDefault_;
-    float handSizeDefault_;
+    //float handSizeDefault_;
     float fisheyeFieldOfViewDefault_;
     float fisheyeRateDefault_;
     float fisheyeCenterDefault_;
@@ -45,7 +46,7 @@ public class Menu : MonoBehaviour
         screenSizeDefault_ = ScreenSizeDropdown.value;
         handPositionXDefault_ = HandPositionXSlider.value;
         handPositionYDefault_ = HandPositionYSlider.value;
-        handSizeDefault_ = HandSizeSlider.value;
+        //handSizeDefault_ = HandSizeSlider.value;
         fisheyeFieldOfViewDefault_ = FisheyeFieldOfViewSlider.value;
         fisheyeRateDefault_ = FisheyeRateSlider.value;
         fisheyeCenterDefault_ = FisheyeCenterSlider.value;
@@ -59,7 +60,7 @@ public class Menu : MonoBehaviour
         PlayerPrefs.SetInt("HandMR_ScreenSize", ScreenSizeDropdown.value);
         PlayerPrefs.SetFloat("HandMR_HandPositionX", HandPositionXSlider.value);
         PlayerPrefs.SetFloat("HandMR_HandPositionY", HandPositionYSlider.value);
-        PlayerPrefs.SetFloat("HandMR_HandSize", HandSizeSlider.value);
+        //PlayerPrefs.SetFloat("HandMR_HandSize", HandSizeSlider.value);
         PlayerPrefs.SetFloat("HandMR_FisheyeFieldOfView", FisheyeFieldOfViewSlider.value);
         PlayerPrefs.SetFloat("HandMR_FisheyeRate", FisheyeRateSlider.value);
         PlayerPrefs.SetFloat("HandMR_FisheyeCenter", FisheyeCenterSlider.value);
@@ -194,9 +195,9 @@ public class Menu : MonoBehaviour
         float posYValue = PlayerPrefs.GetFloat("HandMR_HandPositionY", handPositionYDefault_);
         HandPositionYSlider.value = posYValue;
         HandPositionYInputField.text = "" + (int)posYValue;
-        float handSizeValue = PlayerPrefs.GetFloat("HandMR_HandSize", handSizeDefault_);
-        HandSizeSlider.value = handSizeValue;
-        HandSizeInputField.text = "" + (int)handSizeValue;
+        //float handSizeValue = PlayerPrefs.GetFloat("HandMR_HandSize", handSizeDefault_);
+        //HandSizeSlider.value = handSizeValue;
+        //HandSizeInputField.text = "" + (int)handSizeValue;
         float fisheyeFieldOfView = PlayerPrefs.GetFloat("HandMR_FisheyeFieldOfView", fisheyeFieldOfViewDefault_);
         FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
         FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
@@ -208,6 +209,8 @@ public class Menu : MonoBehaviour
         FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
 
         settingEnabled();
+
+        HandSizeCalibResetButton.interactable = PlayerPrefs.HasKey("HandMR_PointLength_15");
     }
 
     public void ExitButton()
@@ -243,9 +246,9 @@ public class Menu : MonoBehaviour
         float posYValue = handPositionYDefault_;
         HandPositionYSlider.value = posYValue;
         HandPositionYInputField.text = "" + (int)posYValue;
-        float handSizeValue = handSizeDefault_;
-        HandSizeSlider.value = handSizeValue;
-        HandSizeInputField.text = "" + (int)handSizeValue;
+        //float handSizeValue = handSizeDefault_;
+        //HandSizeSlider.value = handSizeValue;
+        //HandSizeInputField.text = "" + (int)handSizeValue;
         float fisheyeFieldOfView = fisheyeFieldOfViewDefault_;
         FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
         FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
@@ -317,6 +320,7 @@ public class Menu : MonoBehaviour
         endEditInputField(HandPositionYInputField, HandPositionYSlider);
     }
 
+    /*
     public void HandSizeSliderChanged(float val)
     {
         changeSlider(HandSizeInputField, val);
@@ -331,6 +335,7 @@ public class Menu : MonoBehaviour
     {
         endEditInputField(HandSizeInputField, HandSizeSlider);
     }
+    */
 
     public void FisheyeFieldOfViewSliderChanged(float val)
     {
@@ -375,5 +380,31 @@ public class Menu : MonoBehaviour
     public void FisheyeCenterInputFieldEndEdit(string val)
     {
         endEditInputField(FisheyeCenterInputField, FisheyeCenterSlider);
+    }
+
+    public void HandSizeCalibButton()
+    {
+        saveValues();
+        SceneManager.LoadScene("HandSizeCalib");
+    }
+
+    public void HandSizeCalibResetButtonClick()
+    {
+        if (PlayerPrefs.HasKey("HandMR_PointLength_15"))
+        {
+            for (int loop = 0; loop < 5; loop++)
+            {
+                PlayerPrefs.DeleteKey("HandMR_PointPosX_" + loop);
+            }
+
+            for (int loop = 0; loop < 16; loop++)
+            {
+                PlayerPrefs.DeleteKey("HandMR_PointLength_" + loop);
+            }
+
+            PlayerPrefs.Save();
+        }
+
+        HandSizeCalibResetButton.interactable = false;
     }
 }

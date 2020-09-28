@@ -29,5 +29,5 @@ unitypackageファイルは[こちら](https://github.com/NON906/HandMR/releases
 
 - Unity-iPhoneをクリックすると出てくる設定画面のUnityFrameworkのGeneral→Frameworks and Librariesから「MultiHandAppLib-fl.a」を削除
 - 同画面のBuild Settings→Linking→Other Linker Flagsに``-force_load`` ``Libraries/HandMR/SubAssets/HandVR/Plugins/iOS/MultiHandAppLib-fl.a``の2つをこの順番で追加
-- Unity-iPhoneプロジェクトのData/Rawディレクトリにある``hand_landmark.tflite`` ``multihandtrackinggpu.binarypb`` ``palm_detection_labelmap.txt`` ``palm_detection.tflite``の4つをUnityFrameworkディレクトリにドラッグアンドドロップ、Unity-iPhoneとUnityFrameworkにチェックを入れた状態でFinishをクリック
+- iOS\_assetsディレクトリ（またはiOS\_assets\_0.x.zip）の中にある5つのファイルをUnityFrameworkディレクトリにドラッグアンドドロップ、Unity-iPhoneとUnityFrameworkにチェックを入れた状態でFinishをクリック
 - 各自の方法で署名を設定

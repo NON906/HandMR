@@ -64,6 +64,7 @@
     <Compile Include="Assets/Hologla/Scripts/Samples/HelloDanglaSample.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/CanCarryObject.cs" />
     <Compile Include="Assets/Hologla/Scripts/HologlaSetting.cs" />
+    <Compile Include="Assets/HandMR/SubAssets/Fisheye/Scripts/Fisheye.cs" />
     <Compile Include="Assets/HandMR/SubAssets/ARVR/Scripts/TrackingCameraPosition.cs" />
     <Compile Include="Assets/HandMR/SubAssets/ARVR/Scripts/ResizeBackGroundQuad.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/BackButtonExit.cs" />
@@ -84,14 +85,14 @@
     <Compile Include="Assets/Hologla/Scripts/GazeInput.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVR/Scripts/HandVRPosition.cs" />
     <Compile Include="Assets/Hologla/Scripts/HologlaInput.cs" />
-    <Compile Include="Assets/HandMR/SubAssets/Fisheye/Scripts/Fisheye.cs" />
+    <Compile Include="Assets/HandMR/SubAssets/HandSizeCalib/Scripts/HandSizeCalibMarker.cs" />
+    <Compile Include="Assets/HandMR/SubAssets/HandSizeCalib/Scripts/HandSizeCalibMain.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets/HandMR/SubAssets/Fisheye/Shaders/FisheyeShader.shader" />
      <None Include="Assets/Hologla/Lisence.txt" />
      <None Include="Assets/Hologla/Shader/ARExternal/HologlaYUVShader.shader" />
      <None Include="Assets/Hologla/Shader/ARExternal/Common/UnlitForefrontShader.shader" />
-     <None Include="Assets/StreamingAssets/palm_detection_labelmap.txt" />
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity/Hub/Editor/2020.1.4f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

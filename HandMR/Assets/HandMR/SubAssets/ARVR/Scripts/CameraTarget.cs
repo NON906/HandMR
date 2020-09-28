@@ -12,6 +12,7 @@ public class CameraTarget : MonoBehaviour
     public Camera[] Cameras;
     public bool TouchReset;
     public bool BackgroundObjAutoDisable = true;
+    public bool PlaneDetectEnabled = true;
 
     // トラッキングの位置中心
     Vector3 poseCenter_ = Vector3.zero;
@@ -43,10 +44,56 @@ public class CameraTarget : MonoBehaviour
             cameraMasks_[loop] = Cameras[loop].cullingMask;
             Cameras[loop].cullingMask = 1 << LayerMask.NameToLayer("BackGround");
         }
+
+        if (!PlaneDetectEnabled)
+        {
+            // カメラ画像の切り替え
+            disableCameraImage();
+        }
+    }
+
+    void disableCameraImage()
+    {
+#if DOWNLOADED_ARFOUNDATION
+        if (BackgroundObj != null)
+        {
+            if (BackgroundObjAutoDisable)
+            {
+                StartCoroutine(delayedSubCameraDisable());
+                for (int loop = 0; loop < Cameras.Length; loop++)
+                {
+                    Cameras[loop].cullingMask = cameraMasks_[loop];
+                }
+            }
+            else
+            {
+                BackgroundObj.GetComponent<Camera>().depth = -51;
+
+                ResizeBackGroundQuad resizeBackGroundQuad = BackgroundObj.GetComponentInChildren<ResizeBackGroundQuad>();
+                if (resizeBackGroundQuad != null)
+                {
+                    resizeBackGroundQuad.FieldOfView =
+                        FindObjectOfType<ARCameraManager>().GetComponent<Camera>().fieldOfView;
+                    resizeBackGroundQuad.Resize();
+                }
+            }
+        }
+
+        IsTracking = true;
+#endif
     }
 
     void Update()
     {
+        if (!PlaneDetectEnabled)
+        {
+            // 移動
+            transform.position = PoseDriverTrans.position;
+            transform.rotation = PoseDriverTrans.rotation;
+
+            return;
+        }
+
 #if DOWNLOADED_ARFOUNDATION
         if (plane_ == null || (TouchReset && Input.touchCount > 0))
         {
@@ -79,31 +126,7 @@ public class CameraTarget : MonoBehaviour
                 ResetPosition();
 
                 // カメラ画像の切り替え
-                if (BackgroundObj != null)
-                {
-                    if (BackgroundObjAutoDisable)
-                    {
-                        StartCoroutine(delayedSubCameraDisable());
-                        for (int loop = 0; loop < Cameras.Length; loop++)
-                        {
-                            Cameras[loop].cullingMask = cameraMasks_[loop];
-                        }
-                    }
-                    else
-                    {
-                        BackgroundObj.GetComponent<Camera>().depth = -51;
-
-                        ResizeBackGroundQuad resizeBackGroundQuad = BackgroundObj.GetComponentInChildren<ResizeBackGroundQuad>();
-                        if (resizeBackGroundQuad != null)
-                        {
-                            resizeBackGroundQuad.FieldOfView =
-                                FindObjectOfType<ARCameraManager>().GetComponent<Camera>().fieldOfView;
-                            resizeBackGroundQuad.Resize();
-                        }
-                    }
-                }
-
-                IsTracking = true;
+                disableCameraImage();
             }
 
             if (plane_ == null)
