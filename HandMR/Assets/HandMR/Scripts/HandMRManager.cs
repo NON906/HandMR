@@ -71,6 +71,15 @@ public class HandMRManager : MonoBehaviour
                     CameraTarget cameraTarget = MRObject.GetComponentInChildren<CameraTarget>();
                     cameraTarget.BackgroundObj.SetActive(true);
                     VRSubCamera.SetActive(false);
+
+                    Canvas[] canvases = FindObjectsOfType<Canvas>();
+                    foreach (Canvas canvas in canvases)
+                    {
+                        if (canvas.renderMode == RenderMode.WorldSpace && canvas.worldCamera == null)
+                        {
+                            canvas.worldCamera = MRCamera.GetComponent<Camera>();
+                        }
+                    }
                 }
                 break;
             case Mode.VR:
@@ -110,6 +119,15 @@ public class HandMRManager : MonoBehaviour
                     }
                     LeftEyeFrame.SetActive(false);
                     RightEyeFrame.SetActive(false);
+
+                    Canvas[] canvases = FindObjectsOfType<Canvas>();
+                    foreach (Canvas canvas in canvases)
+                    {
+                        if (canvas.renderMode == RenderMode.WorldSpace && canvas.worldCamera == null)
+                        {
+                            canvas.worldCamera = MRCamera.GetComponent<Camera>();
+                        }
+                    }
                 }
                 break;
             case Mode.VRSingle:
@@ -133,6 +151,15 @@ public class HandMRManager : MonoBehaviour
                     ARObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = true;
                     ARObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = true;
                     StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.SolidColor));
+
+                    Canvas[] canvases = FindObjectsOfType<Canvas>();
+                    foreach (Canvas canvas in canvases)
+                    {
+                        if (canvas.renderMode == RenderMode.WorldSpace && canvas.worldCamera == null)
+                        {
+                            canvas.worldCamera = ARCamera.GetComponent<Camera>();
+                        }
+                    }
                 }
                 break;
             case Mode.AR:
@@ -156,6 +183,15 @@ public class HandMRManager : MonoBehaviour
                     ARObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = false;
                     ARObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = true;
                     StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.Depth));
+
+                    Canvas[] canvases = FindObjectsOfType<Canvas>();
+                    foreach (Canvas canvas in canvases)
+                    {
+                        if (canvas.renderMode == RenderMode.WorldSpace && canvas.worldCamera == null)
+                        {
+                            canvas.worldCamera = ARCamera.GetComponent<Camera>();
+                        }
+                    }
                 }
                 break;
         }
@@ -215,5 +251,24 @@ public class HandMRManager : MonoBehaviour
                 camera.fieldOfView = FieldOfView;
             }
         }
+    }
+
+    public Transform GetCameraTransform()
+    {
+        Transform ret = null;
+
+        switch (ViewMode)
+        {
+            case Mode.MR:
+            case Mode.VR:
+                ret = MRCamera;
+                break;
+            case Mode.VRSingle:
+            case Mode.AR:
+                ret = ARCamera;
+                break;
+        }
+
+        return ret;
     }
 }

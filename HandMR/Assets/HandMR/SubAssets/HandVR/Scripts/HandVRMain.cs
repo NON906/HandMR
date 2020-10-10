@@ -19,7 +19,7 @@ public class HandVRMain : MonoBehaviour
     float[] fingerLengthArray_ = new float[16];
     Quaternion[] rotationQuaternions_ = new Quaternion[2];
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
     AndroidJavaObject multiHandMain_;
 
     [DllImport("hand3d")]
@@ -41,9 +41,7 @@ public class HandVRMain : MonoBehaviour
     static extern void hand3dSetHandPoint(int pointId, float x, float y, float z);
     [DllImport("hand3d")]
     static extern void hand3dReset();
-#endif
-
-#if UNITY_IOS
+#elif UNITY_IOS && !UNITY_EDITOR
     [DllImport("__Internal")]
     static extern void multiHandCleanup();
     [DllImport("__Internal")]
@@ -80,6 +78,27 @@ public class HandVRMain : MonoBehaviour
     static extern void hand3dSetHandPoint(int pointId, float x, float y, float z);
     [DllImport("__Internal")]
     static extern void hand3dReset();
+#else
+    static void hand3dInit([In]string filePath) { }
+    static void hand3dGetCameraValues(out double fx, out double fy, out double cx, out double cy) {
+        fx = fy = cx = cy = 0.0;
+    }
+    static void hand3dInitWithValues(double fx, double fy, double cx, double cy) { }
+    static void hand3dExec(out double rx, out double ry, out double rz, out double x, out double y, out double z,
+        double x0, double y0,
+        double x1, double y1,
+        double x2, double y2,
+        double x3, double y3,
+        double x4, double y4)
+    {
+        rx = ry = rz = x = y = z = 0.0;
+    }
+    static void hand3dGet3dPosition(out double x, out double y, out double z, int pointId)
+    {
+        x = y = z = 0.0;
+    }
+    static void hand3dSetHandPoint(int pointId, float x, float y, float z) { }
+    static void hand3dReset() { }
 #endif
 
     bool isStart_ = false;
@@ -94,7 +113,7 @@ public class HandVRMain : MonoBehaviour
 
     void Start()
     {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
         using (AndroidJavaObject currentUnityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
         {
@@ -104,7 +123,7 @@ public class HandVRMain : MonoBehaviour
 
         texture2D_ = new Texture2D(RESIZE_HEIGHT * Screen.width / Screen.height, RESIZE_HEIGHT, TextureFormat.ARGB32, false, false);
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         IntPtr graphName = Marshal.StringToHGlobalAnsi("multihandtrackinggpu");
         multiHandSetup(graphName, texture2D_.width, texture2D_.height);
         Marshal.FreeHGlobal(graphName);
@@ -154,7 +173,7 @@ public class HandVRMain : MonoBehaviour
     void updateFrame()
     {
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         if (!isStart_)
         {
             multiHandMain_.Call("startRunningGraph");
@@ -162,7 +181,7 @@ public class HandVRMain : MonoBehaviour
         }
 #endif
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         if (!isStart_)
         {
             multiHandStartRunningGraph();
@@ -182,14 +201,14 @@ public class HandVRMain : MonoBehaviour
 
         byte[] frameImage;
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         frameImage = ImageConversion.EncodeToJPG(texture2D_);
 
         sbyte[] frameImageSigned = Array.ConvertAll(frameImage, b => unchecked((sbyte)b));
         multiHandMain_.Call("setFrame", frameImageSigned);
 #endif
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         frameImage = ImageConversion.EncodeToPNG(texture2D_);
 
         IntPtr frameIntPtr = Marshal.AllocHGlobal(frameImage.Length * Marshal.SizeOf<byte>());
@@ -225,9 +244,9 @@ public class HandVRMain : MonoBehaviour
     {
         float[] ret;
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         ret = multiHandMain_.Call<float[]>("getLandmark", id, index);
-#elif UNITY_IOS
+#elif UNITY_IOS && !UNITY_EDITOR
         if (multiHandGetHandCount() <= id)
         {
             return null;
@@ -380,14 +399,14 @@ public class HandVRMain : MonoBehaviour
 
     public float[] GetLandmark(int id, int index)
     {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         if (multiHandMain_.Call<bool>("getIsUpdated"))
         {
             calcLandmark();
         }
 #endif
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         if (multiHandGetIsUpdated())
         {
             calcLandmark();
@@ -399,9 +418,9 @@ public class HandVRMain : MonoBehaviour
 
     public int GetHandednesses(int id)
     {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         return multiHandMain_.Call<int>("getHandednesses", id);
-#elif UNITY_IOS
+#elif UNITY_IOS && !UNITY_EDITOR
         return multiHandGetHandednesses(id);
 #else
         return -1;
@@ -430,14 +449,14 @@ public class HandVRMain : MonoBehaviour
 
     void OnDestroy()
     {
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         if (multiHandMain_ != null)
         {
             multiHandMain_.Dispose();
         }
 #endif
 
-#if UNITY_IOS
+#if UNITY_IOS && !UNITY_EDITOR
         multiHandCleanup();
 #endif
 
