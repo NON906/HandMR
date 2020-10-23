@@ -24,7 +24,7 @@ public class HandMRSceneInitializer
             }
             if (webRequest.error != null)
             {
-                EditorUtility.DisplayDialog("エラー", "ダウンロードに失敗しました\n" + url + "\n" + webRequest.error, "OK");
+                EditorUtility.DisplayDialog("Error", "Download is failed\n" + url + "\n" + webRequest.error, "OK");
                 return false;
             }
             File.WriteAllBytes(path, webRequest.downloadHandler.data);
@@ -33,8 +33,8 @@ public class HandMRSceneInitializer
         return true;
     }
 
-    [MenuItem("HandMR/Download iOS Plugins")]
-    static void InitProjectForIOS()
+    //[MenuItem("HandMR/Download iOS Plugins")]
+    public static void InitProjectForIOS()
     {
         if (!Directory.Exists(Application.dataPath + "/HandMR/SubAssets/HandVR/Plugins/iOS"))
         {
@@ -43,8 +43,10 @@ public class HandMRSceneInitializer
                 Directory.CreateDirectory(Application.dataPath + "/../../downloads");
             }
 
-            download("https://github.com/NON906/HandMR/releases/download/0.9/HandMR_iOS_plugin_for_projects_0.9.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.9.unitypackage");
-            AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.9.unitypackage", false);
+            download("https://github.com/NON906/HandMR/releases/download/0.11/HandMR_iOS_plugin_for_projects_0.11.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.x.unitypackage");
+            AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.x.unitypackage", false);
+
+            Debug.Log("Download is finished.");
         }
     }
 

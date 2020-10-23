@@ -27,9 +27,7 @@ public class HandSizeCalibMain : MonoBehaviour
         float size);
     [DllImport("hand3d")]
     static extern void handSizeCalibTransform(ref float x, ref float y);
-#endif
-
-#if UNITY_IOS
+#elif UNITY_IOS
     [DllImport("__Internal")]
     static extern void handSizeCalibFindHomography(float x0, float y0,
         float x1, float y1,
@@ -38,6 +36,16 @@ public class HandSizeCalibMain : MonoBehaviour
         float size);
     [DllImport("__Internal")]
     static extern void handSizeCalibTransform(ref float x, ref float y);
+#else
+    static void handSizeCalibFindHomography(float x0, float y0,
+        float x1, float y1,
+        float x2, float y2,
+        float x3, float y3,
+        float size) { }
+    static void handSizeCalibTransform(ref float x, ref float y)
+    {
+        x = y = 0f;
+    }
 #endif
 
     float calcLength(float[] pos, float[] basePos)

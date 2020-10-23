@@ -3,11 +3,36 @@ using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 
 public class Exporter
 {
-    static string[] getPathsExcept(string currentDir, string exceptDir)
+    public static string[] GetPathsExcept(string currentDir, string exceptDir)
     {
+        if (!exceptDir.StartsWith(currentDir))
+        {
+            return new string[] { currentDir };
+        }
+
+        if (!AssetDatabase.IsValidFolder(currentDir))
+        {
+            if (currentDir != exceptDir)
+            {
+                return new string[] { currentDir };
+            }
+            else
+            {
+                return new string[] { };
+            }
+        }
+
+        var re = new Regex(currentDir);
+        exceptDir = re.Replace(exceptDir, "", 1);
+        while (exceptDir.StartsWith("/"))
+        {
+            exceptDir = exceptDir.Substring(1, exceptDir.Length - 1);
+        }
+
         while (exceptDir.EndsWith("/"))
         {
             exceptDir = exceptDir.Substring(0, exceptDir.Length - 1);
@@ -21,7 +46,7 @@ public class Exporter
             string[] dirs = Directory.GetDirectories(currentDir, "*", SearchOption.TopDirectoryOnly);
             foreach (string dir in dirs)
             {
-                string newDir = dir;
+                string newDir = dir.Replace("\\", "/");
                 while (newDir.EndsWith("/"))
                 {
                     newDir = newDir.Substring(0, newDir.Length - 1);
@@ -29,6 +54,16 @@ public class Exporter
                 if (newDir != currentExceptDir)
                 {
                     paths.Add(newDir);
+                }
+            }
+
+            string[] files = Directory.GetFiles(currentDir, "*", SearchOption.TopDirectoryOnly);
+            foreach (string file in files)
+            {
+                string newFile = file.Replace("\\", "/");
+                if (newFile != currentExceptDir)
+                {
+                    paths.Add(newFile);
                 }
             }
 
@@ -42,28 +77,34 @@ public class Exporter
         return paths.ToArray();
     }
 
-    [MenuItem("HandMR/Develop/Export with settings")]
+    public static string[] GetPathsExcept(string[] currentDirs, string[] exceptDirs)
+    {
+        foreach (string exceptDir in exceptDirs)
+        {
+            List<string> dirsList = new List<string>();
+            foreach (string currentDir in currentDirs)
+            {
+                dirsList.AddRange(GetPathsExcept(currentDir, exceptDir));
+            }
+            currentDirs = dirsList.ToArray();
+        }
+        return currentDirs;
+    }
+
+    [MenuItem("HandMR/Develop/Export")]
     static void Export()
     {
-        string symbols;
-        symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android);
-        symbols = symbols.Replace(";DOWNLOADED_ARFOUNDATION", "");
-        symbols = symbols.Replace(";SETTING_PREFAB", "");
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, symbols);
-        symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS);
-        symbols = symbols.Replace(";DOWNLOADED_ARFOUNDATION", "");
-        symbols = symbols.Replace(";SETTING_PREFAB", "");
-        PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, symbols);
-
-        AssetDatabase.ExportPackage(getPathsExcept("Assets", "HandMR/SubAssets/HandVR/Plugins/iOS"),
+        AssetDatabase.ExportPackage(
+            GetPathsExcept(new string[] { "Assets" },
+            new string[] { "Assets/XR", "Assets/HandMR/iOS_assets", "Assets/HandMR/SubAssets/HandVR/Plugins/iOS" }),
             "HandMR_0.x.unitypackage",
-            ExportPackageOptions.Interactive | ExportPackageOptions.Recurse | ExportPackageOptions.IncludeLibraryAssets);
+            ExportPackageOptions.Interactive | ExportPackageOptions.Recurse);
     }
 
     [MenuItem("HandMR/Develop/Export iOS assets")]
     static void ExportiOS()
     {
-        AssetDatabase.ExportPackage(new string[] { "Assets/HandMR/SubAssets/HandVR/Plugins/iOS" },
+        AssetDatabase.ExportPackage(new string[] { "Assets/HandMR/SubAssets/HandVR/Plugins/iOS", "Assets/HandMR/iOS_assets" },
             "HandMR_iOS_plugin_for_projects_0.x.unitypackage",
             ExportPackageOptions.Interactive | ExportPackageOptions.Recurse);
     }
