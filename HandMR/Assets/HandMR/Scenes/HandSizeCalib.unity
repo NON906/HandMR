@@ -442,7 +442,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30DE\u30FC\u30AB\u30FC\u3092\u6620\u3057\u3066\u304F\u3060\u3055\u3044"
+  m_Text: Please capture marker.
 --- !u!222 &1144270451
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -477,6 +477,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_RotationAction.m_SingletonActionBindings.Array.data[0].m_Id
       value: d2b194c6-2d20-4457-87f3-e8cada4333c6
+      objectReference: {fileID: 0}
+    - target: {fileID: 518884542284124932, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Please capture floor,
+
+        and move camera.'
       objectReference: {fileID: 0}
     - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
@@ -583,6 +590,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: HandMRManager
       objectReference: {fileID: 0}
+    - target: {fileID: 1853515811184790206, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Please capture floor,
+
+        and move camera.'
+      objectReference: {fileID: 0}
     - target: {fileID: 3904432937936951294, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
       propertyPath: PlaneDetectEnabled
@@ -610,6 +624,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 987183182177306958, guid: 0e7c6102d4e3343adbce6fd281bf94aa, type: 3}
+    - {fileID: 5714927333909319870, guid: 0e7c6102d4e3343adbce6fd281bf94aa, type: 3}
+    - {fileID: 8290171757635211832, guid: 0e7c6102d4e3343adbce6fd281bf94aa, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0e7c6102d4e3343adbce6fd281bf94aa, type: 3}
 --- !u!1 &1503241284 stripped
 GameObject:
@@ -934,7 +950,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u623B\u308B"
+  m_Text: Back
 --- !u!222 &1700264532
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1122,7 +1138,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u64AE\u5F71"
+  m_Text: Capture
 --- !u!222 &2039579509
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -1,5 +1,7 @@
 # HandMR
 
+English version is [here](https://github.com/NON906/HandMR/blob/master/README_EN.md).
+
 スマホでMRを体験できる[だんグラ](https://dangla.jp/)上で、ハンドトラッキングを行うためのアセットです。
 スマホVR（cardboardなど）にも対応しております。
 

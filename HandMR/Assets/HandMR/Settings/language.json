@@ -1,0 +1,104 @@
+{
+"lang" : [
+    {
+        "en" : "Please capture floor,\nand move camera.",
+        "jp" : "床を映した状態で\nカメラを動かしてください"
+    },
+    {
+        "en" : "Capture",
+        "jp" : "撮影"
+    },
+    {
+        "en" : "Back",
+        "jp" : "戻る"
+    },
+    {
+        "en" : "Types of Goggles",
+        "jp" : "ゴーグルの種類"
+    },
+    {
+        "en" : "MR (Dangla)",
+        "jp" : "MRゴーグル（だんグラ）"
+    },
+    {
+        "en" : "MR (Dangla) (Monocular)",
+        "jp" : "MRゴーグル（だんグラ）（単眼）"
+    },
+    {
+        "en" : "VR",
+        "jp" : "VRゴーグル"
+    },
+    {
+        "en" : "Monocular",
+        "jp" : "単眼（単眼VRゴーグルorなし）"
+    },
+    {
+        "en" : "AR",
+        "jp" : "AR（ゴーグルなし）"
+    },
+    {
+        "en" : "Smartphone Position in Goggles",
+        "jp" : "ゴーグルのスマホ位置"
+    },
+    {
+        "en" : "Up",
+        "jp" : "上"
+    },
+    {
+        "en" : "Down (Reverse)",
+        "jp" : "下（上下反転）"
+    },
+    {
+        "en" : "Interpupillary Distance",
+        "jp" : "瞳孔間距離"
+    },
+    {
+        "en" : "Display Area Size",
+        "jp" : "表示領域サイズ"
+    },
+    {
+        "en" : "Hand Position (X)",
+        "jp" : "手の位置調整（X）"
+    },
+    {
+        "en" : "Hand Position (Y)",
+        "jp" : "手の位置調整（Y）"
+    },
+    {
+        "en" : "Hand Size Setting",
+        "jp" : "手の大きさの設定"
+    },
+    {
+        "en" : "Reset",
+        "jp" : "リセット"
+    },
+    {
+        "en" : "Field Of View",
+        "jp" : "画角"
+    },
+    {
+        "en" : "Rate of Strain",
+        "jp" : "歪み強度"
+    },
+    {
+        "en" : "Space Between Two Images",
+        "jp" : "画像の間隔"
+    },
+    {
+        "en" : "Exit",
+        "jp" : "終了"
+    },
+    {
+        "en" : "License",
+        "jp" : "ライセンス表示"
+    },
+    {
+        "en" : "Start",
+        "jp" : "開始"
+    },
+    {
+        "en" : "Please capture marker.",
+        "jp" : "マーカーを映してください"
+    }
+]
+}

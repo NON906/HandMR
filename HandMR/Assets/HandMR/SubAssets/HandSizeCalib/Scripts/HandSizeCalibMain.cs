@@ -55,14 +55,22 @@ public class HandSizeCalibMain : MonoBehaviour
 
     IEnumerator Start()
     {
+#if LANG_JP
         ExplanationText.text = "マーカーを映してください";
+#else
+        ExplanationText.text = "Please capture marker.";
+#endif
 
         while (MarkerTransforms == null)
         {
             yield return null;
         }
 
+#if LANG_JP
         ExplanationText.text = "マーカーの近くの平面に手を置き、撮影ボタンを押してください";
+#else
+        ExplanationText.text = "Put your hands near by marker, and push Capture button.";
+#endif
 
         HandVRMain handVRMain = FindObjectOfType<HandVRMain>();
 
@@ -85,7 +93,11 @@ public class HandSizeCalibMain : MonoBehaviour
             }
             if (landmarks[20] == null)
             {
+#if LANG_JP
                 ExplanationText.text = "手の認識に失敗しました。もう一度撮影してください";
+#else
+                ExplanationText.text = "Failed to hand recognition.";
+#endif
                 continue;
             }
 
@@ -141,7 +153,11 @@ public class HandSizeCalibMain : MonoBehaviour
 
             PlayerPrefs.Save();
 
+#if LANG_JP
             ExplanationText.text = "設定に成功しました";
+#else
+            ExplanationText.text = "Success.";
+#endif
 
             handVRMain.ResetHandValues();
         }

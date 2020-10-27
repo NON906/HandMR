@@ -716,16 +716,16 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 32
     m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 0
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 4
+    m_MaxSize: 32
     m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u753B\u50CF\u306E\u9593\u9694"
+  m_Text: Space Between Two Images
 --- !u!222 &77274183
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1119,7 +1119,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u624B\u306E\u5927\u304D\u3055\u306E\u8A2D\u5B9A"
+  m_Text: Hand Size Setting
 --- !u!222 &211155498
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1198,7 +1198,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u624B\u306E\u4F4D\u7F6E\u8ABF\u6574\uFF08X\uFF09"
+  m_Text: Hand Position (X)
 --- !u!222 &233972525
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1592,7 +1592,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u7D42\u4E86"
+  m_Text: Exit
 --- !u!222 &284223311
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1746,7 +1746,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30E9\u30A4\u30BB\u30F3\u30B9\u8868\u793A"
+  m_Text: License
 --- !u!222 &326558192
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2656,7 +2656,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u6B6A\u307F\u5F37\u5EA6"
+  m_Text: Rate of Strain
 --- !u!222 &472602448
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2991,15 +2991,15 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: "MR\u30B4\u30FC\u30B0\u30EB\uFF08\u3060\u3093\u30B0\u30E9\uFF09"
+    - m_Text: MR (Dangla)
       m_Image: {fileID: 0}
-    - m_Text: "MR\u30B4\u30FC\u30B0\u30EB\uFF08\u3060\u3093\u30B0\u30E9\uFF09\uFF08\u5358\u773C\uFF09"
+    - m_Text: MR (Dangla) (Monocular)
       m_Image: {fileID: 0}
-    - m_Text: "VR\u30B4\u30FC\u30B0\u30EB"
+    - m_Text: VR
       m_Image: {fileID: 0}
-    - m_Text: "\u5358\u773C\uFF08\u5358\u773CVR\u30B4\u30FC\u30B0\u30EBor\u306A\u3057\uFF09"
+    - m_Text: Monocular
       m_Image: {fileID: 0}
-    - m_Text: "AR\uFF08\u30B4\u30FC\u30B0\u30EB\u306A\u3057\uFF09"
+    - m_Text: AR
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -3251,7 +3251,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30EA\u30BB\u30C3\u30C8"
+  m_Text: Reset
 --- !u!222 &569244748
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3721,7 +3721,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u521D\u671F\u5316"
+  m_Text: Reset
 --- !u!222 &642673414
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4545,7 +4545,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u77B3\u5B54\u9593\u8DDD\u96E2"
+  m_Text: Interpupillary Distance
 --- !u!222 &819611955
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5939,7 +5939,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u8868\u793A\u9818\u57DF\u30B5\u30A4\u30BA\n"
+  m_Text: Display Area Size
 --- !u!222 &1025145876
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6757,16 +6757,16 @@ MonoBehaviour:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
     m_FontSize: 32
     m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 0
-    m_MaxSize: 40
+    m_BestFit: 1
+    m_MinSize: 4
+    m_MaxSize: 32
     m_Alignment: 3
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30B4\u30FC\u30B0\u30EB\u306E\u30B9\u30DE\u30DB\u4F4D\u7F6E"
+  m_Text: Smartphone Position in Goggles
 --- !u!222 &1247322114
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7113,7 +7113,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "MR\u30B4\u30FC\u30B0\u30EB\uFF08\u3060\u3093\u30B0\u30E9\uFF09"
+  m_Text: MR (Dangla)
 --- !u!222 &1332018708
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7192,7 +7192,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u624B\u306E\u4F4D\u7F6E\u8ABF\u6574\uFF08Y\uFF09"
+  m_Text: Hand Position (Y)
 --- !u!222 &1343174160
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7853,7 +7853,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u753B\u89D2"
+  m_Text: Field Of View
 --- !u!222 &1451409245
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -9044,9 +9044,9 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: "\u4E0A"
+    - m_Text: Up
       m_Image: {fileID: 0}
-    - m_Text: "\u4E0B\uFF08\u4E0A\u4E0B\u53CD\u8EE2\uFF09"
+    - m_Text: Down (Reverse)
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -9235,7 +9235,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u958B\u59CB"
+  m_Text: Start
 --- !u!222 &1731348364
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10383,7 +10383,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u30B4\u30FC\u30B0\u30EB\u306E\u7A2E\u985E"
+  m_Text: Types of Goggles
 --- !u!222 &2054084802
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -10770,7 +10770,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u4E0A"
+  m_Text: Up
 --- !u!222 &2132988920
 CanvasRenderer:
   m_ObjectHideFlags: 0

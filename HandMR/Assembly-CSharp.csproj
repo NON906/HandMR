@@ -630,6 +630,9 @@
     <Reference Include="Unity.XR.Management">
       <HintPath>Library/ScriptAssemblies/Unity.XR.Management.dll</HintPath>
     </Reference>
+    <Reference Include="Unity.XR.ARKit">
+      <HintPath>Library/ScriptAssemblies/Unity.XR.ARKit.dll</HintPath>
+    </Reference>
     <Reference Include="Unity.Subsystem.Registration">
       <HintPath>Library/ScriptAssemblies/Unity.Subsystem.Registration.dll</HintPath>
     </Reference>
@@ -684,14 +687,11 @@
     <Reference Include="UnityEditor.XR.LegacyInputHelpers">
       <HintPath>Library/ScriptAssemblies/UnityEditor.XR.LegacyInputHelpers.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.UI">
-      <HintPath>Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.XR.ARKit">
-      <HintPath>Library/ScriptAssemblies/Unity.XR.ARKit.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.XR.ARKit.Editor">
       <HintPath>Library/ScriptAssemblies/Unity.XR.ARKit.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.UI">
+      <HintPath>Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

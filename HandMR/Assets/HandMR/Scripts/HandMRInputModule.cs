@@ -10,13 +10,17 @@ public class HandMRInputModule : StandaloneInputModule
     public HandVRSphereHand[] Hands;
     public float TouchDistance = 0.02f;
     public bool GrabDetect = true;
+    public float LeaveTime = 0.5f;
 
     HandMRManager handMRManager_ = null;
     List<Collider> colliders_ = new List<Collider>();
     GameObject prevDetectObj_ = null;
+    float prevDetectTime_ = 0f;
     bool isGrabDetected_ = false;
     Vector2 lastPosition_;
     Vector2 startDragPosition_;
+
+    PointerEventData submitPointerData_ = null;
 
     bool isOnScreen(Selectable selectable)
     {
@@ -115,8 +119,16 @@ public class HandMRInputModule : StandaloneInputModule
             GameObject submitObj = ExecuteEvents.GetEventHandler<ISubmitHandler>(detectObject);
             if (submitObj != null)
             {
-                ExecuteEvents.Execute(submitObj, pointerData, ExecuteEvents.submitHandler);
-                addColliderToSelectable();
+                if (grab || submitObj.GetComponent<Dropdown>() == null)
+                {
+                    ExecuteEvents.Execute(submitObj, pointerData, ExecuteEvents.submitHandler);
+                    addColliderToSelectable();
+                    submitPointerData_ = null;
+                }
+                else
+                {
+                    submitPointerData_ = pointerData;
+                }
             }
 
             pointerData.pointerDrag = ExecuteEvents.GetEventHandler<IDragHandler>(detectObject);
@@ -126,6 +138,10 @@ public class HandMRInputModule : StandaloneInputModule
                 lastPosition_ = pointerData.position;
                 startDragPosition_ = pointerData.pressPosition;
             }
+
+            prevDetectObj_ = detectObject;
+            prevDetectTime_ = Time.time;
+            isGrabDetected_ = true;
         }
         else
         {
@@ -146,9 +162,10 @@ public class HandMRInputModule : StandaloneInputModule
                 ExecuteEvents.Execute(pointerData.pointerDrag, pointerData, ExecuteEvents.dragHandler);
                 lastPosition_ = pointerData.position;
             }
+
+            prevDetectTime_ = Time.time;
+            isGrabDetected_ = true;
         }
-        prevDetectObj_ = detectObject;
-        isGrabDetected_ = true;
     }
 
     public override void Process()
@@ -173,10 +190,13 @@ public class HandMRInputModule : StandaloneInputModule
         }
         if (noHands)
         {
-            Selectable[] selectables2 = Selectable.allSelectablesArray;
-            changeEnabledSelectable(true, selectables2);
-            base.Process();
-            reEnabledSelectable(selectables2);
+            if (Time.time - prevDetectTime_ > LeaveTime)
+            {
+                Selectable[] selectables2 = Selectable.allSelectablesArray;
+                changeEnabledSelectable(true, selectables2);
+                base.Process();
+                reEnabledSelectable(selectables2);
+            }
             return;
         }
 
@@ -241,7 +261,7 @@ public class HandMRInputModule : StandaloneInputModule
                 float distance = Vector3.Distance(nearHit.point, hand.GetFinger(8).position);
                 if (grabed || (distance <= TouchDistance && TouchDistance > 0f))
                 {
-                    uiDetectControl(nearObj, nearHit.point, distance > TouchDistance);
+                    uiDetectControl(nearObj, nearHit.point, grabed);
                     return;
                 }
                 else
@@ -276,13 +296,28 @@ public class HandMRInputModule : StandaloneInputModule
             return;
         }
 
-        resetSelect();
-        prevDetectObj_ = null;
+        if (prevDetectObj_ != null && submitPointerData_ != null)
+        {
+            GameObject submitObj = ExecuteEvents.GetEventHandler<ISubmitHandler>(prevDetectObj_);
+            if (submitObj != null)
+            {
+                ExecuteEvents.Execute(submitObj, submitPointerData_, ExecuteEvents.submitHandler);
+                addColliderToSelectable();
+                prevDetectTime_ = Time.time;
+            }
+            submitPointerData_ = null;
+        }
+        
+        if (Time.time - prevDetectTime_ > LeaveTime)
+        {
+            resetSelect();
+            prevDetectObj_ = null;
 
-        Selectable[] selectables = Selectable.allSelectablesArray;
-        changeEnabledSelectable(true, selectables);
-        base.Process();
-        reEnabledSelectable(selectables);
+            Selectable[] selectables = Selectable.allSelectablesArray;
+            changeEnabledSelectable(true, selectables);
+            base.Process();
+            reEnabledSelectable(selectables);
+        }
     }
 
     protected override void OnDestroy()

@@ -880,7 +880,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Reset
+  m_Text: ' Reset '
 --- !u!222 &287873598
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2350,6 +2350,13 @@ PrefabInstance:
       propertyPath: m_RotationAction.m_SingletonActionBindings.Array.data[0].m_Id
       value: d2b194c6-2d20-4457-87f3-e8cada4333c6
       objectReference: {fileID: 0}
+    - target: {fileID: 518884542284124932, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Please capture floor,
+
+        and move camera.'
+      objectReference: {fileID: 0}
     - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2450,6 +2457,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: HandMRManager
       objectReference: {fileID: 0}
+    - target: {fileID: 1853515811184790206, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Please capture floor,
+
+        and move camera.'
+      objectReference: {fileID: 0}
     - target: {fileID: 5249255319954541510, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
       propertyPath: m_BackGroundColor.r
@@ -2464,6 +2478,13 @@ PrefabInstance:
         type: 3}
       propertyPath: m_BackGroundColor.b
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101793165686051837, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Please capture floor,
+
+        and move camera.'
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0e7c6102d4e3343adbce6fd281bf94aa, type: 3}
@@ -3299,7 +3320,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2004170349}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -0}
+  m_LocalPosition: {x: 0, y: 0, z: 0.0000059605}
   m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
   m_Children:
   - {fileID: 1534139995}
@@ -3309,7 +3330,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -64.9, y: -17.960257}
+  m_AnchoredPosition: {x: 60, y: -67.7}
   m_SizeDelta: {x: 80, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2004170351
@@ -3595,7 +3616,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2101172733}
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: -0, y: -0.5793263, z: -0, w: 0.8150958}
   m_LocalPosition: {x: 0, y: 0, z: -0.291}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_Children:
@@ -3605,7 +3626,7 @@ RectTransform:
   - {fileID: 409766248}
   m_Father: {fileID: 0}
   m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -70.806, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: -0.668, y: 0.9356}

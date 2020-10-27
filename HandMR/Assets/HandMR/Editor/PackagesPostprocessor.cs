@@ -5,6 +5,7 @@ using UnityEditor;
 using System.Linq;
 using System.IO;
 using System.Threading.Tasks;
+using System;
 #if DOWNLOADED_ARFOUNDATION
 using UnityEngine.XR.ARFoundation;
 using UnityEditor.XR.Management;
@@ -186,7 +187,7 @@ public class PackagesPostprocessor
 
     static DialogWindow window_ = null;
 
-    static void setScriptingDefineSymbol(string symbol)
+    public static void SetScriptingDefineSymbol(string symbol)
     {
         string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android);
         if (!symbols.Contains(symbol))
@@ -248,7 +249,7 @@ public class PackagesPostprocessor
             System.Threading.Thread.Sleep(16);
             AssetDatabase.Refresh();
         }
-        setScriptingDefineSymbol("DOWNLOADED_ARFOUNDATION");
+        SetScriptingDefineSymbol("DOWNLOADED_ARFOUNDATION");
         AssetDatabase.SaveAssets();
 
         if (isChange)
@@ -455,6 +456,17 @@ public class PackagesPostprocessor
 
     public class DialogWindow : EditorWindow
     {
+        ChangeLanguage.Languages lang_;
+
+        void Awake()
+        {
+#if LANG_JP
+            lang_ = ChangeLanguage.Languages.Japanese;
+#else
+            lang_ = ChangeLanguage.Languages.English;
+#endif
+        }
+
         void OnGUI()
         {
             GUILayout.Label("Step 1. Add Packages to PackageManager");
@@ -483,6 +495,14 @@ public class PackagesPostprocessor
                 HandMRSceneInitializer.InitProjectForIOS();
             }
 
+            GUILayout.Label("Step 5. Select Languages");
+            var newLang = (ChangeLanguage.Languages)EditorGUILayout.EnumPopup(lang_);
+            if (newLang != lang_)
+            {
+                ChangeLanguage.Change(lang_, newLang);
+                lang_ = newLang;
+            }
+
             GUILayout.Space(20);
             if (GUILayout.Button("Close"))
             {
@@ -492,7 +512,7 @@ public class PackagesPostprocessor
 
         void OnDestroy()
         {
-            setScriptingDefineSymbol("CLOSE_DIALOG_WINDOW");
+            SetScriptingDefineSymbol("CLOSE_DIALOG_WINDOW");
             window_ = null;
         }
     }
