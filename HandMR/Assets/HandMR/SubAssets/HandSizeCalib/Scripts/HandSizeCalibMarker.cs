@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandSizeCalibMarker : MonoBehaviour
+namespace HandMR
 {
-    public Transform[] EdgePoints;
-
-    void Start()
+    public class HandSizeCalibMarker : MonoBehaviour
     {
-        FindObjectOfType<HandSizeCalibMain>().MarkerTransforms = EdgePoints;
+        public Transform[] EdgePoints;
+
+        void Start()
+        {
+            FindObjectOfType<HandSizeCalibMain>().MarkerTransforms = EdgePoints;
+        }
     }
 }

@@ -4,46 +4,49 @@ using UnityEditor.Callbacks;
 using UnityEditor.iOS.Xcode;
 using UnityEngine;
 
-public static class PostProcessBuildProject
+namespace HandMR
 {
-	[PostProcessBuild(100)]
-	public static void OnPostProcessBuild(BuildTarget target, string path)
+	public static class PostProcessBuildProject
 	{
-		if (target == BuildTarget.iOS)
+		[PostProcessBuild(100)]
+		public static void OnPostProcessBuild(BuildTarget target, string path)
 		{
-			postProcessBuildiOS(path);
-		}
-	}
-
-	static void postProcessBuildiOS(string path)
-	{
-		string projectPath = PBXProject.GetPBXProjectPath(path);
-		PBXProject pbxProject = new PBXProject();
-
-		pbxProject.ReadFromString(File.ReadAllText(projectPath));
-
-		string target = pbxProject.GetUnityFrameworkTargetGuid();
-		string mainTarget = pbxProject.GetUnityMainTargetGuid();
-
-		string libGuid = pbxProject.FindFileGuidByRealPath("Libraries/HandMR/SubAssets/HandVR/Plugins/iOS/MultiHandAppLib-fl.a");
-		pbxProject.RemoveFile(libGuid);
-		pbxProject.RemoveFileFromBuild(target, libGuid);
-		pbxProject.RemoveFrameworkFromProject(target, libGuid);
-		pbxProject.AddBuildProperty(target, "OTHER_LDFLAGS_FRAMEWORK", "-force_load Libraries/HandMR/SubAssets/HandVR/Plugins/iOS/MultiHandAppLib-fl.a");
-
-		string[] files = Directory.GetFiles(Path.Combine(Application.dataPath, "HandMR/iOS_assets"));
-		foreach (string file in files)
-		{
-			if (file.EndsWith(".meta") || file == Path.Combine(Application.dataPath, "HandMR/iOS_assets/LICENSE"))
-            {
-				continue;
-            }
-
-			string fileGuid = pbxProject.AddFile(file, Path.Combine("UnityFramework", Path.GetFileName(file)));
-			pbxProject.AddFileToBuild(target, fileGuid);
-			pbxProject.AddFileToBuild(mainTarget, fileGuid);
+			if (target == BuildTarget.iOS)
+			{
+				postProcessBuildiOS(path);
+			}
 		}
 
-		File.WriteAllText(projectPath, pbxProject.WriteToString());
+		static void postProcessBuildiOS(string path)
+		{
+			string projectPath = PBXProject.GetPBXProjectPath(path);
+			PBXProject pbxProject = new PBXProject();
+
+			pbxProject.ReadFromString(File.ReadAllText(projectPath));
+
+			string target = pbxProject.GetUnityFrameworkTargetGuid();
+			string mainTarget = pbxProject.GetUnityMainTargetGuid();
+
+			string libGuid = pbxProject.FindFileGuidByRealPath("Libraries/HandMR/SubAssets/HandVR/Plugins/iOS/MultiHandAppLib-fl.a");
+			pbxProject.RemoveFile(libGuid);
+			pbxProject.RemoveFileFromBuild(target, libGuid);
+			pbxProject.RemoveFrameworkFromProject(target, libGuid);
+			pbxProject.AddBuildProperty(target, "OTHER_LDFLAGS_FRAMEWORK", "-force_load Libraries/HandMR/SubAssets/HandVR/Plugins/iOS/MultiHandAppLib-fl.a");
+
+			string[] files = Directory.GetFiles(Path.Combine(Application.dataPath, "HandMR/iOS_assets"));
+			foreach (string file in files)
+			{
+				if (file.EndsWith(".meta") || file == Path.Combine(Application.dataPath, "HandMR/iOS_assets/LICENSE"))
+				{
+					continue;
+				}
+
+				string fileGuid = pbxProject.AddFile(file, Path.Combine("UnityFramework", Path.GetFileName(file)));
+				pbxProject.AddFileToBuild(target, fileGuid);
+				pbxProject.AddFileToBuild(mainTarget, fileGuid);
+			}
+
+			File.WriteAllText(projectPath, pbxProject.WriteToString());
+		}
 	}
 }

@@ -55,12 +55,11 @@
     <Analyzer Include="/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/AddIns/MonoDevelop.Unity/Analyzers/Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets/Hologla/Editor/SceneInitializeMenu.cs" />
     <Compile Include="Assets/HandMR/Editor/PackagesPostprocessor.cs" />
     <Compile Include="Assets/HandMR/Editor/Exporter.cs" />
     <Compile Include="Assets/HandMR/Editor/PostProcessBuildProject.cs" />
-    <Compile Include="Assets/HandMR/Editor/HandMRSceneInitializer.cs" />
     <Compile Include="Assets/HandMR/Editor/ChangeLanguage.cs" />
+    <Compile Include="Assets/HandMR/Editor/HandMRSceneInitializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

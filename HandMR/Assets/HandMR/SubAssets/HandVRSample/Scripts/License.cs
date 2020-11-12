@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class License : MonoBehaviour
+namespace HandMR
 {
-    public void BackButton()
+    public class License : MonoBehaviour
     {
-        SceneManager.LoadScene("Menu");
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        public void BackButton()
         {
-            BackButton();
+            SceneManager.LoadScene("Menu");
+        }
+
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                BackButton();
+            }
         }
     }
 }

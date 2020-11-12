@@ -55,47 +55,48 @@
     <Analyzer Include="/Applications/Visual Studio.app/Contents/Resources/lib/monodevelop/AddIns/MonoDevelop.Unity/Analyzers/Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets/Hologla/Scripts/HologlaARCoreVideo.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/HologlaARCoreVideo.cs" />
     <Compile Include="Assets/HandMR/Scripts/HandMRManager.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/IControlObject.cs" />
-    <Compile Include="Assets/Hologla/Scripts/LaunchScene.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/LaunchScene.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/Menu.cs" />
-    <Compile Include="Assets/Hologla/Scripts/HologlaCameraManager.cs" />
-    <Compile Include="Assets/Hologla/Scripts/Samples/HelloDanglaSample.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/HologlaCameraManager.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/Samples/HelloDanglaSample.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/SizeSliderUI.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/CanCarryObject.cs" />
-    <Compile Include="Assets/Hologla/Scripts/HologlaSetting.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/HologlaSetting.cs" />
     <Compile Include="Assets/HandMR/SubAssets/Fisheye/Scripts/Fisheye.cs" />
     <Compile Include="Assets/HandMR/SubAssets/ARVR/Scripts/TrackingCameraPosition.cs" />
     <Compile Include="Assets/HandMR/SubAssets/ARVR/Scripts/ResizeBackGroundQuad.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandSizeCalib/Scripts/HandSizeCalibMarker.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/BackButtonExit.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/License.cs" />
-    <Compile Include="Assets/Hologla/Scripts/HologlaARKitVideo.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/HologlaARKitVideo.cs" />
     <Compile Include="Assets/HandMR/SubAssets/ARVR/Scripts/CameraTarget.cs" />
-    <Compile Include="Assets/Hologla/Animation/SystemMenu/DanglaMenuIn.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Animation/SystemMenu/DanglaMenuIn.cs" />
     <Compile Include="Assets/HandMR/SubAssets/MRUtil/Scripts/SettingFromPlayerPrefs.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVR/Scripts/HandVRSphereHand.cs" />
     <Compile Include="Assets/HandMR/SubAssets/MRHand/Scripts/MRHandFingerLine.cs" />
-    <Compile Include="Assets/Hologla/Scripts/Samples/DanglaMenuSample.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/Samples/DanglaMenuSample.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/ResetButtonUI.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVR/Scripts/HandVRMain.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandSizeCalib/Scripts/HandSizeCalibMain.cs" />
-    <Compile Include="Assets/Hologla/Scripts/GazeInteractive.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/GazeInteractive.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/HandVRController.cs" />
     <Compile Include="Assets/HandMR/SubAssets/MRHand/Scripts/MRHandMesh.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVR/Scripts/SetParentMainCamera.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/ResetButton.cs" />
     <Compile Include="Assets/HandMR/Scripts/HandMRInputModule.cs" />
-    <Compile Include="Assets/Hologla/Scripts/GazeInput.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/GazeInput.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVR/Scripts/HandVRPosition.cs" />
-    <Compile Include="Assets/Hologla/Scripts/HologlaInput.cs" />
+    <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/HologlaInput.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets/HandMR/SubAssets/Fisheye/Shaders/FisheyeShader.shader" />
-     <None Include="Assets/Hologla/Lisence.txt" />
-     <None Include="Assets/Hologla/Shader/ARExternal/HologlaYUVShader.shader" />
-     <None Include="Assets/Hologla/Shader/ARExternal/Common/UnlitForefrontShader.shader" />
+     <None Include="Assets/HandMR/3rdParty/Hologla/Lisence.txt" />
+     <None Include="Assets/HandMR/3rdParty/Hologla/Shader/ARExternal/HologlaYUVShader.shader" />
+     <None Include="Assets/HandMR/3rdParty/Hologla/Shader/ARExternal/Common/UnlitForefrontShader.shader" />
+     <None Include="Assets/HandMR/README.txt" />
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity/Hub/Editor/2020.1.4f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

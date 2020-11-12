@@ -2,52 +2,55 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fisheye : MonoBehaviour
+namespace HandMR
 {
-    public Material FisheyeMaterial;
-    public bool IsLeft = false;
-
-    public float Rate
+    public class Fisheye : MonoBehaviour
     {
-        get
-        {
-            return FisheyeMaterial.GetFloat("_Rate");
-        }
-        set
-        {
-            FisheyeMaterial.SetFloat("_Rate", value);
-        }
-    }
+        public Material FisheyeMaterial;
+        public bool IsLeft = false;
 
-    public float Center
-    {
-        get
+        public float Rate
         {
-            float center = FisheyeMaterial.GetFloat("_Center");
-            if (IsLeft)
+            get
             {
-                center = 1f - center;
+                return FisheyeMaterial.GetFloat("_Rate");
             }
-            return center;
-        }
-        set
-        {
-            float center = value;
-            if (IsLeft)
+            set
             {
-                center = 1f - center;
+                FisheyeMaterial.SetFloat("_Rate", value);
             }
-            FisheyeMaterial.SetFloat("_Center", center);
         }
-    }
 
-    void OnRenderImage(RenderTexture src, RenderTexture dest)
-    {
-        if (!enabled)
+        public float Center
         {
-            return;
+            get
+            {
+                float center = FisheyeMaterial.GetFloat("_Center");
+                if (IsLeft)
+                {
+                    center = 1f - center;
+                }
+                return center;
+            }
+            set
+            {
+                float center = value;
+                if (IsLeft)
+                {
+                    center = 1f - center;
+                }
+                FisheyeMaterial.SetFloat("_Center", center);
+            }
         }
 
-        Graphics.Blit(src, dest, FisheyeMaterial);
+        void OnRenderImage(RenderTexture src, RenderTexture dest)
+        {
+            if (!enabled)
+            {
+                return;
+            }
+
+            Graphics.Blit(src, dest, FisheyeMaterial);
+        }
     }
 }

@@ -3,70 +3,73 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class HandVRPosition : MonoBehaviour
+namespace HandMR
 {
-    public int Index;
-
-    public int Id
+    public class HandVRPosition : MonoBehaviour
     {
-        set;
-        get;
-    }
+        public int Index;
 
-    public bool PhysicEnabled
-    {
-        get;
-        private set;
-    } = false;
-
-    HandVRMain handVRMain_;
-    Vector3 position_;
-    Rigidbody rigidbody_;
-    Renderer renderer_;
-
-    void Start()
-    {
-        handVRMain_ = FindObjectOfType<HandVRMain>();
-        rigidbody_ = GetComponent<Rigidbody>();
-        renderer_ = GetComponent<Renderer>();
-        if (renderer_ != null)
+        public int Id
         {
-            renderer_.enabled = false;
+            set;
+            get;
         }
-    }
 
-    void Update()
-    {
-        float[] posVecArray = handVRMain_.GetLandmark(Id, Index);
-        if (posVecArray != null)
+        public bool PhysicEnabled
         {
-            if (renderer_ != null)
-            {
-                renderer_.enabled = true;
-            }
-            PhysicEnabled = true;
+            get;
+            private set;
+        } = false;
 
-            position_ = new Vector3(posVecArray[0], posVecArray[1], posVecArray[2]);
-        }
-        else
+        HandVRMain handVRMain_;
+        Vector3 position_;
+        Rigidbody rigidbody_;
+        Renderer renderer_;
+
+        void Start()
         {
+            handVRMain_ = FindObjectOfType<HandVRMain>();
+            rigidbody_ = GetComponent<Rigidbody>();
+            renderer_ = GetComponent<Renderer>();
             if (renderer_ != null)
             {
                 renderer_.enabled = false;
             }
-            PhysicEnabled = false;
         }
-    }
 
-    void FixedUpdate()
-    {
-        if (rigidbody_ != null && !rigidbody_.isKinematic && PhysicEnabled)
+        void Update()
         {
-            rigidbody_.AddForce((position_ - transform.localPosition) / Time.fixedDeltaTime - rigidbody_.velocity, ForceMode.VelocityChange);
+            float[] posVecArray = handVRMain_.GetLandmark(Id, Index);
+            if (posVecArray != null)
+            {
+                if (renderer_ != null)
+                {
+                    renderer_.enabled = true;
+                }
+                PhysicEnabled = true;
+
+                position_ = new Vector3(posVecArray[0], posVecArray[1], posVecArray[2]);
+            }
+            else
+            {
+                if (renderer_ != null)
+                {
+                    renderer_.enabled = false;
+                }
+                PhysicEnabled = false;
+            }
         }
-        else
+
+        void FixedUpdate()
         {
-            transform.localPosition = position_;
+            if (rigidbody_ != null && !rigidbody_.isKinematic && PhysicEnabled)
+            {
+                rigidbody_.AddForce((position_ - transform.localPosition) / Time.fixedDeltaTime - rigidbody_.velocity, ForceMode.VelocityChange);
+            }
+            else
+            {
+                transform.localPosition = position_;
+            }
         }
     }
 }

@@ -2,21 +2,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SetParentMainCamera : MonoBehaviour
+namespace HandMR
 {
-    Transform mainCameraTransform_ = null;
-    public Transform MainCameraTransform
+    public class SetParentMainCamera : MonoBehaviour
     {
-        get
+        Transform mainCameraTransform_ = null;
+        public Transform MainCameraTransform
         {
-            return mainCameraTransform_;
-        }
-        set
-        {
-            mainCameraTransform_ = value;
-            transform.parent = MainCameraTransform;
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = Quaternion.identity;
+            get
+            {
+                return mainCameraTransform_;
+            }
+            set
+            {
+                mainCameraTransform_ = value;
+                transform.parent = MainCameraTransform;
+                transform.localPosition = Vector3.zero;
+                transform.localRotation = Quaternion.identity;
+            }
         }
     }
 }

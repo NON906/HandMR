@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class BackButtonExit : MonoBehaviour
+namespace HandMR
 {
-    void Update()
+    public class BackButtonExit : MonoBehaviour
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        void Update()
         {
-            Exit();
-            return;
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                Exit();
+                return;
+            }
         }
-    }
 
-    public void Exit()
-    {
-        SceneManager.LoadScene("Menu");
+        public void Exit()
+        {
+            SceneManager.LoadScene("Menu");
+        }
     }
 }

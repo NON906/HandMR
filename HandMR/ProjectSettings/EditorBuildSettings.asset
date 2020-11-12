@@ -4,19 +4,7 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes:
-  - enabled: 1
-    path: Assets/HandMR/Scenes/Menu.unity
-    guid: 6679dd8fa9eb648d7bec7044a4cf13c0
-  - enabled: 1
-    path: Assets/HandMR/Scenes/License.unity
-    guid: cbf575724187b4d638afcac13488c2b5
-  - enabled: 1
-    path: Assets/HandMR/Scenes/Main.unity
-    guid: 24d4eebdf20e94a4699c665e58d3dbbb
-  - enabled: 1
-    path: Assets/HandMR/Scenes/HandSizeCalib.unity
-    guid: 6ee2d3cf73e784432a2e8e3766ca7458
+  m_Scenes: []
   m_configObjects:
     UnityEditor.XR.ARCore.ARCoreSettings: {fileID: 11400000, guid: 5eb7396d7be554686bd034dd82e7cc1b,
       type: 2}

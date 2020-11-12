@@ -5,107 +5,127 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 
-public class Exporter
+namespace HandMR
 {
-    public static string[] GetPathsExcept(string currentDir, string exceptDir)
+#if HANDMR_DEVELOP
+    public class Exporter
     {
-        if (!exceptDir.StartsWith(currentDir))
+        public static string[] GetPathsExcept(string currentDir, string exceptDir)
         {
-            return new string[] { currentDir };
-        }
-
-        if (!AssetDatabase.IsValidFolder(currentDir))
-        {
-            if (currentDir != exceptDir)
+            if (!exceptDir.StartsWith(currentDir))
             {
                 return new string[] { currentDir };
             }
-            else
+
+            if (currentDir.StartsWith(exceptDir))
             {
                 return new string[] { };
             }
-        }
 
-        var re = new Regex(currentDir);
-        exceptDir = re.Replace(exceptDir, "", 1);
-        while (exceptDir.StartsWith("/"))
-        {
-            exceptDir = exceptDir.Substring(1, exceptDir.Length - 1);
-        }
-
-        while (exceptDir.EndsWith("/"))
-        {
-            exceptDir = exceptDir.Substring(0, exceptDir.Length - 1);
-        }
-
-        List<string> paths = new List<string>();
-        string[] splitExceptDir = exceptDir.Split('/');
-        string currentExceptDir = currentDir + "/" + splitExceptDir[0];
-        for (int loop = 0; loop < splitExceptDir.Length; loop++)
-        {
-            string[] dirs = Directory.GetDirectories(currentDir, "*", SearchOption.TopDirectoryOnly);
-            foreach (string dir in dirs)
+            if (!AssetDatabase.IsValidFolder(currentDir))
             {
-                string newDir = dir.Replace("\\", "/");
-                while (newDir.EndsWith("/"))
+                if (currentDir != exceptDir)
                 {
-                    newDir = newDir.Substring(0, newDir.Length - 1);
+                    return new string[] { currentDir };
                 }
-                if (newDir != currentExceptDir)
+                else
                 {
-                    paths.Add(newDir);
+                    return new string[] { };
                 }
             }
 
-            string[] files = Directory.GetFiles(currentDir, "*", SearchOption.TopDirectoryOnly);
-            foreach (string file in files)
+            var re = new Regex(currentDir);
+            exceptDir = re.Replace(exceptDir, "", 1);
+            while (exceptDir.StartsWith("/"))
             {
-                string newFile = file.Replace("\\", "/");
-                if (newFile != currentExceptDir)
+                exceptDir = exceptDir.Substring(1, exceptDir.Length - 1);
+            }
+
+            while (exceptDir.EndsWith("/"))
+            {
+                exceptDir = exceptDir.Substring(0, exceptDir.Length - 1);
+            }
+
+            List<string> paths = new List<string>();
+            string[] splitExceptDir = exceptDir.Split('/');
+            string currentExceptDir = currentDir + "/" + splitExceptDir[0];
+            for (int loop = 0; loop < splitExceptDir.Length; loop++)
+            {
+                string[] dirs = Directory.GetDirectories(currentDir, "*", SearchOption.TopDirectoryOnly);
+                foreach (string dir in dirs)
                 {
-                    paths.Add(newFile);
+                    string newDir = dir.Replace("\\", "/");
+                    while (newDir.EndsWith("/"))
+                    {
+                        newDir = newDir.Substring(0, newDir.Length - 1);
+                    }
+                    if (newDir != currentExceptDir)
+                    {
+                        paths.Add(newDir);
+                    }
+                }
+
+                string[] files = Directory.GetFiles(currentDir, "*", SearchOption.TopDirectoryOnly);
+                foreach (string file in files)
+                {
+                    string newFile = file.Replace("\\", "/");
+                    if (newFile != currentExceptDir)
+                    {
+                        paths.Add(newFile);
+                    }
+                }
+
+                if (loop < splitExceptDir.Length - 1)
+                {
+                    currentDir = currentExceptDir;
+                    currentExceptDir += "/" + splitExceptDir[loop + 1];
                 }
             }
 
-            if (loop < splitExceptDir.Length - 1)
-            {
-                currentDir = currentExceptDir;
-                currentExceptDir += "/" + splitExceptDir[loop + 1];
-            }
+            return paths.ToArray();
         }
 
-        return paths.ToArray();
-    }
-
-    public static string[] GetPathsExcept(string[] currentDirs, string[] exceptDirs)
-    {
-        foreach (string exceptDir in exceptDirs)
+        public static string[] GetPathsExcept(string[] currentDirs, string[] exceptDirs)
         {
-            List<string> dirsList = new List<string>();
-            foreach (string currentDir in currentDirs)
+            foreach (string exceptDir in exceptDirs)
             {
-                dirsList.AddRange(GetPathsExcept(currentDir, exceptDir));
+                List<string> dirsList = new List<string>();
+                foreach (string currentDir in currentDirs)
+                {
+                    dirsList.AddRange(GetPathsExcept(currentDir, exceptDir));
+                }
+                currentDirs = dirsList.ToArray();
             }
-            currentDirs = dirsList.ToArray();
+            return currentDirs;
         }
-        return currentDirs;
-    }
 
-    [MenuItem("HandMR/Develop/Export")]
-    static void Export()
-    {
-        AssetDatabase.ExportPackage(
-            GetPathsExcept(new string[] { "Assets" },
-            new string[] { "Assets/XR", "Assets/HandMR/iOS_assets", "Assets/HandMR/SubAssets/HandVR/Plugins/iOS" }),
-            "HandMR_0.x.unitypackage",
-            ExportPackageOptions.Interactive | ExportPackageOptions.Recurse);
-    }
+        [MenuItem("Tools/HandMR/Develop/Export")]
+        static void Export()
+        {
+            AssetDatabase.ExportPackage(
+                GetPathsExcept(new string[] { "Assets/HandMR" },
+                new string[] { "Assets/HandMR/iOS_assets", "Assets/HandMR/SubAssets/HandVR/Plugins/iOS", "Assets/HandMR/Sample" }),
+                "HandMR_0.x.unitypackage",
+                ExportPackageOptions.Interactive | ExportPackageOptions.Recurse);
+        }
 
-    [MenuItem("HandMR/Develop/Export iOS assets")]
-    static void ExportiOS()
-    {
-        AssetDatabase.ExportPackage(new string[] { "Assets/HandMR/SubAssets/HandVR/Plugins/iOS", "Assets/HandMR/iOS_assets" },
-            "HandMR_iOS_plugin_for_projects_0.x.unitypackage",
-            ExportPackageOptions.Interactive | ExportPackageOptions.Recurse);
+        [MenuItem("Tools/HandMR/Develop/Export with Sample")]
+        static void ExportWithSample()
+        {
+            AssetDatabase.ExportPackage(
+                GetPathsExcept(new string[] { "Assets/HandMR" },
+                new string[] { "Assets/HandMR/iOS_assets", "Assets/HandMR/SubAssets/HandVR/Plugins/iOS" }),
+                "HandMR_Sample_0.x.unitypackage",
+                ExportPackageOptions.Interactive | ExportPackageOptions.Recurse);
+        }
+
+        [MenuItem("Tools/HandMR/Develop/Export iOS assets")]
+        static void ExportiOS()
+        {
+            AssetDatabase.ExportPackage(new string[] { "Assets/HandMR/SubAssets/HandVR/Plugins/iOS", "Assets/HandMR/iOS_assets" },
+                "HandMR_iOS_plugin_for_projects_0.x.unitypackage",
+                ExportPackageOptions.Interactive | ExportPackageOptions.Recurse);
+        }
     }
+#endif
 }

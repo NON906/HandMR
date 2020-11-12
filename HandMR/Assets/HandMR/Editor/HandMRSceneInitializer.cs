@@ -10,59 +10,61 @@ using System.Linq;
 using Hologla;
 #endif
 
-public class HandMRSceneInitializer
+namespace HandMR
 {
-    static bool download(string url, string path)
+    public class HandMRSceneInitializer
     {
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+        static bool download(string url, string path)
         {
-            UnityWebRequestAsyncOperation request = webRequest.SendWebRequest();
-            while (!request.isDone)
+            using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
             {
-                EditorUtility.DisplayProgressBar("Download Assets", "Downloading: " + url, request.progress);
-                System.Threading.Thread.Sleep(16);
-            }
-            if (webRequest.error != null)
-            {
-                EditorUtility.DisplayDialog("Error", "Download is failed\n" + url + "\n" + webRequest.error, "OK");
-                return false;
-            }
-            File.WriteAllBytes(path, webRequest.downloadHandler.data);
-        }
-
-        return true;
-    }
-
-    //[MenuItem("HandMR/Download iOS Plugins")]
-    public static void InitProjectForIOS()
-    {
-        if (!Directory.Exists(Application.dataPath + "/HandMR/SubAssets/HandVR/Plugins/iOS"))
-        {
-            if (!Directory.Exists(Application.dataPath + "/../../downloads"))
-            {
-                Directory.CreateDirectory(Application.dataPath + "/../../downloads");
+                UnityWebRequestAsyncOperation request = webRequest.SendWebRequest();
+                while (!request.isDone)
+                {
+                    EditorUtility.DisplayProgressBar("Download Assets", "Downloading: " + url, request.progress);
+                    System.Threading.Thread.Sleep(16);
+                }
+                if (webRequest.error != null)
+                {
+                    EditorUtility.DisplayDialog("Error", "Download is failed\n" + url + "\n" + webRequest.error, "OK");
+                    return false;
+                }
+                File.WriteAllBytes(path, webRequest.downloadHandler.data);
             }
 
-            download("https://github.com/NON906/HandMR/releases/download/0.11/HandMR_iOS_plugin_for_projects_0.11.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.x.unitypackage");
-            AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.x.unitypackage", false);
-
-            Debug.Log("Download is finished.");
+            return true;
         }
-    }
 
-    [MenuItem("HandMR/Initialize Scene")]
-    static void InitScene()
-    {
-        if (Camera.main != null)
+        public static void InitProjectForIOS()
         {
-            Undo.RecordObject(Camera.main.gameObject, "Deactivate Camera");
-            Camera.main.gameObject.SetActive(false);
+            if (!Directory.Exists(Application.dataPath + "/HandMR/SubAssets/HandVR/Plugins/iOS"))
+            {
+                if (!Directory.Exists(Application.dataPath + "/../../downloads"))
+                {
+                    Directory.CreateDirectory(Application.dataPath + "/../../downloads");
+                }
+
+                download("https://github.com/NON906/HandMR/releases/download/0.11/HandMR_iOS_plugin_for_projects_0.11.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.x.unitypackage");
+                AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.x.unitypackage", false);
+
+                Debug.Log("Download is finished.");
+            }
         }
 
-        GameObject handmrObject = PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/HandMR/Prefabs/HandMRManager.prefab")) as GameObject;
-        Undo.RegisterCreatedObjectUndo(handmrObject, "Create object");
+        [MenuItem("Tools/HandMR/Initialize Scene")]
+        static void InitScene()
+        {
+            if (Camera.main != null)
+            {
+                Undo.RecordObject(Camera.main.gameObject, "Deactivate Camera");
+                Camera.main.gameObject.SetActive(false);
+            }
 
-        Undo.PerformUndo();
-        Undo.PerformRedo();
+            GameObject handmrObject = PrefabUtility.InstantiatePrefab(AssetDatabase.LoadAssetAtPath<GameObject>("Assets/HandMR/Prefabs/HandMRManager.prefab")) as GameObject;
+            Undo.RegisterCreatedObjectUndo(handmrObject, "Create object");
+
+            Undo.PerformUndo();
+            Undo.PerformRedo();
+        }
     }
 }

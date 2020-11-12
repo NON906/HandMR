@@ -2,30 +2,33 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ResetButtonUI : MonoBehaviour
+namespace HandMR
 {
-    public Transform[] Resetables;
-
-    Vector3[] resetablesPosition_;
-    Quaternion[] resetablesRotation_;
-
-    void Start()
+    public class ResetButtonUI : MonoBehaviour
     {
-        resetablesPosition_ = new Vector3[Resetables.Length];
-        resetablesRotation_ = new Quaternion[Resetables.Length];
-        for (int loop = 0; loop < Resetables.Length; loop++)
+        public Transform[] Resetables;
+
+        Vector3[] resetablesPosition_;
+        Quaternion[] resetablesRotation_;
+
+        void Start()
         {
-            resetablesPosition_[loop] = Resetables[loop].position;
-            resetablesRotation_[loop] = Resetables[loop].rotation;
+            resetablesPosition_ = new Vector3[Resetables.Length];
+            resetablesRotation_ = new Quaternion[Resetables.Length];
+            for (int loop = 0; loop < Resetables.Length; loop++)
+            {
+                resetablesPosition_[loop] = Resetables[loop].position;
+                resetablesRotation_[loop] = Resetables[loop].rotation;
+            }
         }
-    }
 
-    public void Click()
-    {
-        for (int loop = 0; loop < Resetables.Length; loop++)
+        public void Click()
         {
-            Resetables[loop].position = resetablesPosition_[loop];
-            Resetables[loop].rotation = resetablesRotation_[loop];
+            for (int loop = 0; loop < Resetables.Length; loop++)
+            {
+                Resetables[loop].position = resetablesPosition_[loop];
+                Resetables[loop].rotation = resetablesRotation_[loop];
+            }
         }
     }
 }

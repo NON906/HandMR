@@ -2,197 +2,200 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HandVRController : MonoBehaviour
+namespace HandMR
 {
-    public float TouchSize = 0.25f;
-    public Transform MainCameraTransform = null;
-
-    HandVRSphereHand[] sphereHands_;
-
-    IControlObject[] focusedObjects_ = new IControlObject[2];
-    bool[] isGrab_ = new bool[2];
-    bool[] isTouch_ = new bool[2];
-
-    Coroutine[] startGrabCoroutineRunning_ = new Coroutine[2];
-    Coroutine[] endGrabCoroutineRunning_ = new Coroutine[2];
-
-    IEnumerator Start()
+    public class HandVRController : MonoBehaviour
     {
-        sphereHands_ = FindObjectsOfType<HandVRSphereHand>();
+        public float TouchSize = 0.25f;
+        public Transform MainCameraTransform = null;
 
-        while (MainCameraTransform == null)
-        {
-            MainCameraTransform = sphereHands_[0].GetComponent<SetParentMainCamera>().MainCameraTransform;
-            yield return null;
-        }
-    }
+        HandVRSphereHand[] sphereHands_;
 
-    void Update()
-    {
-        if (MainCameraTransform == null)
+        IControlObject[] focusedObjects_ = new IControlObject[2];
+        bool[] isGrab_ = new bool[2];
+        bool[] isTouch_ = new bool[2];
+
+        Coroutine[] startGrabCoroutineRunning_ = new Coroutine[2];
+        Coroutine[] endGrabCoroutineRunning_ = new Coroutine[2];
+
+        IEnumerator Start()
         {
-            return;
+            sphereHands_ = FindObjectsOfType<HandVRSphereHand>();
+
+            while (MainCameraTransform == null)
+            {
+                MainCameraTransform = sphereHands_[0].GetComponent<SetParentMainCamera>().MainCameraTransform;
+                yield return null;
+            }
         }
 
-        bool[] isDetected = new bool[2];
-
-        foreach (HandVRSphereHand sphereHand in sphereHands_)
+        void Update()
         {
-            if (!sphereHand.IsTrackingHand)
+            if (MainCameraTransform == null)
             {
-                continue;
+                return;
             }
 
-            if (isDetected[(int)sphereHand.ThisEitherHand])
+            bool[] isDetected = new bool[2];
+
+            foreach (HandVRSphereHand sphereHand in sphereHands_)
             {
-                continue;
-            }
-            isDetected[(int)sphereHand.ThisEitherHand] = true;
-
-            int layerMask = LayerMask.GetMask("ControlObject");
-
-            RaycastHit hit;
-            IControlObject newObject = null;
-            bool rayIsHit = Physics.Raycast(sphereHand.GetFinger(8).position - (sphereHand.GetFinger(8).position - MainCameraTransform.position).normalized * 2f,
-                (sphereHand.GetFinger(8).position - MainCameraTransform.position).normalized,
-                out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Collide);
-            if (rayIsHit)
-            {
-                newObject = hit.transform.GetComponent<IControlObject>();
-            }
-
-            int handId = (int)sphereHand.ThisEitherHand;
-
-            if (focusedObjects_[handId] != newObject && focusedObjects_[handId] != null && !isGrab_[handId])
-            {
-                focusedObjects_[handId].EndFocus(sphereHand.ThisEitherHand);
-                focusedObjects_[handId] = null;
-            }
-
-            if (focusedObjects_[handId] == null && newObject != null)
-            {
-                newObject.StartFocus(sphereHand.ThisEitherHand);
-                focusedObjects_[handId] = newObject;
-            }
-
-            if (focusedObjects_[handId] != null)
-            {
-                Collider col = null;
-                if (rayIsHit && hit.distance < 2f + TouchSize)
+                if (!sphereHand.IsTrackingHand)
                 {
-                    col = hit.collider;
+                    continue;
                 }
 
-                if (!isTouch_[handId])
+                if (isDetected[(int)sphereHand.ThisEitherHand])
                 {
-                    if (col != null && col.GetComponent<IControlObject>() == focusedObjects_[handId])
-                    {
-                        focusedObjects_[handId].StartTouch(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position));
-                        isTouch_[handId] = true;
-                    }
+                    continue;
                 }
-                else
-                {
-                    isTouch_[handId] = false;
+                isDetected[(int)sphereHand.ThisEitherHand] = true;
 
-                    if (col != null && col.GetComponent<IControlObject>() == focusedObjects_[handId])
+                int layerMask = LayerMask.GetMask("ControlObject");
+
+                RaycastHit hit;
+                IControlObject newObject = null;
+                bool rayIsHit = Physics.Raycast(sphereHand.GetFinger(8).position - (sphereHand.GetFinger(8).position - MainCameraTransform.position).normalized * 2f,
+                    (sphereHand.GetFinger(8).position - MainCameraTransform.position).normalized,
+                    out hit, Mathf.Infinity, layerMask, QueryTriggerInteraction.Collide);
+                if (rayIsHit)
+                {
+                    newObject = hit.transform.GetComponent<IControlObject>();
+                }
+
+                int handId = (int)sphereHand.ThisEitherHand;
+
+                if (focusedObjects_[handId] != newObject && focusedObjects_[handId] != null && !isGrab_[handId])
+                {
+                    focusedObjects_[handId].EndFocus(sphereHand.ThisEitherHand);
+                    focusedObjects_[handId] = null;
+                }
+
+                if (focusedObjects_[handId] == null && newObject != null)
+                {
+                    newObject.StartFocus(sphereHand.ThisEitherHand);
+                    focusedObjects_[handId] = newObject;
+                }
+
+                if (focusedObjects_[handId] != null)
+                {
+                    Collider col = null;
+                    if (rayIsHit && hit.distance < 2f + TouchSize)
                     {
-                        focusedObjects_[handId].StayTouch(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position));
-                        isTouch_[handId] = true;
+                        col = hit.collider;
                     }
+
                     if (!isTouch_[handId])
                     {
-                        focusedObjects_[handId].EndTouch(sphereHand.ThisEitherHand);
-                    }
-                }
-
-                bool grabCountrol = true;
-                for (int loop = 0; loop < 2; loop++)
-                {
-                    if (handId != loop && focusedObjects_[handId] == focusedObjects_[loop] && isGrab_[loop])
-                    {
-                        grabCountrol = false;
-                    }
-                }
-
-                if (grabCountrol)
-                {
-                    bool grabed = true;
-                    bool opened = true;
-                    for (int loop = 1; loop < 5; loop++)
-                    {
-                        if (sphereHand.GetFingerOpened(loop))
+                        if (col != null && col.GetComponent<IControlObject>() == focusedObjects_[handId])
                         {
-                            grabed = false;
+                            focusedObjects_[handId].StartTouch(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position));
+                            isTouch_[handId] = true;
                         }
-                        else
+                    }
+                    else
+                    {
+                        isTouch_[handId] = false;
+
+                        if (col != null && col.GetComponent<IControlObject>() == focusedObjects_[handId])
                         {
+                            focusedObjects_[handId].StayTouch(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position));
+                            isTouch_[handId] = true;
+                        }
+                        if (!isTouch_[handId])
+                        {
+                            focusedObjects_[handId].EndTouch(sphereHand.ThisEitherHand);
+                        }
+                    }
+
+                    bool grabCountrol = true;
+                    for (int loop = 0; loop < 2; loop++)
+                    {
+                        if (handId != loop && focusedObjects_[handId] == focusedObjects_[loop] && isGrab_[loop])
+                        {
+                            grabCountrol = false;
+                        }
+                    }
+
+                    if (grabCountrol)
+                    {
+                        bool grabed = true;
+                        bool opened = true;
+                        for (int loop = 1; loop < 5; loop++)
+                        {
+                            if (sphereHand.GetFingerOpened(loop))
+                            {
+                                grabed = false;
+                            }
+                            else
+                            {
+                                opened = false;
+                            }
+                        }
+                        if (Vector3.Distance(sphereHand.GetFinger(4).position, sphereHand.GetFinger(8).position) < 0.03f)
+                        {
+                            grabed = true;
                             opened = false;
                         }
-                    }
-                    if (Vector3.Distance(sphereHand.GetFinger(4).position, sphereHand.GetFinger(8).position) < 0.03f)
-                    {
-                        grabed = true;
-                        opened = false;
-                    }
 
-                    if (!isGrab_[handId] && grabed)
-                    {
-                        startGrabCoroutineRunning_[handId] = StartCoroutine(startGrabCoroutine(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position)));
-                        isGrab_[handId] = true;
-                    }
-                    else if (isGrab_[handId] && grabed)
-                    {
-                        if (startGrabCoroutineRunning_[handId] == null)
+                        if (!isGrab_[handId] && grabed)
                         {
-                            focusedObjects_[handId].StayGrab(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position));
+                            startGrabCoroutineRunning_[handId] = StartCoroutine(startGrabCoroutine(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position)));
+                            isGrab_[handId] = true;
                         }
-                        if (endGrabCoroutineRunning_[handId] != null)
+                        else if (isGrab_[handId] && grabed)
                         {
-                            StopCoroutine(endGrabCoroutineRunning_[handId]);
-                            endGrabCoroutineRunning_[handId] = null;
+                            if (startGrabCoroutineRunning_[handId] == null)
+                            {
+                                focusedObjects_[handId].StayGrab(sphereHand.ThisEitherHand, sphereHand.transform.TransformPoint(sphereHand.GetFinger(8).position));
+                            }
+                            if (endGrabCoroutineRunning_[handId] != null)
+                            {
+                                StopCoroutine(endGrabCoroutineRunning_[handId]);
+                                endGrabCoroutineRunning_[handId] = null;
+                            }
                         }
-                    }
-                    else if (isGrab_[handId] && opened)
-                    {
-                        if (startGrabCoroutineRunning_[handId] != null)
+                        else if (isGrab_[handId] && opened)
                         {
-                            StopCoroutine(startGrabCoroutineRunning_[handId]);
-                            startGrabCoroutineRunning_[handId] = null;
-                        }
-                        else if (endGrabCoroutineRunning_[handId] == null)
-                        {
-                            endGrabCoroutineRunning_[handId] = StartCoroutine(endGrabCoroutine(sphereHand.ThisEitherHand));
+                            if (startGrabCoroutineRunning_[handId] != null)
+                            {
+                                StopCoroutine(startGrabCoroutineRunning_[handId]);
+                                startGrabCoroutineRunning_[handId] = null;
+                            }
+                            else if (endGrabCoroutineRunning_[handId] == null)
+                            {
+                                endGrabCoroutineRunning_[handId] = StartCoroutine(endGrabCoroutine(sphereHand.ThisEitherHand));
+                            }
                         }
                     }
                 }
             }
-        }
 
-        for (int loop = 0; loop < 2; loop++)
-        {
-            if (!isDetected[loop] && focusedObjects_[loop] != null && !isGrab_[loop])
+            for (int loop = 0; loop < 2; loop++)
             {
-                focusedObjects_[loop].EndFocus((HandVRSphereHand.EitherHand)loop);
-                focusedObjects_[loop] = null;
+                if (!isDetected[loop] && focusedObjects_[loop] != null && !isGrab_[loop])
+                {
+                    focusedObjects_[loop].EndFocus((HandVRSphereHand.EitherHand)loop);
+                    focusedObjects_[loop] = null;
+                }
             }
         }
-    }
 
-    IEnumerator startGrabCoroutine(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
-    {
-        yield return new WaitForSeconds(0.1f);
+        IEnumerator startGrabCoroutine(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
+        {
+            yield return new WaitForSeconds(0.1f);
 
-        focusedObjects_[(int)hand].StartGrab(hand, centerPosition);
-        startGrabCoroutineRunning_[(int)hand] = null;
-    }
+            focusedObjects_[(int)hand].StartGrab(hand, centerPosition);
+            startGrabCoroutineRunning_[(int)hand] = null;
+        }
 
-    IEnumerator endGrabCoroutine(HandVRSphereHand.EitherHand hand)
-    {
-        yield return new WaitForSeconds(0.1f);
+        IEnumerator endGrabCoroutine(HandVRSphereHand.EitherHand hand)
+        {
+            yield return new WaitForSeconds(0.1f);
 
-        focusedObjects_[(int)hand].EndGrab(hand);
-        endGrabCoroutineRunning_[(int)hand] = null;
-        isGrab_[(int)hand] = false;
+            focusedObjects_[(int)hand].EndGrab(hand);
+            endGrabCoroutineRunning_[(int)hand] = null;
+            isGrab_[(int)hand] = false;
+        }
     }
 }

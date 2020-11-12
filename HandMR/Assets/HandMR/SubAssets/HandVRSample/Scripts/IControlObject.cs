@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IControlObject
+namespace HandMR
 {
-    void StartFocus(HandVRSphereHand.EitherHand hand);
-    void EndFocus(HandVRSphereHand.EitherHand hand);
-    void StartGrab(HandVRSphereHand.EitherHand hand, Vector3 centerPosition);
-    void StayGrab(HandVRSphereHand.EitherHand hand, Vector3 centerPosition);
-    void EndGrab(HandVRSphereHand.EitherHand hand);
-    void StartTouch(HandVRSphereHand.EitherHand hand, Vector3 centerPosition);
-    void StayTouch(HandVRSphereHand.EitherHand hand, Vector3 centerPosition);
-    void EndTouch(HandVRSphereHand.EitherHand hand);
+    public interface IControlObject
+    {
+        void StartFocus(HandVRSphereHand.EitherHand hand);
+        void EndFocus(HandVRSphereHand.EitherHand hand);
+        void StartGrab(HandVRSphereHand.EitherHand hand, Vector3 centerPosition);
+        void StayGrab(HandVRSphereHand.EitherHand hand, Vector3 centerPosition);
+        void EndGrab(HandVRSphereHand.EitherHand hand);
+        void StartTouch(HandVRSphereHand.EitherHand hand, Vector3 centerPosition);
+        void StayTouch(HandVRSphereHand.EitherHand hand, Vector3 centerPosition);
+        void EndTouch(HandVRSphereHand.EitherHand hand);
+    }
 }
