@@ -14,7 +14,7 @@ Sample scenes is [here](https://assetstore.unity.com/packages/slug/181940).
 
 1. ``git clone`` or import unitypackage file.
 
-2. The setting window will open, so execute contents.
+2. The setting window will open (or open from Tools->HandMR->Show Start Dialog Window), so execute contents.
 
 3. Placement Assets/HandMR/Prefabs/HandMRManager.prefab on scene.
 

@@ -17,7 +17,7 @@ unitypackageファイルは[こちら](https://github.com/NON906/HandMR/releases
 
 1. プロジェクトをgitでclone、もしくはunitypackageファイルをインポート
 
-2. 設定画面が開くので、内容を確認して実行
+2. 設定画面が開く（開かない場合はTools→HandMR→Show Start Dialog Windowから開く）ので、内容を確認して実行
 
 3. Assets/HandMR/PrefabsにあるHandMRManagerをシーン上に配置
 

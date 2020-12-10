@@ -231,6 +231,41 @@ namespace HandMR
             }
         }
 
+        static string deleteSymbol(string symbols, string symbol)
+        {
+            if (symbols.Contains(";" + symbol))
+            {
+                symbols = symbols.Replace(";" + symbol, "");
+            }
+            else if (symbols.Contains(symbol + ";"))
+            {
+                symbols = symbols.Replace(symbol + ";", "");
+            }
+            else
+            {
+                symbols = symbols.Replace(symbol, "");
+            }
+
+            return symbols;
+        }
+
+        static void deleteScriptingDefineSymbol(string symbol)
+        {
+            string symbols;
+
+            symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android);
+            symbols = deleteSymbol(symbols, symbol);
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android, symbols);
+
+            symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS);
+            symbols = deleteSymbol(symbols, symbol);
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.iOS, symbols);
+
+            symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone);
+            symbols = deleteSymbol(symbols, symbol);
+            PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildTargetGroup.Standalone, symbols);
+        }
+
         //[MenuItem("HandMR/Add Packages to PackageManager")]
         static void loadPackages()
         {
@@ -238,7 +273,7 @@ namespace HandMR
 
             bool isChange = false;
 
-            isChange |= loadPackage.addPackageManager("com.unity.xr.management", "3.2");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.management", "3.2.16");
             isChange |= loadPackage.addPackageManager("com.unity.xr.arfoundation", "4.0");
             isChange |= loadPackage.addPackageManager("com.unity.xr.arsubsystems", "4.0");
 
@@ -459,6 +494,7 @@ namespace HandMR
         public class DialogWindow : EditorWindow
         {
             ChangeLanguage.Languages lang_;
+            bool isNotShowAgain_;
 
             void Awake()
             {
@@ -466,6 +502,12 @@ namespace HandMR
                 lang_ = ChangeLanguage.Languages.Japanese;
 #else
                 lang_ = ChangeLanguage.Languages.English;
+#endif
+
+#if CLOSE_DIALOG_WINDOW
+                isNotShowAgain_ = true;
+#else
+                isNotShowAgain_ = false;
 #endif
             }
 
@@ -491,13 +533,28 @@ namespace HandMR
                     EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
                 }
 
-                GUILayout.Label("Step 4. Download And Install iOS Plugins");
+                GUILayout.Label("Step 4. Copy Setting Files for Android Plugins");
+                if (GUILayout.Button("Execute"))
+                {
+                    if (!Directory.Exists("Assets/Plugins"))
+                    {
+                        AssetDatabase.CreateFolder("Assets", "Plugins");
+                    }
+                    if (!Directory.Exists("Assets/Plugins/Android"))
+                    {
+                        AssetDatabase.CreateFolder("Assets/Plugins", "Android");
+                    }
+                    AssetDatabase.CopyAsset("Assets/HandMR/Plugins/Android/mainTemplate.gradle", "Assets/Plugins/Android/mainTemplate.gradle");
+                    AssetDatabase.CopyAsset("Assets/HandMR/Plugins/Android/gradleTemplate.properties", "Assets/Plugins/Android/gradleTemplate.properties");
+                }
+
+                GUILayout.Label("Step 5. Download and Install iOS Plugins");
                 if (GUILayout.Button("Execute"))
                 {
                     HandMRSceneInitializer.InitProjectForIOS();
                 }
 
-                GUILayout.Label("Step 5. Select Languages");
+                GUILayout.Label("Step 6. Select Languages");
                 var newLang = (ChangeLanguage.Languages)EditorGUILayout.EnumPopup(lang_);
                 if (newLang != lang_)
                 {
@@ -506,6 +563,9 @@ namespace HandMR
                 }
 
                 GUILayout.Space(20);
+
+                isNotShowAgain_ = GUILayout.Toggle(isNotShowAgain_, "Do not show again");
+
                 if (GUILayout.Button("Close"))
                 {
                     Close();
@@ -514,7 +574,14 @@ namespace HandMR
 
             void OnDestroy()
             {
-                SetScriptingDefineSymbol("CLOSE_DIALOG_WINDOW");
+                if (isNotShowAgain_)
+                {
+                    SetScriptingDefineSymbol("CLOSE_DIALOG_WINDOW");
+                }
+                else
+                {
+                    deleteScriptingDefineSymbol("CLOSE_DIALOG_WINDOW");
+                }
                 window_ = null;
             }
         }
