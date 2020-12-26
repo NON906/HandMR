@@ -29,13 +29,20 @@
                 float4 vertex : SV_POSITION;
             };
 
+            float4 _MainTex_TexelSize;
+
             v2f vert (appdata v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
-                if (_ProjectionParams.x < 0)
+#if !UNITY_UV_STARTS_AT_TOP
+                o.uv.y = 1-o.uv.y;
+#else
+                if (_MainTex_TexelSize.y > 0) {
                     o.uv.y = 1-o.uv.y;
+                }
+#endif
                 return o;
             }
 

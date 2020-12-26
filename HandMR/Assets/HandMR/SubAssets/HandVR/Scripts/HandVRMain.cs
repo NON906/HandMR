@@ -136,11 +136,11 @@ namespace HandMR
 
 #if UNITY_IOS && !UNITY_EDITOR
             texture2D_ = new Texture2D(width, RESIZE_HEIGHT, TextureFormat.BGRA32, false, false);
-            filpMaterial_ = null;
 #else
             texture2D_ = new Texture2D(width, RESIZE_HEIGHT, TextureFormat.ARGB32, false, false);
-            filpMaterial_ = new Material(FlipShader);
 #endif
+
+            filpMaterial_ = new Material(FlipShader);
 
 #if UNITY_IOS && !UNITY_EDITOR
             IntPtr graphName = Marshal.StringToHGlobalAnsi("handcputogpu");
@@ -296,7 +296,6 @@ namespace HandMR
             }
 
             ret[0] = (ret[0] - 0.5f) * Screen.width / Screen.height + 0.5f;
-            ret[1] = (ret[1] - 0.5f) * -1f + 0.5f;
 
             return ret;
         }
