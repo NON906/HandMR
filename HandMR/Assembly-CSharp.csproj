@@ -93,6 +93,7 @@
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets/HandMR/SubAssets/Fisheye/Shaders/FisheyeShader.shader" />
+     <None Include="Assets/HandMR/SubAssets/HandVR/Shaders/FlipShader.shader" />
      <None Include="Assets/HandMR/3rdParty/Hologla/Lisence.txt" />
      <None Include="Assets/HandMR/3rdParty/Hologla/Shader/ARExternal/HologlaYUVShader.shader" />
      <None Include="Assets/HandMR/3rdParty/Hologla/Shader/ARExternal/Common/UnlitForefrontShader.shader" />

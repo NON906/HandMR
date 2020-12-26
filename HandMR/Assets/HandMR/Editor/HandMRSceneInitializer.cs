@@ -44,7 +44,7 @@ namespace HandMR
                     Directory.CreateDirectory(Application.dataPath + "/../../downloads");
                 }
 
-                download("https://github.com/NON906/HandMR/releases/download/0.11/HandMR_iOS_plugin_for_projects_0.11.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.x.unitypackage");
+                download("https://github.com/NON906/HandMR/releases/download/0.11/HandMR_iOS_plugin_for_projects_0.14.unitypackage", Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.x.unitypackage");
                 AssetDatabase.ImportPackage(Application.dataPath + "/../../downloads/HandMR_iOS_plugin_for_projects_0.x.unitypackage", false);
 
                 Debug.Log("Download is finished.");

@@ -9,17 +9,23 @@ namespace HandMR
     public class HandVRMain : MonoBehaviour
     {
         const int RESIZE_HEIGHT = 512;
+        const float DISABLE_TIME = 0.1f;
+        const float START_DELAY_TIME = 0f;
 
         public RenderTexture InputRenderTexture;
+        public Shader FlipShader;
         public float ShiftX = 0f;
         public float ShiftY = 0f;
         //public float HandSize = 0.13f;
         public float FieldOfView = 60f;
+        public float IntervalTime = 0.04f;
 
         float[,][] landmarkArray_ = new float[2, 21][];
         double focalLength_;
         float[] fingerLengthArray_ = new float[16];
         Quaternion[] rotationQuaternions_ = new Quaternion[2];
+        float lastEnableTime_ = 0f;
+        Material filpMaterial_;
 
 #if UNITY_ANDROID && !UNITY_EDITOR
         AndroidJavaObject multiHandMain_;
@@ -104,7 +110,6 @@ namespace HandMR
         static void hand3dReset() { }
 #endif
 
-        bool isStart_ = false;
         Texture2D texture2D_;
         public Texture2D Texture2DRaw
         {
@@ -114,20 +119,31 @@ namespace HandMR
             }
         }
 
+        bool isStart_ = false;
+        float nextUpdateFrameTime_ = float.PositiveInfinity;
+
         void Start()
         {
+            int width = RESIZE_HEIGHT * Screen.width / Screen.height;
+
 #if UNITY_ANDROID && !UNITY_EDITOR
             using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
             using (AndroidJavaObject currentUnityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
             {
-                multiHandMain_ = new AndroidJavaObject("online.mumeigames.mediapipe.apps.multihandtrackinggpu.MultiHandMain", currentUnityActivity);
+                multiHandMain_ = new AndroidJavaObject("online.mumeigames.mediapipe.apps.multihandtrackinggpu.MultiHandMain", currentUnityActivity, width, RESIZE_HEIGHT);
             }
 #endif
 
-            texture2D_ = new Texture2D(RESIZE_HEIGHT * Screen.width / Screen.height, RESIZE_HEIGHT, TextureFormat.ARGB32, false, false);
+#if UNITY_IOS && !UNITY_EDITOR
+            texture2D_ = new Texture2D(width, RESIZE_HEIGHT, TextureFormat.BGRA32, false, false);
+            filpMaterial_ = null;
+#else
+            texture2D_ = new Texture2D(width, RESIZE_HEIGHT, TextureFormat.ARGB32, false, false);
+            filpMaterial_ = new Material(FlipShader);
+#endif
 
 #if UNITY_IOS && !UNITY_EDITOR
-            IntPtr graphName = Marshal.StringToHGlobalAnsi("multihandtrackinggpu");
+            IntPtr graphName = Marshal.StringToHGlobalAnsi("handcputogpu");
             multiHandSetup(graphName, texture2D_.width, texture2D_.height);
             Marshal.FreeHGlobal(graphName);
 #endif
@@ -180,6 +196,7 @@ namespace HandMR
             if (!isStart_)
             {
                 multiHandMain_.Call("startRunningGraph");
+                nextUpdateFrameTime_ = Time.time + START_DELAY_TIME;
                 isStart_ = true;
             }
 #endif
@@ -188,12 +205,26 @@ namespace HandMR
             if (!isStart_)
             {
                 multiHandStartRunningGraph();
+                nextUpdateFrameTime_ = Time.time + START_DELAY_TIME;
                 isStart_ = true;
             }
 #endif
 
+            if (nextUpdateFrameTime_ > Time.time)
+            {
+                return;
+            }
+            nextUpdateFrameTime_ += IntervalTime;
+
             RenderTexture reshapedTexture = RenderTexture.GetTemporary(texture2D_.width, texture2D_.height);
-            Graphics.Blit(InputRenderTexture, reshapedTexture);
+            if (filpMaterial_ != null)
+            {
+                Graphics.Blit(InputRenderTexture, reshapedTexture, filpMaterial_);
+            }
+            else
+            {
+                Graphics.Blit(InputRenderTexture, reshapedTexture);
+            }
 
             RenderTexture.active = reshapedTexture;
             texture2D_.ReadPixels(new Rect(0, 0, texture2D_.width, texture2D_.height), 0, 0, false);
@@ -202,18 +233,14 @@ namespace HandMR
 
             RenderTexture.ReleaseTemporary(reshapedTexture);
 
-            byte[] frameImage;
+            byte[] frameImage = texture2D_.GetRawTextureData();
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-            frameImage = ImageConversion.EncodeToJPG(texture2D_);
-
             sbyte[] frameImageSigned = Array.ConvertAll(frameImage, b => unchecked((sbyte)b));
             multiHandMain_.Call("setFrame", frameImageSigned);
 #endif
 
 #if UNITY_IOS && !UNITY_EDITOR
-            frameImage = ImageConversion.EncodeToPNG(texture2D_);
-
             IntPtr frameIntPtr = Marshal.AllocHGlobal(frameImage.Length * Marshal.SizeOf<byte>());
             Marshal.Copy(frameImage, 0, frameIntPtr, frameImage.Length);
             multiHandSetFrame(frameIntPtr, frameImage.Length);
@@ -269,6 +296,7 @@ namespace HandMR
             }
 
             ret[0] = (ret[0] - 0.5f) * Screen.width / Screen.height + 0.5f;
+            ret[1] = (ret[1] - 0.5f) * -1f + 0.5f;
 
             return ret;
         }
@@ -406,6 +434,7 @@ namespace HandMR
             if (multiHandMain_.Call<bool>("getIsUpdated"))
             {
                 calcLandmark();
+                lastEnableTime_ = Time.time;
             }
 #endif
 
@@ -413,21 +442,31 @@ namespace HandMR
             if (multiHandGetIsUpdated())
             {
                 calcLandmark();
+                lastEnableTime_ = Time.time;
             }
 #endif
+
+            if (Time.time - lastEnableTime_ > DISABLE_TIME)
+            {
+                return null;
+            }
 
             return landmarkArray_[id, index];
         }
 
         public int GetHandednesses(int id)
         {
+            int ret;
+
 #if UNITY_ANDROID && !UNITY_EDITOR
-            return multiHandMain_.Call<int>("getHandednesses", id);
+            ret = multiHandMain_.Call<int>("getHandednesses", id);
 #elif UNITY_IOS && !UNITY_EDITOR
-            return multiHandGetHandednesses(id);
+            ret = multiHandGetHandednesses(id);
 #else
-            return -1;
+            ret = -1;
 #endif
+
+            return ret;
         }
 
         public Vector3 GetHandDirection(int id)

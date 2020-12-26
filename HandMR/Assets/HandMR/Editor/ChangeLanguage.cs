@@ -48,10 +48,10 @@ namespace HandMR
 
         static string[] SCENES = new string[]
         {
-        "Assets/HandMR/Scenes/Menu.unity",
-        "Assets/HandMR/Scenes/License.unity",
-        "Assets/HandMR/Scenes/HandSizeCalib.unity",
-        "Assets/HandMR/Scenes/Main.unity",
+        "Assets/HandMR/Sample/Scenes/Menu.unity",
+        "Assets/HandMR/Sample/Scenes/License.unity",
+        "Assets/HandMR/Sample/Scenes/HandSizeCalib.unity",
+        "Assets/HandMR/Sample/Scenes/Main.unity",
         };
 
         static string removeSymbolFromString(string symbols, string remove)
@@ -86,6 +86,11 @@ namespace HandMR
 
         static public void Change(Languages before, Languages after)
         {
+            if (!File.Exists(SCENES[0]))
+            {
+                Debug.Log("This feature requires sample scenes.");
+            }
+
             string settingsStr = File.ReadAllText("Assets/HandMR/Settings/language.json");
             LanguageJson[] settings = JsonUtility.FromJson<LanguageJsonArray>(settingsStr).lang;
 

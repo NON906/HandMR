@@ -7,6 +7,7 @@ namespace HandMR
     public class HandVRController : MonoBehaviour
     {
         public float TouchSize = 0.25f;
+        public float PickSize = 0.05f;
         public Transform MainCameraTransform = null;
 
         HandVRSphereHand[] sphereHands_;
@@ -132,7 +133,7 @@ namespace HandMR
                                 opened = false;
                             }
                         }
-                        if (Vector3.Distance(sphereHand.GetFinger(4).position, sphereHand.GetFinger(8).position) < 0.03f)
+                        if (Vector3.Distance(sphereHand.GetFinger(4).position, sphereHand.GetFinger(8).position) < PickSize)
                         {
                             grabed = true;
                             opened = false;
