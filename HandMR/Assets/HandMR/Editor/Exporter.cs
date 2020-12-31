@@ -104,7 +104,7 @@ namespace HandMR
         {
             AssetDatabase.ExportPackage(
                 GetPathsExcept(new string[] { "Assets/HandMR" },
-                new string[] { "Assets/HandMR/iOS_assets", "Assets/HandMR/SubAssets/HandVR/Plugins/iOS", "Assets/HandMR/Sample" }),
+                new string[] { "Assets/HandMR/iOS_assets", "Assets/HandMR/SubAssets/HandVR/Plugins/iOS", "Assets/HandMR/Sample/HandFireBall" }),
                 "HandMR_0.x.unitypackage",
                 ExportPackageOptions.Interactive | ExportPackageOptions.Recurse);
         }

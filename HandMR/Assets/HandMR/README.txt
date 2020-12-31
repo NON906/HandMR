@@ -12,7 +12,7 @@ By using this asset, you can easily create an MR / VR / AR app with hand trackin
 
 ## License
 
-This sample asset (Assets/HandMR/Sample) is governed by the Asset Store EULA; however, the following components are governed by the licenses indicated below:
+This sample asset (Assets/HandMR/Sample/HandFireBall) is governed by the Asset Store EULA; however, the following components are governed by the licenses indicated below:
 A. HandMR  MIT License
 Copyright (c) 2020 NON906
 B. MediaPipe  Apache2.0

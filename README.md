@@ -11,7 +11,7 @@ ARM64でARCoreに対応したAndroid上やARKitに対応したiOS上で動作し
 
 unitypackageファイルは[こちら](https://github.com/NON906/HandMR/releases)からダウンロードできます。
 
-サンプルシーンは[Asset Store](https://assetstore.unity.com/packages/slug/181940)に移行しました。
+[Asset Store](https://assetstore.unity.com/packages/slug/181940)でも配布しております。
 
 ## アセットの使用方法
 

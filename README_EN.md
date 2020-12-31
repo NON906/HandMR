@@ -8,7 +8,7 @@ Confirmed with Unity (version 2020.1.4f1).
 
 Unitypackage file is [here](https://github.com/NON906/HandMR/releases).
 
-Sample scenes is [here](https://assetstore.unity.com/packages/slug/181940).
+Asset Store page is [here](https://assetstore.unity.com/packages/slug/181940).
 
 ## How to use
 

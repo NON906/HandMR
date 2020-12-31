@@ -450,7 +450,7 @@ namespace HandMR
 
             isChange |= settingProject();
 
-            isChange |= settingLayers(new string[] { "BackGround", "ControlObject" }, new int[] { 20, 21 });
+            isChange |= settingLayers(new string[] { "BackGround", "ControlObject", "PlaySpaceWall" }, new int[] { 20, 21, 22 });
 
             return isChange;
 #else
