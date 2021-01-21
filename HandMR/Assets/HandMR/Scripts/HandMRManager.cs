@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
-#if DOWNLOADED_HOLOGLA
 using Hologla;
-#endif
 
 namespace HandMR
 {
@@ -87,9 +85,7 @@ namespace HandMR
                 case Mode.VR:
                     {
                         MRObject.SetActive(true);
-#if DOWNLOADED_HOLOGLA
                         MRObject.GetComponentInChildren<HologlaCameraManager>().SwitchViewMode(HologlaCameraManager.ViewMode.VR);
-#endif
                         ARObject.SetActive(false);
                         foreach (SetParentMainCamera hand in Hands)
                         {

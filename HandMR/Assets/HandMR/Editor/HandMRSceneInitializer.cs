@@ -6,9 +6,6 @@ using UnityEngine.Networking;
 using System.IO;
 using System;
 using System.Linq;
-#if DOWNLOADED_HOLOGLA
-using Hologla;
-#endif
 
 namespace HandMR
 {

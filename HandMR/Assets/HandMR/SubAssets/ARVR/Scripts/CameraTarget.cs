@@ -33,6 +33,14 @@ namespace HandMR
             get;
         } = false;
 
+        void OnDestroy()
+        {
+#if DOWNLOADED_ARFOUNDATION
+            LoaderUtility.Deinitialize();
+            LoaderUtility.Initialize();
+#endif
+        }
+
         void Start()
         {
             if (Cameras == null)

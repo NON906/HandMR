@@ -1,9 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-#if DOWNLOADED_HOLOGLA
 using Hologla;
-#endif
 using UnityEngine.XR;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -41,7 +39,6 @@ namespace HandMR
                     RightButton.localScale = new Vector3(RightButton.localScale.x, -RightButton.localScale.y, RightButton.localScale.z);
                 }
 
-#if DOWNLOADED_HOLOGLA
                 HologlaCameraManager hologlaCameraManager = HologlaCameraManagerObj.GetComponent<HologlaCameraManager>();
 
                 if (mode == 1)
@@ -51,7 +48,6 @@ namespace HandMR
 
                 hologlaCameraManager.ApplyIPD(PlayerPrefs.GetFloat("HandMR_InterpupillaryDistance", 64f));
                 hologlaCameraManager.SwitchViewSize((HologlaCameraManager.ViewSize)PlayerPrefs.GetInt("HandMR_ScreenSize", 0));
-#endif
             }
             else if (mode == 2)
             {
@@ -68,11 +64,9 @@ namespace HandMR
                 LeftButton.GetChild(0).GetComponent<Image>().enabled = false;
                 RightButton.GetChild(0).GetComponent<Image>().enabled = false;
 
-#if DOWNLOADED_HOLOGLA
                 HologlaCameraManager hologlaCameraManager = HologlaCameraManagerObj.GetComponent<HologlaCameraManager>();
                 hologlaCameraManager.ApplyIPD(PlayerPrefs.GetFloat("HandMR_InterpupillaryDistance", 64f));
                 hologlaCameraManager.SwitchViewSize((HologlaCameraManager.ViewSize)PlayerPrefs.GetInt("HandMR_ScreenSize", 0));
-#endif
             }
             else if (mode == 3)
             {
