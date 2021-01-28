@@ -90,6 +90,7 @@
     <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/GazeInput.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVR/Scripts/HandVRPosition.cs" />
     <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/HologlaInput.cs" />
+    <Compile Include="Assets/HandMR/SubAssets/HandArea/Scripts/HandArea.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets/HandMR/SubAssets/Fisheye/Shaders/FisheyeShader.shader" />
@@ -97,6 +98,7 @@
      <None Include="Assets/HandMR/3rdParty/Hologla/Lisence.txt" />
      <None Include="Assets/HandMR/3rdParty/Hologla/Shader/ARExternal/HologlaYUVShader.shader" />
      <None Include="Assets/HandMR/3rdParty/Hologla/Shader/ARExternal/Common/UnlitForefrontShader.shader" />
+     <None Include="Assets/HandMR/SubAssets/HandArea/Shaders/HandAreaShader.shader" />
      <None Include="Assets/HandMR/README.txt" />
     <Reference Include="UnityEngine">
       <HintPath>/Applications/Unity/Hub/Editor/2020.1.4f1/Unity.app/Contents/Managed/UnityEngine/UnityEngine.dll</HintPath>

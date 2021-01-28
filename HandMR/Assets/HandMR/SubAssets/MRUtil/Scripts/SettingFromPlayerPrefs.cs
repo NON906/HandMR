@@ -5,6 +5,7 @@ using Hologla;
 using UnityEngine.XR;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System;
 
 namespace HandMR
 {
@@ -15,11 +16,42 @@ namespace HandMR
         public HandVRMain HandVRMainObj;
         public Transform LeftButton;
         public Transform RightButton;
+        public GameObject HandAreaObj = null;
 
         Fisheye[] fisheyes_;
 
+        void Reset()
+        {
+            try
+            {
+                HandMRManagerObj = FindObjectOfType<HandMRManager>();
+                HologlaCameraManagerObj = HandMRManagerObj.GetComponentInChildren<HologlaCameraManager>().gameObject;
+                HandVRMainObj = HandMRManagerObj.GetComponentInChildren<HandVRMain>();
+
+                var hologlaInput = HandMRManagerObj.GetComponentInChildren<HologlaInput>();
+                LeftButton = hologlaInput.LeftButtonComp.transform;
+                RightButton = hologlaInput.RightButtonComp.transform;
+            }
+            catch (NullReferenceException)
+            {
+                Debug.Log("Setting SettingFromPlayerPrefs is failed.\nPlease setting from Inspector.");
+            }
+
+            var handArea = FindObjectOfType<HandArea>();
+            if (handArea != null)
+            {
+                HandAreaObj = handArea.gameObject;
+            }
+        }
+
         void Start()
         {
+            if (HandMRManagerObj == null || HologlaCameraManagerObj == null || HandVRMainObj == null
+                || LeftButton == null || RightButton == null)
+            {
+                return;
+            }
+
             HandVRMainObj.ShiftX = PlayerPrefs.GetFloat("HandMR_HandPositionX", 0f) * 0.001f;
             //HandVRMainObj.HandSize = PlayerPrefs.GetFloat("HandMR_HandSize", 130f) * 0.001f;
 
@@ -76,6 +108,11 @@ namespace HandMR
             {
                 HandVRMainObj.ShiftX = 0f;
                 HandMRManagerObj.ViewModeChange(HandMRManager.Mode.AR);
+            }
+
+            if (HandAreaObj != null)
+            {
+                HandAreaObj.SetActive(PlayerPrefs.GetInt("HandMR_HandArea", 1) != 0);
             }
         }
     }

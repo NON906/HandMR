@@ -27,6 +27,7 @@ namespace HandMR
         public Slider FisheyeCenterSlider;
         public InputField FisheyeCenterInputField;
         public Button HandSizeCalibResetButton;
+        public Toggle ViewHandAreaToggle;
         public Canvas MenuCanvas;
 
         int googleModeDefault_;
@@ -39,6 +40,7 @@ namespace HandMR
         float fisheyeFieldOfViewDefault_;
         float fisheyeRateDefault_;
         float fisheyeCenterDefault_;
+        bool viewHandAreaDefault_;
 
         void settingDefaultValues()
         {
@@ -52,6 +54,7 @@ namespace HandMR
             fisheyeFieldOfViewDefault_ = FisheyeFieldOfViewSlider.value;
             fisheyeRateDefault_ = FisheyeRateSlider.value;
             fisheyeCenterDefault_ = FisheyeCenterSlider.value;
+            viewHandAreaDefault_ = ViewHandAreaToggle.isOn;
         }
 
         void saveValues()
@@ -66,6 +69,7 @@ namespace HandMR
             PlayerPrefs.SetFloat("HandMR_FisheyeFieldOfView", FisheyeFieldOfViewSlider.value);
             PlayerPrefs.SetFloat("HandMR_FisheyeRate", FisheyeRateSlider.value);
             PlayerPrefs.SetFloat("HandMR_FisheyeCenter", FisheyeCenterSlider.value);
+            PlayerPrefs.SetInt("HandMR_HandArea", ViewHandAreaToggle.isOn ? 1 : 0);
             PlayerPrefs.Save();
         }
 
@@ -88,6 +92,7 @@ namespace HandMR
                     FisheyeRateInputField.interactable = false;
                     FisheyeCenterSlider.interactable = false;
                     FisheyeCenterInputField.interactable = false;
+                    ViewHandAreaToggle.interactable = false;
                     break;
                 case 1:
                     PhonePositionDropdown.interactable = true;
@@ -104,6 +109,7 @@ namespace HandMR
                     FisheyeRateInputField.interactable = false;
                     FisheyeCenterSlider.interactable = false;
                     FisheyeCenterInputField.interactable = false;
+                    ViewHandAreaToggle.interactable = false;
                     break;
                 case 2:
                     PhonePositionDropdown.interactable = false;
@@ -120,6 +126,7 @@ namespace HandMR
                     FisheyeRateInputField.interactable = true;
                     FisheyeCenterSlider.interactable = true;
                     FisheyeCenterInputField.interactable = true;
+                    ViewHandAreaToggle.interactable = true;
                     break;
                 case 3:
                     PhonePositionDropdown.interactable = false;
@@ -136,6 +143,7 @@ namespace HandMR
                     FisheyeRateInputField.interactable = false;
                     FisheyeCenterSlider.interactable = false;
                     FisheyeCenterInputField.interactable = false;
+                    ViewHandAreaToggle.interactable = false;
                     break;
                 case 4:
                     PhonePositionDropdown.interactable = false;
@@ -152,6 +160,7 @@ namespace HandMR
                     FisheyeRateInputField.interactable = false;
                     FisheyeCenterSlider.interactable = false;
                     FisheyeCenterInputField.interactable = false;
+                    ViewHandAreaToggle.interactable = false;
                     break;
             }
         }
@@ -209,6 +218,8 @@ namespace HandMR
             float fisheyeCenter = PlayerPrefs.GetFloat("HandMR_FisheyeCenter", fisheyeCenterDefault_);
             FisheyeCenterSlider.value = fisheyeCenter;
             FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
+            bool viewHandArea = PlayerPrefs.GetInt("HandMR_HandArea", viewHandAreaDefault_ ? 1 : 0) != 0;
+            ViewHandAreaToggle.isOn = viewHandArea;
 
             settingEnabled();
 
@@ -260,6 +271,8 @@ namespace HandMR
             float fisheyeCenter = fisheyeCenterDefault_;
             FisheyeCenterSlider.value = fisheyeCenter;
             FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
+            bool viewHandArea = viewHandAreaDefault_;
+            ViewHandAreaToggle.isOn = viewHandArea;
 
             settingEnabled();
         }

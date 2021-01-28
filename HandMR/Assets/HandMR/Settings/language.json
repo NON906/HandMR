@@ -85,6 +85,10 @@
         "jp" : "画像の間隔"
     },
     {
+        "en" : "Show Hand Tracking Area",
+        "jp" : "手の認識範囲の表示"
+    },
+    {
         "en" : "Exit",
         "jp" : "終了"
     },

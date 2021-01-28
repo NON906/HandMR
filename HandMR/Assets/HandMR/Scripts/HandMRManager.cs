@@ -18,6 +18,13 @@ namespace HandMR
 
         [SerializeField]
         Mode ViewMode;
+        public Mode CurrentViewMode
+        {
+            get
+            {
+                return ViewMode;
+            }
+        }
 
         public GameObject[] VRBackgroundObjects;
 
