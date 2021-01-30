@@ -274,11 +274,11 @@ namespace HandMR
             bool isChange = false;
 
             isChange |= loadPackage.addPackageManager("com.unity.xr.management", "3.2.16");
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arfoundation", "4.0");
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arsubsystems", "4.0");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arfoundation", "4.0.9");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arsubsystems", "4.0.9");
 
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arcore", "4.0");
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arkit", "4.0");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arcore", "4.0.9");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arkit", "4.0.9");
 
             AssetDatabase.Refresh();
             while (string.IsNullOrEmpty(AssetDatabase.AssetPathToGUID("ProjectSettings/ProjectSettings.asset")))
