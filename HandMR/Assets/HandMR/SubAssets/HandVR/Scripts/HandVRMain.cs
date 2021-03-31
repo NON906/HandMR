@@ -172,11 +172,10 @@ namespace HandMR
             resetHandValues();
         }
 
+#if DOWNLOADED_ARFOUNDATION && ENABLE_UNSAFE_CODE
         void OnEnable()
         {
-#if DOWNLOADED_ARFOUNDATION
             cameraManager_ = FindObjectOfType<ARCameraManager>();
-#endif
 
             cameraManager_.frameReceived += OnCameraFrameReceived;
         }
@@ -197,7 +196,6 @@ namespace HandMR
                 nextUpdateFrameTime_ += IntervalTime;
             }
 
-#if DOWNLOADED_ARFOUNDATION && ENABLE_UNSAFE_CODE
             if (!cameraManager_.TryAcquireLatestCpuImage(out XRCpuImage image))
             {
                 return;
@@ -280,8 +278,8 @@ namespace HandMR
 
                 buffer.Dispose();
             }
-#endif
         }
+#endif
 
         float[] calcLandmarkPoint(float[] target, float[] parent, float[] parentReal, float length, float mulSize)
         {
