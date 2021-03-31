@@ -14,7 +14,12 @@ namespace HandMR
         public Camera[] Cameras;
         public bool TouchReset;
         public bool BackgroundObjAutoDisable = true;
-        public bool PlaneDetectEnabled = true;
+
+        public bool PlaneDetectEnabled
+        {
+            get;
+            set;
+        } = true;
 
         // トラッキングの位置中心
         Vector3 poseCenter_ = Vector3.zero;

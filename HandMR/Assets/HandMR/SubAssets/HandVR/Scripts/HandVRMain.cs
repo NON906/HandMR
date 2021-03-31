@@ -2,7 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+#if DOWNLOADED_ARFOUNDATION
+using UnityEngine.XR.ARFoundation;
+using UnityEngine.XR.ARSubsystems;
+#endif
 
 namespace HandMR
 {
@@ -12,20 +18,46 @@ namespace HandMR
         const float DISABLE_TIME = 0.1f;
         const float START_DELAY_TIME = 0f;
 
-        public RenderTexture InputRenderTexture;
-        public Shader FlipShader;
         public float ShiftX = 0f;
         public float ShiftY = 0f;
-        //public float HandSize = 0.13f;
         public float FieldOfView = 60f;
         public float IntervalTime = 0.04f;
+
+        public float FixedFieldOfView
+        {
+            get
+            {
+                return FieldOfView * height_ * Screen.width / (width_ * Screen.height);
+            }
+        }
+        public int Width
+        {
+            get
+            {
+                return width_;
+            }
+        }
+        public int Height
+        {
+            get
+            {
+                return height_;
+            }
+        }
 
         float[,][] landmarkArray_ = new float[2, 21][];
         double focalLength_;
         float[] fingerLengthArray_ = new float[16];
         Quaternion[] rotationQuaternions_ = new Quaternion[2];
         float lastEnableTime_ = 0f;
-        Material filpMaterial_;
+        bool isStart_ = false;
+        float nextUpdateFrameTime_ = float.PositiveInfinity;
+        int width_ = 0;
+        int height_ = 0;
+
+#if DOWNLOADED_ARFOUNDATION
+        ARCameraManager cameraManager_;
+#endif
 
 #if UNITY_ANDROID && !UNITY_EDITOR
         AndroidJavaObject multiHandMain_;
@@ -110,50 +142,6 @@ namespace HandMR
         static void hand3dReset() { }
 #endif
 
-        Texture2D texture2D_;
-        public Texture2D Texture2DRaw
-        {
-            get
-            {
-                return texture2D_;
-            }
-        }
-
-        bool isStart_ = false;
-        float nextUpdateFrameTime_ = float.PositiveInfinity;
-
-        void Start()
-        {
-            int width = RESIZE_HEIGHT * Screen.width / Screen.height;
-
-#if UNITY_ANDROID && !UNITY_EDITOR
-            using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
-            using (AndroidJavaObject currentUnityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
-            {
-                multiHandMain_ = new AndroidJavaObject("online.mumeigames.mediapipe.apps.multihandtrackinggpu.MultiHandMain", currentUnityActivity, width, RESIZE_HEIGHT);
-            }
-#endif
-
-#if UNITY_IOS && !UNITY_EDITOR
-            texture2D_ = new Texture2D(width, RESIZE_HEIGHT, TextureFormat.BGRA32, false, false);
-#else
-            texture2D_ = new Texture2D(width, RESIZE_HEIGHT, TextureFormat.ARGB32, false, false);
-#endif
-
-            filpMaterial_ = new Material(FlipShader);
-
-#if UNITY_IOS && !UNITY_EDITOR
-            IntPtr graphName = Marshal.StringToHGlobalAnsi("handcputogpu");
-            multiHandSetup(graphName, texture2D_.width, texture2D_.height);
-            Marshal.FreeHGlobal(graphName);
-#endif
-
-            focalLength_ = 0.5 / Mathf.Tan(FieldOfView * Mathf.Deg2Rad * 0.5f);
-            hand3dInitWithValues(focalLength_, focalLength_, 0.5, 0.5);
-
-            resetHandValues();
-        }
-
         void resetHandValues()
         {
             if (PlayerPrefs.HasKey("HandMR_PointLength_15"))
@@ -184,67 +172,114 @@ namespace HandMR
             resetHandValues();
         }
 
-        void Update()
+        void OnEnable()
         {
-            updateFrame();
+#if DOWNLOADED_ARFOUNDATION
+            cameraManager_ = FindObjectOfType<ARCameraManager>();
+#endif
+
+            cameraManager_.frameReceived += OnCameraFrameReceived;
         }
 
-        void updateFrame()
+        void OnDisable()
         {
+            cameraManager_.frameReceived -= OnCameraFrameReceived;
+        }
 
-#if UNITY_ANDROID && !UNITY_EDITOR
-            if (!isStart_)
+        void OnCameraFrameReceived(ARCameraFrameEventArgs eventArgs)
+        {
+            if (isStart_)
             {
-                multiHandMain_.Call("startRunningGraph");
-                nextUpdateFrameTime_ = Time.time + START_DELAY_TIME;
-                isStart_ = true;
+                if (nextUpdateFrameTime_ > Time.time)
+                {
+                    return;
+                }
+                nextUpdateFrameTime_ += IntervalTime;
             }
-#endif
 
-#if UNITY_IOS && !UNITY_EDITOR
-            if (!isStart_)
-            {
-                multiHandStartRunningGraph();
-                nextUpdateFrameTime_ = Time.time + START_DELAY_TIME;
-                isStart_ = true;
-            }
-#endif
-
-            if (nextUpdateFrameTime_ > Time.time)
+#if DOWNLOADED_ARFOUNDATION && ENABLE_UNSAFE_CODE
+            if (!cameraManager_.TryAcquireLatestCpuImage(out XRCpuImage image))
             {
                 return;
             }
-            nextUpdateFrameTime_ += IntervalTime;
 
-            RenderTexture reshapedTexture = RenderTexture.GetTemporary(texture2D_.width, texture2D_.height);
-            if (filpMaterial_ != null)
+            if (!isStart_)
             {
-                Graphics.Blit(InputRenderTexture, reshapedTexture, filpMaterial_);
-            }
-            else
-            {
-                Graphics.Blit(InputRenderTexture, reshapedTexture);
-            }
+                height_ = RESIZE_HEIGHT;
+                if (image.height < height_)
+                {
+                    height_ = image.height;
+                }
 
-            RenderTexture.active = reshapedTexture;
-            texture2D_.ReadPixels(new Rect(0, 0, texture2D_.width, texture2D_.height), 0, 0, false);
-            texture2D_.Apply();
-            RenderTexture.active = null;
-
-            RenderTexture.ReleaseTemporary(reshapedTexture);
-
-            byte[] frameImage = texture2D_.GetRawTextureData();
+                width_ = height_ * image.width / image.height;
 
 #if UNITY_ANDROID && !UNITY_EDITOR
-            sbyte[] frameImageSigned = Array.ConvertAll(frameImage, b => unchecked((sbyte)b));
-            multiHandMain_.Call("setFrame", frameImageSigned);
+                using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+                using (AndroidJavaObject currentUnityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
+                {
+                    multiHandMain_ = new AndroidJavaObject("online.mumeigames.mediapipe.apps.multihandtrackinggpu.MultiHandMain", currentUnityActivity, width_, height_);
+                }
+
+                multiHandMain_.Call("startRunningGraph");
+                nextUpdateFrameTime_ = Time.time + START_DELAY_TIME;
 #endif
 
 #if UNITY_IOS && !UNITY_EDITOR
-            IntPtr frameIntPtr = Marshal.AllocHGlobal(frameImage.Length * Marshal.SizeOf<byte>());
-            Marshal.Copy(frameImage, 0, frameIntPtr, frameImage.Length);
-            multiHandSetFrame(frameIntPtr, frameImage.Length);
-            Marshal.FreeHGlobal(frameIntPtr);
+                IntPtr graphName = Marshal.StringToHGlobalAnsi("handcputogpu");
+                multiHandSetup(graphName, width_, height_);
+                Marshal.FreeHGlobal(graphName);
+
+                multiHandStartRunningGraph();
+                nextUpdateFrameTime_ = Time.time + START_DELAY_TIME;
+#endif
+
+                focalLength_ = 0.5 / Mathf.Tan(FixedFieldOfView * Mathf.Deg2Rad * 0.5f);
+                hand3dInitWithValues(focalLength_, focalLength_, 0.5, 0.5);
+
+                resetHandValues();
+
+                isStart_ = true;
+
+                image.Dispose();
+                return;
+            }
+
+            var conversionParams = new XRCpuImage.ConversionParams
+            {
+                inputRect = new RectInt(0, 0, image.width, image.height),
+                outputDimensions = new Vector2Int(width_, height_),
+#if UNITY_IOS && !UNITY_EDITOR
+                outputFormat = TextureFormat.BGRA32,
+#else
+                outputFormat = TextureFormat.ARGB32,
+#endif
+                transformation = XRCpuImage.Transformation.None
+            };
+
+            unsafe
+            {
+                int size = image.GetConvertedDataSize(conversionParams);
+                var buffer = new NativeArray<byte>(size, Allocator.Temp);
+                image.Convert(conversionParams, new IntPtr(buffer.GetUnsafePtr()), buffer.Length);
+                image.Dispose();
+
+                byte[] frameImage = new byte[size];
+                buffer.CopyTo(frameImage);
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+                sbyte[] frameImageSigned = Array.ConvertAll(frameImage, b => unchecked((sbyte)b));
+                multiHandMain_.Call("setFrame", frameImageSigned);
+#endif
+
+#if UNITY_IOS && !UNITY_EDITOR
+                IntPtr frameIntPtr = Marshal.AllocHGlobal(frameImage.Length * Marshal.SizeOf<byte>());
+                Marshal.Copy(frameImage, 0, frameIntPtr, frameImage.Length);
+                multiHandSetFrame(frameIntPtr, frameImage.Length);
+                Marshal.FreeHGlobal(frameIntPtr);
+#endif
+
+                buffer.Dispose();
+            }
 #endif
         }
 
@@ -295,7 +330,7 @@ namespace HandMR
                 return null;
             }
 
-            ret[0] = (ret[0] - 0.5f) * Screen.width / Screen.height + 0.5f;
+            ret[0] = (ret[0] - 0.5f) * width_ / height_ + 0.5f;
 
             return ret;
         }

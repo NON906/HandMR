@@ -183,6 +183,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &604177994
 Canvas:
   m_ObjectHideFlags: 0
@@ -293,6 +294,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}
@@ -465,13 +467,13 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 279316110780404667, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
-      propertyPath: m_PositionAction.m_SingletonActionBindings.Array.data[0].m_Id
-      value: fd8016c2-d9ed-4209-b6bf-020368872b29
+      propertyPath: m_RotationAction.m_Id
+      value: 465ac8e2-a303-45b6-bd4a-cbf4d2171411
       objectReference: {fileID: 0}
     - target: {fileID: 279316110780404667, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
-      propertyPath: m_RotationAction.m_Id
-      value: 465ac8e2-a303-45b6-bd4a-cbf4d2171411
+      propertyPath: m_PositionAction.m_SingletonActionBindings.Array.data[0].m_Id
+      value: fd8016c2-d9ed-4209-b6bf-020368872b29
       objectReference: {fileID: 0}
     - target: {fileID: 279316110780404667, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
@@ -484,6 +486,11 @@ PrefabInstance:
       value: 'Please capture floor,
 
         and move camera.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
@@ -502,6 +509,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
@@ -514,16 +526,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
-      propertyPath: m_RootOrder
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
@@ -542,6 +544,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1448683349813166025, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
+      propertyPath: ViewMode
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1448683349813166025, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
       propertyPath: VRBackgroundObjects.Array.size
       value: 0
       objectReference: {fileID: 0}
@@ -549,11 +556,6 @@ PrefabInstance:
         type: 3}
       propertyPath: VRBackgroundObjects.Array.data[0]
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1448683349813166025, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
-      propertyPath: ViewMode
-      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
@@ -567,14 +569,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1930387069}
+    - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
@@ -604,7 +606,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5249255319954541510, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
-      propertyPath: m_BackGroundColor.r
+      propertyPath: m_BackGroundColor.b
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5249255319954541510, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
@@ -614,7 +616,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5249255319954541510, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
-      propertyPath: m_BackGroundColor.b
+      propertyPath: m_BackGroundColor.r
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6101793165686051837, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
@@ -732,6 +734,7 @@ Light:
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
   m_UseBoundingSphereOverride: 0
+  m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
 --- !u!4 &1511143801
@@ -801,6 +804,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Navigation:
     m_Mode: 3
+    m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
     m_SelectOnLeft: {fileID: 0}

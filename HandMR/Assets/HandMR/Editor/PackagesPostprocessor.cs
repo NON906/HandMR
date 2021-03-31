@@ -273,12 +273,12 @@ namespace HandMR
 
             bool isChange = false;
 
-            isChange |= loadPackage.addPackageManager("com.unity.xr.management", "3.2.16");
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arfoundation", "4.0.9");
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arsubsystems", "4.0.9");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.management", "4.0.1");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arfoundation", "4.0.12");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arsubsystems", "4.0.12");
 
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arcore", "4.0.9");
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arkit", "4.0.9");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arcore", "4.0.12");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arkit", "4.0.12");
 
             AssetDatabase.Refresh();
             while (string.IsNullOrEmpty(AssetDatabase.AssetPathToGUID("ProjectSettings/ProjectSettings.asset")))
@@ -384,6 +384,13 @@ namespace HandMR
                 PlayerSettings.defaultInterfaceOrientation = UIOrientation.LandscapeLeft;
                 isChange = true;
             }
+
+            if (!PlayerSettings.allowUnsafeCode)
+            {
+                PlayerSettings.allowUnsafeCode = true;
+                isChange = true;
+            }
+            SetScriptingDefineSymbol("ENABLE_UNSAFE_CODE");
 
             if (isChange)
             {

@@ -17,6 +17,7 @@ namespace HandMR
         Color defaultColorInner_;
         float colorAlpha_ = 0f;
         bool renderEnabled_ = false;
+        bool isSetThickness_ = false;
 
         void Start()
         {
@@ -30,11 +31,6 @@ namespace HandMR
             defaultColorInner_ = renderer_.material.GetColor("_ColorInner");
             renderer_.material.SetColor("_ColorInner",
                 new Color(defaultColorInner_.r, defaultColorInner_.g, defaultColorInner_.b, 0f));
-
-            renderer_.material.SetFloat("_ThicknessX",
-                renderer_.material.GetFloat("_ThicknessX") * Screen.height / Screen.width);
-            renderer_.material.SetFloat("_ThicknessInnerX",
-                renderer_.material.GetFloat("_ThicknessInnerX") * Screen.height / Screen.width);
         }
 
         void Update()
@@ -86,10 +82,20 @@ namespace HandMR
                 }
                 else
                 {
+                    if (!isSetThickness_)
+                    {
+                        renderer_.material.SetFloat("_ThicknessX",
+                            renderer_.material.GetFloat("_ThicknessX") * handVRMain_.Height / handVRMain_.Width);
+                        renderer_.material.SetFloat("_ThicknessInnerX",
+                            renderer_.material.GetFloat("_ThicknessInnerX") * handVRMain_.Height / handVRMain_.Width);
+
+                        isSetThickness_ = true;
+                    }
+
                     zLength /= zLengthCount;
 
-                    float height = Mathf.Tan(handVRMain_.FieldOfView * Mathf.Deg2Rad * 0.5f) * zLength * Size;
-                    float width = height * Screen.width / Screen.height;
+                    float height = Mathf.Tan(handVRMain_.FixedFieldOfView * Mathf.Deg2Rad * 0.5f) * zLength * Size;
+                    float width = height * handVRMain_.Width / handVRMain_.Height;
                     transform.localScale = new Vector3(width, height, 1f);
 
                     Vector3 localPos = new Vector3(handVRMain_.ShiftX, handVRMain_.ShiftY, zLength);

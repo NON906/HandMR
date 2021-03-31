@@ -27,6 +27,12 @@ namespace HandMR
         }
 
         public GameObject[] VRBackgroundObjects;
+        public Color VRBackColor;
+        public bool FreezePositionX = false;
+        public bool FreezePositionY = false;
+        public bool FreezePositionZ = false;
+        public bool IsEnabledHandsTracking = true;
+        public bool SkipDetectFloor = false;
 
         public SetParentMainCamera[] Hands;
         public GameObject MRObject;
@@ -37,7 +43,6 @@ namespace HandMR
         public GameObject VRSubCamera;
         public GameObject LeftEyeFrame;
         public GameObject RightEyeFrame;
-        public Color VRBackColor;
 
         Fisheye[] fisheyes_;
         public float FieldOfView
@@ -77,6 +82,7 @@ namespace HandMR
                         }
                         CameraTarget cameraTarget = MRObject.GetComponentInChildren<CameraTarget>();
                         cameraTarget.BackgroundObj.SetActive(true);
+                        cameraTarget.PlaneDetectEnabled = !SkipDetectFloor;
                         VRSubCamera.SetActive(false);
 
                         Canvas[] canvases = FindObjectsOfType<Canvas>();
@@ -110,6 +116,7 @@ namespace HandMR
                         }
                         CameraTarget cameraTarget = MRObject.GetComponentInChildren<CameraTarget>();
                         cameraTarget.BackgroundObjAutoDisable = true;
+                        cameraTarget.PlaneDetectEnabled = !SkipDetectFloor;
                         cameraTarget.BackgroundObj.SetActive(false);
                         VRSubCamera.SetActive(true);
                         cameraTarget.BackgroundObj = VRSubCamera;
@@ -154,6 +161,7 @@ namespace HandMR
                             }
                         }
                         ARObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = true;
+                        ARObject.GetComponentInChildren<CameraTarget>().PlaneDetectEnabled = !SkipDetectFloor;
                         ARObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = true;
                         StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.SolidColor));
 
@@ -186,6 +194,7 @@ namespace HandMR
                             }
                         }
                         ARObject.GetComponentInChildren<CameraTarget>().BackgroundObjAutoDisable = false;
+                        ARObject.GetComponentInChildren<CameraTarget>().PlaneDetectEnabled = !SkipDetectFloor;
                         ARObject.GetComponentInChildren<ResizeBackGroundQuad>().NoticeTextCenter = true;
                         StartCoroutine(vrCameraSettingCoroutine(CameraClearFlags.Depth));
 
@@ -234,6 +243,18 @@ namespace HandMR
         {
             ViewMode = mode;
             viewModeChange();
+        }
+
+        void Update()
+        {
+            if (IsEnabledHandsTracking != Hands[0].gameObject.activeSelf)
+            {
+                foreach (SetParentMainCamera hand in Hands)
+                {
+                    hand.gameObject.SetActive(IsEnabledHandsTracking);
+                }
+                FindObjectOfType<HandVRMain>().gameObject.SetActive(IsEnabledHandsTracking);
+            }
         }
 
         void LateUpdate()

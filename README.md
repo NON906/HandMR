@@ -7,7 +7,7 @@ English version is [here](https://github.com/NON906/HandMR/blob/master/README_EN
 
 ARM64でARCoreに対応したAndroid上やARKitに対応したiOS上で動作します。
 
-バージョン2020.1.4f1のUnityで動作確認しています。
+バージョン2020.3.2f1のUnityで動作確認しています。
 
 unitypackageファイルは[こちら](https://github.com/NON906/HandMR/releases)からダウンロードできます。
 
