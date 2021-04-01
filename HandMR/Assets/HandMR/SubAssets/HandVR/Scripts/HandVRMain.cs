@@ -17,6 +17,7 @@ namespace HandMR
         const int RESIZE_HEIGHT = 512;
         const float DISABLE_TIME = 0.1f;
         const float START_DELAY_TIME = 0f;
+        const float DISTANCE_LIMIT = 0.45f;
 
         public float ShiftX = 0f;
         public float ShiftY = 0f;
@@ -49,7 +50,7 @@ namespace HandMR
         double focalLength_;
         float[] fingerLengthArray_ = new float[16];
         Quaternion[] rotationQuaternions_ = new Quaternion[2];
-        float lastEnableTime_ = 0f;
+        float lastEnableTime_ = -1f;
         bool isStart_ = false;
         float nextUpdateFrameTime_ = float.PositiveInfinity;
         int width_ = 0;
@@ -177,19 +178,19 @@ namespace HandMR
         {
             cameraManager_ = FindObjectOfType<ARCameraManager>();
 
-            cameraManager_.frameReceived += OnCameraFrameReceived;
+            cameraManager_.frameReceived += onCameraFrameReceived;
         }
 
         void OnDisable()
         {
-            cameraManager_.frameReceived -= OnCameraFrameReceived;
+            cameraManager_.frameReceived -= onCameraFrameReceived;
         }
 
-        void OnCameraFrameReceived(ARCameraFrameEventArgs eventArgs)
+        void onCameraFrameReceived(ARCameraFrameEventArgs eventArgs)
         {
             if (isStart_)
             {
-                if (nextUpdateFrameTime_ > Time.time)
+                if (nextUpdateFrameTime_ > Time.realtimeSinceStartup)
                 {
                     return;
                 }
@@ -219,7 +220,7 @@ namespace HandMR
                 }
 
                 multiHandMain_.Call("startRunningGraph");
-                nextUpdateFrameTime_ = Time.time + START_DELAY_TIME;
+                nextUpdateFrameTime_ = Time.realtimeSinceStartup + START_DELAY_TIME;
 #endif
 
 #if UNITY_IOS && !UNITY_EDITOR
@@ -228,7 +229,7 @@ namespace HandMR
                 Marshal.FreeHGlobal(graphName);
 
                 multiHandStartRunningGraph();
-                nextUpdateFrameTime_ = Time.time + START_DELAY_TIME;
+                nextUpdateFrameTime_ = Time.realtimeSinceStartup + START_DELAY_TIME;
 #endif
 
                 focalLength_ = 0.5 / Mathf.Tan(FixedFieldOfView * Mathf.Deg2Rad * 0.5f);
@@ -386,7 +387,7 @@ namespace HandMR
                     landmarkArrayRaw[13][0], landmarkArrayRaw[13][1],
                     landmarkArrayRaw[17][0], landmarkArrayRaw[17][1]);
 
-                if (x * x + y * y + z * z > 0.75 * 0.75)
+                if (x * x + y * y + z * z > DISTANCE_LIMIT * DISTANCE_LIMIT)
                 {
                     for (int index = 0; index < 21; index++)
                     {
@@ -466,6 +467,10 @@ namespace HandMR
             if (multiHandMain_.Call<bool>("getIsUpdated"))
             {
                 calcLandmark();
+                lastEnableTime_ = -1f;
+            }
+            else if (lastEnableTime_ < 0f)
+            {
                 lastEnableTime_ = Time.time;
             }
 #endif
@@ -474,11 +479,15 @@ namespace HandMR
             if (multiHandGetIsUpdated())
             {
                 calcLandmark();
+                lastEnableTime_ = -1f;
+            }
+            else if (lastEnableTime_ < 0f)
+            {
                 lastEnableTime_ = Time.time;
             }
 #endif
 
-            if (Time.time - lastEnableTime_ > DISABLE_TIME)
+            if (lastEnableTime_ > 0f && Time.time - lastEnableTime_ > DISABLE_TIME)
             {
                 return null;
             }
