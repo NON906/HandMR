@@ -7,6 +7,8 @@ English version is [here](https://github.com/NON906/HandMR/blob/master/README_EN
 
 ARM64でARCoreに対応したAndroid上やARKitに対応したiOS上で動作します。
 
+[AR Foundation Editor Remote](https://assetstore.unity.com/packages/tools/utilities/ar-foundation-editor-remote-168773)によるリモートデバッグにも対応しております。
+
 バージョン2020.3.2f1のUnityで動作確認しています。
 
 unitypackageファイルは[こちら](https://github.com/NON906/HandMR/releases)からダウンロードできます。

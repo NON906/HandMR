@@ -4,6 +4,8 @@ This is assets for hands tracking with [Dangla](https://dangla.jp/) MR or smartp
 
 This works Android (ARM64 and ARCore) or iOS (ARKit).
 
+You can use [AR Foundation Editor Remote](https://assetstore.unity.com/packages/tools/utilities/ar-foundation-editor-remote-168773) for remote debugging.
+
 Confirmed with Unity (version 2020.3.2f1).
 
 Unitypackage file is [here](https://github.com/NON906/HandMR/releases).

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
@@ -15,14 +16,22 @@ namespace HandMR
     public class HandVRMain : MonoBehaviour
     {
         const int RESIZE_HEIGHT = 512;
-        const float DISABLE_TIME = 0.1f;
-        const float START_DELAY_TIME = 0f;
         const float DISTANCE_LIMIT = 0.45f;
+#if UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+        const float START_DELAY_TIME = 5f;
+        const float INTERVAL_TIME = 0.2f;
+        const float DISABLE_TIME = 0.5f;
+#else
+        const float START_DELAY_TIME = 0f;
+        const float INTERVAL_TIME = 0.04f;
+        const float DISABLE_TIME = 0.1f;
+#endif
 
         public float ShiftX = 0f;
         public float ShiftY = 0f;
         public float FieldOfView = 60f;
-        public float IntervalTime = 0.04f;
+        public RenderTexture InputRenderTexture;
+        public Shader FlipShader;
 
         public float FixedFieldOfView
         {
@@ -55,6 +64,8 @@ namespace HandMR
         float nextUpdateFrameTime_ = float.PositiveInfinity;
         int width_ = 0;
         int height_ = 0;
+        Texture2D texture2D_;
+        Material filpMaterial_;
 
 #if DOWNLOADED_ARFOUNDATION
         ARCameraManager cameraManager_;
@@ -119,6 +130,45 @@ namespace HandMR
         static extern void hand3dSetHandPoint(int pointId, float x, float y, float z);
         [DllImport("__Internal")]
         static extern void hand3dReset();
+#elif UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+        bool isMultiHandEnabled_ = false;
+
+        [DllImport("multiHand")]
+        static extern void multiHandCleanup();
+        [DllImport("multiHand")]
+        static extern void multiHandSetup(IntPtr graphName, int width, int height);
+        [DllImport("multiHand")]
+        static extern void multiHandSetFrame(IntPtr frameSource, int frameSourceSize);
+        [DllImport("multiHand")]
+        static extern void multiHandStartRunningGraph();
+        [DllImport("multiHand")]
+        static extern int multiHandGetHandCount();
+        [DllImport("multiHand")]
+        static extern float multiHandGetLandmark(int id, int index, int axis);
+        [DllImport("multiHand")]
+        static extern bool multiHandGetIsUpdated();
+        [DllImport("multiHand")]
+        static extern int multiHandGetHandednesses(int id);
+
+        [DllImport("multiHand")]
+        static extern void hand3dInit([In] string filePath);
+        [DllImport("multiHand")]
+        static extern void hand3dGetCameraValues(out double fx, out double fy, out double cx, out double cy);
+        [DllImport("multiHand")]
+        static extern void hand3dInitWithValues(double fx, double fy, double cx, double cy);
+        [DllImport("multiHand")]
+        static extern void hand3dExec(out double rx, out double ry, out double rz, out double x, out double y, out double z,
+            double x0, double y0,
+            double x1, double y1,
+            double x2, double y2,
+            double x3, double y3,
+            double x4, double y4);
+        [DllImport("multiHand")]
+        static extern void hand3dGet3dPosition(out double x, out double y, out double z, int pointId);
+        [DllImport("multiHand")]
+        static extern void hand3dSetHandPoint(int pointId, float x, float y, float z);
+        [DllImport("multiHand")]
+        static extern void hand3dReset();
 #else
         static void hand3dInit([In] string filePath) { }
         static void hand3dGetCameraValues(out double fx, out double fy, out double cx, out double cy)
@@ -173,7 +223,71 @@ namespace HandMR
             resetHandValues();
         }
 
-#if DOWNLOADED_ARFOUNDATION && ENABLE_UNSAFE_CODE
+#if UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+        void Start()
+        {
+            if (!Directory.Exists("mediapipe"))
+            {
+                return;
+            }
+            else
+            {
+                isMultiHandEnabled_ = true;
+            }
+
+            height_ = RESIZE_HEIGHT;
+            width_ = height_ * Screen.width / Screen.height;
+
+            texture2D_ = new Texture2D(width_, height_, TextureFormat.RGB24, false, false);
+
+            filpMaterial_ = new Material(FlipShader);
+
+            IntPtr graphName = Marshal.StringToHGlobalAnsi(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/hand_cpu.pbtxt");
+            multiHandSetup(graphName, width_, height_);
+            Marshal.FreeHGlobal(graphName);
+
+            multiHandStartRunningGraph();
+            nextUpdateFrameTime_ = Time.time + START_DELAY_TIME;
+
+            focalLength_ = 0.5 / Mathf.Tan(FixedFieldOfView * Mathf.Deg2Rad * 0.5f);
+            hand3dInitWithValues(focalLength_, focalLength_, 0.5, 0.5);
+
+            resetHandValues();
+        }
+
+        void Update()
+        {
+            if (!isMultiHandEnabled_)
+            {
+                return;
+            }
+
+            if (nextUpdateFrameTime_ > Time.time)
+            {
+                return;
+            }
+            nextUpdateFrameTime_ = Time.time + INTERVAL_TIME;
+
+            RenderTexture reshapedTexture = RenderTexture.GetTemporary(texture2D_.width, texture2D_.height);
+            Graphics.Blit(InputRenderTexture, reshapedTexture, filpMaterial_);
+
+            RenderTexture.active = reshapedTexture;
+            texture2D_.ReadPixels(new Rect(0, 0, texture2D_.width, texture2D_.height), 0, 0, false);
+            texture2D_.Apply();
+            RenderTexture.active = null;
+
+            RenderTexture.ReleaseTemporary(reshapedTexture);
+
+            byte[] frameImage = texture2D_.GetRawTextureData();
+
+            IntPtr frameIntPtr = Marshal.AllocHGlobal(frameImage.Length * Marshal.SizeOf<byte>());
+            Marshal.Copy(frameImage, 0, frameIntPtr, frameImage.Length);
+            multiHandSetFrame(frameIntPtr, frameImage.Length);
+            Marshal.FreeHGlobal(frameIntPtr);
+        }
+#endif
+
+#if DOWNLOADED_ARFOUNDATION && ENABLE_UNSAFE_CODE && !UNITY_EDITOR
         void OnEnable()
         {
             cameraManager_ = FindObjectOfType<ARCameraManager>();
@@ -194,7 +308,7 @@ namespace HandMR
                 {
                     return;
                 }
-                nextUpdateFrameTime_ += IntervalTime;
+                nextUpdateFrameTime_ += INTERVAL_TIME;
             }
 
             if (!cameraManager_.TryAcquireLatestCpuImage(out XRCpuImage image))
@@ -308,9 +422,16 @@ namespace HandMR
         {
             float[] ret;
 
+#if UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+            if (!isMultiHandEnabled_)
+            {
+                return null;
+            }
+#endif
+
 #if UNITY_ANDROID && !UNITY_EDITOR
             ret = multiHandMain_.Call<float[]>("getLandmark", id, index);
-#elif UNITY_IOS && !UNITY_EDITOR
+#elif UNITY_IOS && !UNITY_EDITOR || UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
             if (multiHandGetHandCount() <= id)
             {
                 return null;
@@ -475,7 +596,14 @@ namespace HandMR
             }
 #endif
 
-#if UNITY_IOS && !UNITY_EDITOR
+#if UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+            if (!isMultiHandEnabled_)
+            {
+                return null;
+            }
+#endif
+
+#if UNITY_IOS && !UNITY_EDITOR || UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
             if (multiHandGetIsUpdated())
             {
                 calcLandmark();
@@ -499,9 +627,16 @@ namespace HandMR
         {
             int ret;
 
+#if UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+            if (!isMultiHandEnabled_)
+            {
+                return -1;
+            }
+#endif
+
 #if UNITY_ANDROID && !UNITY_EDITOR
             ret = multiHandMain_.Call<int>("getHandednesses", id);
-#elif UNITY_IOS && !UNITY_EDITOR
+#elif UNITY_IOS && !UNITY_EDITOR || UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
             ret = multiHandGetHandednesses(id);
 #else
             ret = -1;
@@ -539,7 +674,14 @@ namespace HandMR
             }
 #endif
 
-#if UNITY_IOS && !UNITY_EDITOR
+#if UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+            if (!isMultiHandEnabled_)
+            {
+                return;
+            }
+#endif
+
+#if UNITY_IOS && !UNITY_EDITOR || UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
             multiHandCleanup();
 #endif
 

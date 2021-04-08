@@ -1,0 +1,14 @@
+type: "HandCpu"
+
+input_stream: "input_video"
+input_side_packet: "NUM_HANDS:num_hands"
+output_stream: "LANDMARKS:multi_hand_landmarks"
+output_stream: "HANDEDNESS:multi_handedness"
+
+node: {
+  calculator: "HandLandmarkTrackingCpu"
+  input_stream: "IMAGE:input_video"
+  input_side_packet: "NUM_HANDS:num_hands"
+  output_stream: "LANDMARKS:multi_hand_landmarks"
+  output_stream: "HANDEDNESS:multi_handedness"
+}

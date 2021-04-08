@@ -187,8 +187,6 @@ namespace HandMR
             }
         }
 
-        static DialogWindow window_ = null;
-
         public static void SetScriptingDefineSymbol(string symbol)
         {
             string symbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(BuildTargetGroup.Android);
@@ -478,14 +476,20 @@ namespace HandMR
         [MenuItem("Tools/HandMR/Show Start Dialog Window")]
         static void showDialogWindow()
         {
-            if (window_ == null)
+            bool isOpenWindow = false;
+
+            foreach (var window in Resources.FindObjectsOfTypeAll<EditorWindow>())
             {
-                window_ = EditorWindow.GetWindow<DialogWindow>(true, "HandMR");
-                window_.Show();
+                if (window.GetType() == typeof(DialogWindow))
+                {
+                    window.Focus();
+                    isOpenWindow = true;
+                }
             }
-            if (!window_.hasFocus)
+
+            if (!isOpenWindow)
             {
-                window_.Focus();
+                EditorWindow.GetWindow<DialogWindow>(true, "HandMR", true);
             }
         }
 
@@ -520,6 +524,11 @@ namespace HandMR
 
             void OnGUI()
             {
+                var currentPosition = position;
+                currentPosition.width = 350f;
+                currentPosition.height = 500f;
+                position = currentPosition;
+
                 GUILayout.Label("Step 1. Add Packages to PackageManager");
                 if (GUILayout.Button("Execute"))
                 {
@@ -534,7 +543,7 @@ namespace HandMR
 
                 GUILayout.Label("Step 3. Setting XR");
                 GUILayout.Label("  1. Open Project Settings -> XR-Plugin Management.");
-                GUILayout.Label("  2. Check ARCore (for Android) and/or ARKit (for iOS).");
+                GUILayout.Label("  2. Put check(s) ARCore (for Android) and/or ARKit (for iOS).");
                 if (GUILayout.Button("Open Project Settings"))
                 {
                     EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
@@ -569,6 +578,25 @@ namespace HandMR
                     lang_ = newLang;
                 }
 
+                GUILayout.Label("Step 7. Debug Settings (Optional)");
+                GUILayout.Label("  1. Install 'AR Foundation Editor Remote'.");
+                if (GUILayout.Button("Go to Asset Store Page"))
+                {
+                    Application.OpenURL("https://assetstore.unity.com/packages/tools/utilities/ar-foundation-editor-remote-168773");
+                }
+                GUILayout.Label("  2. Copy model files for debugging.");
+                if (GUILayout.Button("Execute"))
+                {
+                    Directory.CreateDirectory("mediapipe/modules/hand_landmark");
+                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/mediapipe/modules/hand_landmark/hand_landmark.tflite",
+                        "mediapipe/modules/hand_landmark/hand_landmark.tflite", true);
+                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/mediapipe/modules/hand_landmark/handedness.txt",
+                        "mediapipe/modules/hand_landmark/handedness.txt", true);
+                    Directory.CreateDirectory("mediapipe/modules/palm_detection");
+                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/mediapipe/modules/palm_detection/palm_detection.tflite",
+                        "mediapipe/modules/palm_detection/palm_detection.tflite", true);
+                }
+
                 GUILayout.Space(20);
 
                 isNotShowAgain_ = GUILayout.Toggle(isNotShowAgain_, "Do not show again");
@@ -589,7 +617,6 @@ namespace HandMR
                 {
                     deleteScriptingDefineSymbol("CLOSE_DIALOG_WINDOW");
                 }
-                window_ = null;
             }
         }
     }
