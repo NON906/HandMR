@@ -118,6 +118,8 @@ namespace HandMR
                 languageSentences.Add(newSentence);
             }
 
+            string startSceneName = SceneManager.GetActiveScene().path;
+
             foreach (string scene in SCENES)
             {
                 if (!File.Exists(scene))
@@ -160,6 +162,45 @@ namespace HandMR
                 EditorSceneManager.SaveScene(sceneObj);
             }
 
+            string prefabPath = "Assets/HandMR/Prefabs/HandMRManager.prefab";
+            GameObject contentsRoot = PrefabUtility.LoadPrefabContents(prefabPath);
+
+            if (contentsRoot != null)
+            {
+                var texts = contentsRoot.GetComponentsInChildren<Text>();
+                foreach (var text in texts)
+                {
+                    var sentence = languageSentences.SingleOrDefault(x => x.Before == text.text);
+                    if (sentence != null)
+                    {
+                        text.text = sentence.After;
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(text);
+                    }
+                }
+
+                var dropdowns = contentsRoot.GetComponentsInChildren<Dropdown>();
+                foreach (var dropdown in dropdowns)
+                {
+                    bool isChange = false;
+                    foreach (var option in dropdown.options)
+                    {
+                        var sentence = languageSentences.SingleOrDefault(x => x.Before == option.text);
+                        if (sentence != null)
+                        {
+                            option.text = sentence.After;
+                            isChange = true;
+                        }
+                    }
+                    if (isChange)
+                    {
+                        PrefabUtility.RecordPrefabInstancePropertyModifications(dropdown);
+                    }
+                }
+
+                PrefabUtility.SaveAsPrefabAsset(contentsRoot, prefabPath);
+                PrefabUtility.UnloadPrefabContents(contentsRoot);
+            }
+
             switch (before)
             {
                 case Languages.English:
@@ -180,6 +221,9 @@ namespace HandMR
                     break;
             }
 
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            EditorSceneManager.OpenScene(startSceneName);
         }
     }
 }

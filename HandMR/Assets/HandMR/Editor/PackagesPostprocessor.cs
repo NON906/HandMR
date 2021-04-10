@@ -562,6 +562,7 @@ namespace HandMR
                     }
                     AssetDatabase.CopyAsset("Assets/HandMR/Plugins/Android/mainTemplate.gradle", "Assets/Plugins/Android/mainTemplate.gradle");
                     AssetDatabase.CopyAsset("Assets/HandMR/Plugins/Android/gradleTemplate.properties", "Assets/Plugins/Android/gradleTemplate.properties");
+                    Debug.Log("Finish copy files.");
                 }
 
                 GUILayout.Label("Step 5. Download and Install iOS Plugins");
@@ -595,6 +596,7 @@ namespace HandMR
                     Directory.CreateDirectory("mediapipe/modules/palm_detection");
                     File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/mediapipe/modules/palm_detection/palm_detection.tflite",
                         "mediapipe/modules/palm_detection/palm_detection.tflite", true);
+                    Debug.Log("Finish copy files.");
                 }
 
                 GUILayout.Space(20);

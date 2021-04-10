@@ -64,7 +64,7 @@
     <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/HologlaARKitVideo.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandSizeCalib/Scripts/HandSizeCalibMain.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/CanCarryObject.cs" />
-    <Compile Include="Assets/HandMR/SubAssets/MRUtil/Scripts/SettingFromPlayerPrefs.cs" />
+    <Compile Include="Assets/HandMR/Settings/SettingFromPlayerPrefs.cs" />
     <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/Samples/DanglaMenuSample.cs" />
     <Compile Include="Assets/HandMR/SubAssets/MRHand/Scripts/MRHandFingerLine.cs" />
     <Compile Include="Assets/HandMR/SubAssets/ARVR/Scripts/CameraTarget.cs" />
