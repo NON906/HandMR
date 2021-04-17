@@ -497,8 +497,12 @@ namespace HandMR
         static void initOnLoad()
         {
 #if !CLOSE_DIALOG_WINDOW
-        System.Threading.Thread.Sleep(1000);
-        showDialogWindow();
+#if UNITY_2021_1_OR_NEWER
+            Debug.Log("This Unity version is not supported auto open window. Please open window from 'Tools/HandMR/Show Start Dialog Window'.");
+#else
+            System.Threading.Thread.Sleep(1000);
+            showDialogWindow();
+#endif
 #endif
         }
 

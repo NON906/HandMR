@@ -92,6 +92,7 @@
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/Menu.cs" />
     <Compile Include="Assets/HandMR/SubAssets/ARVR/Scripts/TrackingCameraPosition.cs" />
     <Compile Include="Assets/HandMR/Scripts/HandMRInputModule.cs" />
+    <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/VRSettings.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets/HandMR/SubAssets/HandVR/Plugins/Windows/multiHand.dll" />

@@ -52,6 +52,7 @@ namespace HandMR
         "Assets/HandMR/Sample/Scenes/License.unity",
         "Assets/HandMR/Sample/Scenes/HandSizeCalib.unity",
         "Assets/HandMR/Sample/Scenes/Main.unity",
+        "Assets/HandMR/Sample/Scenes/VRSettings.unity",
         "Assets/HandMR/Sample/HandFireBall/Scenes/Main.unity",
         };
 

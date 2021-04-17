@@ -51,6 +51,18 @@ namespace HandMR
             set;
         }
 
+        void Awake()
+        {
+            if (SkipDetectFloor)
+            {
+                var quad = MRObject.GetComponentInChildren<ResizeBackGroundQuad>();
+                quad.GetComponent<MeshRenderer>().enabled = false;
+                quad.transform.parent.GetComponentInChildren<Canvas>().gameObject.SetActive(false);
+                MRObject.GetComponentInChildren<CameraTarget>().PlaneDetectEnabled = false;
+                ARObject.GetComponentInChildren<CameraTarget>().PlaneDetectEnabled = false;
+            }
+        }
+
         void Start()
         {
             fisheyes_ = MRObject.GetComponentsInChildren<Fisheye>();

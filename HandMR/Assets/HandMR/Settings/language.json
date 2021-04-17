@@ -103,6 +103,10 @@
     {
         "en" : "Please capture marker.",
         "jp" : "マーカーを映してください"
+    },
+    {
+        "en" : "VR Setting",
+        "jp" : "VR設定"
     }
 ]
 }

@@ -20,14 +20,15 @@ namespace HandMR
         public InputField HandPositionYInputField;
         //public Slider HandSizeSlider;
         //public InputField HandSizeInputField;
-        public Slider FisheyeFieldOfViewSlider;
-        public InputField FisheyeFieldOfViewInputField;
-        public Slider FisheyeRateSlider;
-        public InputField FisheyeRateInputField;
-        public Slider FisheyeCenterSlider;
-        public InputField FisheyeCenterInputField;
+        //public Slider FisheyeFieldOfViewSlider;
+        //public InputField FisheyeFieldOfViewInputField;
+        //public Slider FisheyeRateSlider;
+        //public InputField FisheyeRateInputField;
+        //public Slider FisheyeCenterSlider;
+        //public InputField FisheyeCenterInputField;
         public Button HandSizeCalibResetButton;
         public Toggle ViewHandAreaToggle;
+        public Button VRSettingsButton;
         public Canvas MenuCanvas;
 
         int googleModeDefault_;
@@ -37,9 +38,9 @@ namespace HandMR
         float handPositionXDefault_;
         float handPositionYDefault_;
         //float handSizeDefault_;
-        float fisheyeFieldOfViewDefault_;
-        float fisheyeRateDefault_;
-        float fisheyeCenterDefault_;
+        //float fisheyeFieldOfViewDefault_;
+        //float fisheyeRateDefault_;
+        //float fisheyeCenterDefault_;
         bool viewHandAreaDefault_;
 
         void settingDefaultValues()
@@ -51,9 +52,9 @@ namespace HandMR
             handPositionXDefault_ = HandPositionXSlider.value;
             handPositionYDefault_ = HandPositionYSlider.value;
             //handSizeDefault_ = HandSizeSlider.value;
-            fisheyeFieldOfViewDefault_ = FisheyeFieldOfViewSlider.value;
-            fisheyeRateDefault_ = FisheyeRateSlider.value;
-            fisheyeCenterDefault_ = FisheyeCenterSlider.value;
+            //fisheyeFieldOfViewDefault_ = FisheyeFieldOfViewSlider.value;
+            //fisheyeRateDefault_ = FisheyeRateSlider.value;
+            //fisheyeCenterDefault_ = FisheyeCenterSlider.value;
             viewHandAreaDefault_ = ViewHandAreaToggle.isOn;
         }
 
@@ -66,9 +67,9 @@ namespace HandMR
             PlayerPrefs.SetFloat("HandMR_HandPositionX", HandPositionXSlider.value);
             PlayerPrefs.SetFloat("HandMR_HandPositionY", HandPositionYSlider.value);
             //PlayerPrefs.SetFloat("HandMR_HandSize", HandSizeSlider.value);
-            PlayerPrefs.SetFloat("HandMR_FisheyeFieldOfView", FisheyeFieldOfViewSlider.value);
-            PlayerPrefs.SetFloat("HandMR_FisheyeRate", FisheyeRateSlider.value);
-            PlayerPrefs.SetFloat("HandMR_FisheyeCenter", FisheyeCenterSlider.value);
+            //PlayerPrefs.SetFloat("HandMR_FisheyeFieldOfView", FisheyeFieldOfViewSlider.value);
+            //PlayerPrefs.SetFloat("HandMR_FisheyeRate", FisheyeRateSlider.value);
+            //PlayerPrefs.SetFloat("HandMR_FisheyeCenter", FisheyeCenterSlider.value);
             PlayerPrefs.SetInt("HandMR_HandArea", ViewHandAreaToggle.isOn ? 1 : 0);
             PlayerPrefs.Save();
         }
@@ -86,13 +87,14 @@ namespace HandMR
                     HandPositionXInputField.interactable = true;
                     HandPositionYSlider.interactable = true;
                     HandPositionYInputField.interactable = true;
-                    FisheyeFieldOfViewSlider.interactable = false;
-                    FisheyeFieldOfViewInputField.interactable = false;
-                    FisheyeRateSlider.interactable = false;
-                    FisheyeRateInputField.interactable = false;
-                    FisheyeCenterSlider.interactable = false;
-                    FisheyeCenterInputField.interactable = false;
+                    //FisheyeFieldOfViewSlider.interactable = false;
+                    //FisheyeFieldOfViewInputField.interactable = false;
+                    //FisheyeRateSlider.interactable = false;
+                    //FisheyeRateInputField.interactable = false;
+                    //FisheyeCenterSlider.interactable = false;
+                    //FisheyeCenterInputField.interactable = false;
                     ViewHandAreaToggle.interactable = false;
+                    VRSettingsButton.interactable = false;
                     break;
                 case 1:
                     PhonePositionDropdown.interactable = true;
@@ -103,13 +105,14 @@ namespace HandMR
                     HandPositionXInputField.interactable = true;
                     HandPositionYSlider.interactable = true;
                     HandPositionYInputField.interactable = true;
-                    FisheyeFieldOfViewSlider.interactable = false;
-                    FisheyeFieldOfViewInputField.interactable = false;
-                    FisheyeRateSlider.interactable = false;
-                    FisheyeRateInputField.interactable = false;
-                    FisheyeCenterSlider.interactable = false;
-                    FisheyeCenterInputField.interactable = false;
+                    //FisheyeFieldOfViewSlider.interactable = false;
+                    //FisheyeFieldOfViewInputField.interactable = false;
+                    //FisheyeRateSlider.interactable = false;
+                    //FisheyeRateInputField.interactable = false;
+                    //FisheyeCenterSlider.interactable = false;
+                    //FisheyeCenterInputField.interactable = false;
                     ViewHandAreaToggle.interactable = false;
+                    VRSettingsButton.interactable = false;
                     break;
                 case 2:
                     PhonePositionDropdown.interactable = false;
@@ -120,13 +123,14 @@ namespace HandMR
                     HandPositionXInputField.interactable = true;
                     HandPositionYSlider.interactable = false;
                     HandPositionYInputField.interactable = false;
-                    FisheyeFieldOfViewSlider.interactable = true;
-                    FisheyeFieldOfViewInputField.interactable = true;
-                    FisheyeRateSlider.interactable = true;
-                    FisheyeRateInputField.interactable = true;
-                    FisheyeCenterSlider.interactable = true;
-                    FisheyeCenterInputField.interactable = true;
+                    //FisheyeFieldOfViewSlider.interactable = true;
+                    //FisheyeFieldOfViewInputField.interactable = true;
+                    //FisheyeRateSlider.interactable = true;
+                    //FisheyeRateInputField.interactable = true;
+                    //FisheyeCenterSlider.interactable = true;
+                    //FisheyeCenterInputField.interactable = true;
                     ViewHandAreaToggle.interactable = true;
+                    VRSettingsButton.interactable = true;
                     break;
                 case 3:
                     PhonePositionDropdown.interactable = false;
@@ -137,13 +141,14 @@ namespace HandMR
                     HandPositionXInputField.interactable = true;
                     HandPositionYSlider.interactable = false;
                     HandPositionYInputField.interactable = false;
-                    FisheyeFieldOfViewSlider.interactable = false;
-                    FisheyeFieldOfViewInputField.interactable = false;
-                    FisheyeRateSlider.interactable = false;
-                    FisheyeRateInputField.interactable = false;
-                    FisheyeCenterSlider.interactable = false;
-                    FisheyeCenterInputField.interactable = false;
+                    //FisheyeFieldOfViewSlider.interactable = false;
+                    //FisheyeFieldOfViewInputField.interactable = false;
+                    //FisheyeRateSlider.interactable = false;
+                    //FisheyeRateInputField.interactable = false;
+                    //FisheyeCenterSlider.interactable = false;
+                    //FisheyeCenterInputField.interactable = false;
                     ViewHandAreaToggle.interactable = false;
+                    VRSettingsButton.interactable = false;
                     break;
                 case 4:
                     PhonePositionDropdown.interactable = false;
@@ -154,13 +159,14 @@ namespace HandMR
                     HandPositionXInputField.interactable = false;
                     HandPositionYSlider.interactable = false;
                     HandPositionYInputField.interactable = false;
-                    FisheyeFieldOfViewSlider.interactable = false;
-                    FisheyeFieldOfViewInputField.interactable = false;
-                    FisheyeRateSlider.interactable = false;
-                    FisheyeRateInputField.interactable = false;
-                    FisheyeCenterSlider.interactable = false;
-                    FisheyeCenterInputField.interactable = false;
+                    //FisheyeFieldOfViewSlider.interactable = false;
+                    //FisheyeFieldOfViewInputField.interactable = false;
+                    //FisheyeRateSlider.interactable = false;
+                    //FisheyeRateInputField.interactable = false;
+                    //FisheyeCenterSlider.interactable = false;
+                    //FisheyeCenterInputField.interactable = false;
                     ViewHandAreaToggle.interactable = false;
+                    VRSettingsButton.interactable = false;
                     break;
             }
         }
@@ -209,15 +215,15 @@ namespace HandMR
             //float handSizeValue = PlayerPrefs.GetFloat("HandMR_HandSize", handSizeDefault_);
             //HandSizeSlider.value = handSizeValue;
             //HandSizeInputField.text = "" + (int)handSizeValue;
-            float fisheyeFieldOfView = PlayerPrefs.GetFloat("HandMR_FisheyeFieldOfView", fisheyeFieldOfViewDefault_);
-            FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
-            FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
-            float fisheyeRate = PlayerPrefs.GetFloat("HandMR_FisheyeRate", fisheyeRateDefault_);
-            FisheyeRateSlider.value = fisheyeRate;
-            FisheyeRateInputField.text = "" + (int)fisheyeRate;
-            float fisheyeCenter = PlayerPrefs.GetFloat("HandMR_FisheyeCenter", fisheyeCenterDefault_);
-            FisheyeCenterSlider.value = fisheyeCenter;
-            FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
+            //float fisheyeFieldOfView = PlayerPrefs.GetFloat("HandMR_FisheyeFieldOfView", fisheyeFieldOfViewDefault_);
+            //FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
+            //FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
+            //float fisheyeRate = PlayerPrefs.GetFloat("HandMR_FisheyeRate", fisheyeRateDefault_);
+            //FisheyeRateSlider.value = fisheyeRate;
+            //FisheyeRateInputField.text = "" + (int)fisheyeRate;
+            //float fisheyeCenter = PlayerPrefs.GetFloat("HandMR_FisheyeCenter", fisheyeCenterDefault_);
+            //FisheyeCenterSlider.value = fisheyeCenter;
+            //FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
             bool viewHandArea = PlayerPrefs.GetInt("HandMR_HandArea", viewHandAreaDefault_ ? 1 : 0) != 0;
             ViewHandAreaToggle.isOn = viewHandArea;
 
@@ -262,15 +268,15 @@ namespace HandMR
             //float handSizeValue = handSizeDefault_;
             //HandSizeSlider.value = handSizeValue;
             //HandSizeInputField.text = "" + (int)handSizeValue;
-            float fisheyeFieldOfView = fisheyeFieldOfViewDefault_;
-            FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
-            FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
-            float fisheyeRate = fisheyeRateDefault_;
-            FisheyeRateSlider.value = fisheyeRate;
-            FisheyeRateInputField.text = "" + (int)fisheyeRate;
-            float fisheyeCenter = fisheyeCenterDefault_;
-            FisheyeCenterSlider.value = fisheyeCenter;
-            FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
+            //float fisheyeFieldOfView = fisheyeFieldOfViewDefault_;
+            //FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
+            //FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
+            //float fisheyeRate = fisheyeRateDefault_;
+            //FisheyeRateSlider.value = fisheyeRate;
+            //FisheyeRateInputField.text = "" + (int)fisheyeRate;
+            //float fisheyeCenter = fisheyeCenterDefault_;
+            //FisheyeCenterSlider.value = fisheyeCenter;
+            //FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
             bool viewHandArea = viewHandAreaDefault_;
             ViewHandAreaToggle.isOn = viewHandArea;
 
@@ -352,6 +358,7 @@ namespace HandMR
         }
         */
 
+        /*
         public void FisheyeFieldOfViewSliderChanged(float val)
         {
             changeSlider(FisheyeFieldOfViewInputField, val);
@@ -396,6 +403,7 @@ namespace HandMR
         {
             endEditInputField(FisheyeCenterInputField, FisheyeCenterSlider);
         }
+        */
 
         public void HandSizeCalibButton()
         {
@@ -421,6 +429,12 @@ namespace HandMR
             }
 
             HandSizeCalibResetButton.interactable = false;
+        }
+
+        public void VRSettingsButtonClick()
+        {
+            saveValues();
+            SceneManager.LoadScene("VRSettings");
         }
     }
 }
