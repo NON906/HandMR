@@ -9,7 +9,7 @@ namespace HandMR
     {
         public int Index;
 
-        public int Id
+        public HandVRSphereHand.EitherHand ThisEitherHand
         {
             set;
             get;
@@ -39,7 +39,18 @@ namespace HandMR
 
         void Update()
         {
-            float[] posVecArray = handVRMain_.GetLandmark(Id, Index);
+            int id = handVRMain_.GetIdFromHandednesses(ThisEitherHand);
+            if (id < 0)
+            {
+                if (renderer_ != null)
+                {
+                    renderer_.enabled = false;
+                }
+                PhysicEnabled = false;
+                return;
+            }
+
+            float[] posVecArray = handVRMain_.GetLandmark(id, Index);
             if (posVecArray != null)
             {
                 if (renderer_ != null)

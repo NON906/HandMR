@@ -16,6 +16,14 @@ namespace HandMR
             VRSingle
         };
 
+        public enum HandDetection
+        {
+            Both = 0,
+            LeftOnly = HandVRSphereHand.EitherHand.Left + 1,
+            RightOnly = HandVRSphereHand.EitherHand.Right + 1,
+            None = 3,
+        };
+
         [SerializeField]
         Mode ViewMode;
         public Mode CurrentViewMode
@@ -31,7 +39,7 @@ namespace HandMR
         public bool FreezePositionX = false;
         public bool FreezePositionY = false;
         public bool FreezePositionZ = false;
-        public bool IsEnabledHandsTracking = true;
+        public HandDetection HandDetectionMode = HandDetection.Both;
         public bool SkipDetectFloor = false;
 
         public SetParentMainCamera[] Hands;
@@ -259,13 +267,21 @@ namespace HandMR
 
         void Update()
         {
-            if (IsEnabledHandsTracking != Hands[0].gameObject.activeSelf)
+            Hands[0].gameObject.SetActive(HandDetectionMode == HandDetection.Both ||
+                HandDetectionMode == (HandDetection)(Hands[0].GetComponent<HandVRSphereHand>().ThisEitherHand + 1));
+            Hands[1].gameObject.SetActive(HandDetectionMode == HandDetection.Both ||
+                HandDetectionMode == (HandDetection)(Hands[1].GetComponent<HandVRSphereHand>().ThisEitherHand + 1));
+
+            if (HandDetectionMode == HandDetection.None)
             {
-                foreach (SetParentMainCamera hand in Hands)
+                if (!Hands[0].gameObject.activeSelf)
                 {
-                    hand.gameObject.SetActive(IsEnabledHandsTracking);
+                    FindObjectOfType<HandVRMain>().gameObject.SetActive(false);
                 }
-                FindObjectOfType<HandVRMain>().gameObject.SetActive(IsEnabledHandsTracking);
+            }
+            else
+            {
+                FindObjectOfType<HandVRMain>().BothHand = HandDetectionMode == HandDetection.Both;
             }
         }
 

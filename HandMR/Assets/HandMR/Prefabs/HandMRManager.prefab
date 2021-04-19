@@ -789,6 +789,11 @@ PrefabInstance:
       propertyPath: Id
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 8952861690991705910, guid: 4da6b4ac4b3064729a24505ac7d06f68,
+        type: 3}
+      propertyPath: ThisEitherHand
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8952861690991705915, guid: 4da6b4ac4b3064729a24505ac7d06f68,
         type: 3}
       propertyPath: m_Name

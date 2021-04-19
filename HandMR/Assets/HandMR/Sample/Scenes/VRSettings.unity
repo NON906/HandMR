@@ -3084,6 +3084,13 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 518884542284124932, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Please capture floor,
+
+        and move camera.'
+      objectReference: {fileID: 0}
     - target: {fileID: 1065566440781101239, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
       propertyPath: m_RootOrder
@@ -3151,6 +3158,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1448683349813166025, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
+      propertyPath: HandDetectionMode
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1448683349813166025, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
       propertyPath: IsEnabledHandsTracking
       value: 0
       objectReference: {fileID: 0}
@@ -3163,6 +3175,20 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: HandMRManager
+      objectReference: {fileID: 0}
+    - target: {fileID: 1853515811184790206, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Please capture floor,
+
+        and move camera.'
+      objectReference: {fileID: 0}
+    - target: {fileID: 6101793165686051837, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
+        type: 3}
+      propertyPath: m_Text
+      value: 'Please capture floor,
+
+        and move camera.'
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 5714927333909319870, guid: 0e7c6102d4e3343adbce6fd281bf94aa, type: 3}

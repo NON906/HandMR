@@ -18,17 +18,10 @@ namespace HandMR
         public InputField HandPositionXInputField;
         public Slider HandPositionYSlider;
         public InputField HandPositionYInputField;
-        //public Slider HandSizeSlider;
-        //public InputField HandSizeInputField;
-        //public Slider FisheyeFieldOfViewSlider;
-        //public InputField FisheyeFieldOfViewInputField;
-        //public Slider FisheyeRateSlider;
-        //public InputField FisheyeRateInputField;
-        //public Slider FisheyeCenterSlider;
-        //public InputField FisheyeCenterInputField;
         public Button HandSizeCalibResetButton;
         public Toggle ViewHandAreaToggle;
         public Button VRSettingsButton;
+        public Dropdown HandDetectionModeDropdown;
         public Canvas MenuCanvas;
 
         int googleModeDefault_;
@@ -37,11 +30,8 @@ namespace HandMR
         int screenSizeDefault_;
         float handPositionXDefault_;
         float handPositionYDefault_;
-        //float handSizeDefault_;
-        //float fisheyeFieldOfViewDefault_;
-        //float fisheyeRateDefault_;
-        //float fisheyeCenterDefault_;
         bool viewHandAreaDefault_;
+        int handDetectionModeDefault_;
 
         void settingDefaultValues()
         {
@@ -51,11 +41,8 @@ namespace HandMR
             screenSizeDefault_ = ScreenSizeDropdown.value;
             handPositionXDefault_ = HandPositionXSlider.value;
             handPositionYDefault_ = HandPositionYSlider.value;
-            //handSizeDefault_ = HandSizeSlider.value;
-            //fisheyeFieldOfViewDefault_ = FisheyeFieldOfViewSlider.value;
-            //fisheyeRateDefault_ = FisheyeRateSlider.value;
-            //fisheyeCenterDefault_ = FisheyeCenterSlider.value;
             viewHandAreaDefault_ = ViewHandAreaToggle.isOn;
+            handDetectionModeDefault_ = HandDetectionModeDropdown.value;
         }
 
         void saveValues()
@@ -66,11 +53,8 @@ namespace HandMR
             PlayerPrefs.SetInt("HandMR_ScreenSize", ScreenSizeDropdown.value);
             PlayerPrefs.SetFloat("HandMR_HandPositionX", HandPositionXSlider.value);
             PlayerPrefs.SetFloat("HandMR_HandPositionY", HandPositionYSlider.value);
-            //PlayerPrefs.SetFloat("HandMR_HandSize", HandSizeSlider.value);
-            //PlayerPrefs.SetFloat("HandMR_FisheyeFieldOfView", FisheyeFieldOfViewSlider.value);
-            //PlayerPrefs.SetFloat("HandMR_FisheyeRate", FisheyeRateSlider.value);
-            //PlayerPrefs.SetFloat("HandMR_FisheyeCenter", FisheyeCenterSlider.value);
             PlayerPrefs.SetInt("HandMR_HandArea", ViewHandAreaToggle.isOn ? 1 : 0);
+            PlayerPrefs.SetInt("HandMR_HandDetectionMode", HandDetectionModeDropdown.value);
             PlayerPrefs.Save();
         }
 
@@ -87,12 +71,6 @@ namespace HandMR
                     HandPositionXInputField.interactable = true;
                     HandPositionYSlider.interactable = true;
                     HandPositionYInputField.interactable = true;
-                    //FisheyeFieldOfViewSlider.interactable = false;
-                    //FisheyeFieldOfViewInputField.interactable = false;
-                    //FisheyeRateSlider.interactable = false;
-                    //FisheyeRateInputField.interactable = false;
-                    //FisheyeCenterSlider.interactable = false;
-                    //FisheyeCenterInputField.interactable = false;
                     ViewHandAreaToggle.interactable = false;
                     VRSettingsButton.interactable = false;
                     break;
@@ -105,12 +83,6 @@ namespace HandMR
                     HandPositionXInputField.interactable = true;
                     HandPositionYSlider.interactable = true;
                     HandPositionYInputField.interactable = true;
-                    //FisheyeFieldOfViewSlider.interactable = false;
-                    //FisheyeFieldOfViewInputField.interactable = false;
-                    //FisheyeRateSlider.interactable = false;
-                    //FisheyeRateInputField.interactable = false;
-                    //FisheyeCenterSlider.interactable = false;
-                    //FisheyeCenterInputField.interactable = false;
                     ViewHandAreaToggle.interactable = false;
                     VRSettingsButton.interactable = false;
                     break;
@@ -123,12 +95,6 @@ namespace HandMR
                     HandPositionXInputField.interactable = true;
                     HandPositionYSlider.interactable = false;
                     HandPositionYInputField.interactable = false;
-                    //FisheyeFieldOfViewSlider.interactable = true;
-                    //FisheyeFieldOfViewInputField.interactable = true;
-                    //FisheyeRateSlider.interactable = true;
-                    //FisheyeRateInputField.interactable = true;
-                    //FisheyeCenterSlider.interactable = true;
-                    //FisheyeCenterInputField.interactable = true;
                     ViewHandAreaToggle.interactable = true;
                     VRSettingsButton.interactable = true;
                     break;
@@ -141,12 +107,6 @@ namespace HandMR
                     HandPositionXInputField.interactable = true;
                     HandPositionYSlider.interactable = false;
                     HandPositionYInputField.interactable = false;
-                    //FisheyeFieldOfViewSlider.interactable = false;
-                    //FisheyeFieldOfViewInputField.interactable = false;
-                    //FisheyeRateSlider.interactable = false;
-                    //FisheyeRateInputField.interactable = false;
-                    //FisheyeCenterSlider.interactable = false;
-                    //FisheyeCenterInputField.interactable = false;
                     ViewHandAreaToggle.interactable = false;
                     VRSettingsButton.interactable = false;
                     break;
@@ -159,12 +119,6 @@ namespace HandMR
                     HandPositionXInputField.interactable = false;
                     HandPositionYSlider.interactable = false;
                     HandPositionYInputField.interactable = false;
-                    //FisheyeFieldOfViewSlider.interactable = false;
-                    //FisheyeFieldOfViewInputField.interactable = false;
-                    //FisheyeRateSlider.interactable = false;
-                    //FisheyeRateInputField.interactable = false;
-                    //FisheyeCenterSlider.interactable = false;
-                    //FisheyeCenterInputField.interactable = false;
                     ViewHandAreaToggle.interactable = false;
                     VRSettingsButton.interactable = false;
                     break;
@@ -212,20 +166,9 @@ namespace HandMR
             float posYValue = PlayerPrefs.GetFloat("HandMR_HandPositionY", handPositionYDefault_);
             HandPositionYSlider.value = posYValue;
             HandPositionYInputField.text = "" + (int)posYValue;
-            //float handSizeValue = PlayerPrefs.GetFloat("HandMR_HandSize", handSizeDefault_);
-            //HandSizeSlider.value = handSizeValue;
-            //HandSizeInputField.text = "" + (int)handSizeValue;
-            //float fisheyeFieldOfView = PlayerPrefs.GetFloat("HandMR_FisheyeFieldOfView", fisheyeFieldOfViewDefault_);
-            //FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
-            //FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
-            //float fisheyeRate = PlayerPrefs.GetFloat("HandMR_FisheyeRate", fisheyeRateDefault_);
-            //FisheyeRateSlider.value = fisheyeRate;
-            //FisheyeRateInputField.text = "" + (int)fisheyeRate;
-            //float fisheyeCenter = PlayerPrefs.GetFloat("HandMR_FisheyeCenter", fisheyeCenterDefault_);
-            //FisheyeCenterSlider.value = fisheyeCenter;
-            //FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
             bool viewHandArea = PlayerPrefs.GetInt("HandMR_HandArea", viewHandAreaDefault_ ? 1 : 0) != 0;
             ViewHandAreaToggle.isOn = viewHandArea;
+            HandDetectionModeDropdown.value = PlayerPrefs.GetInt("HandMR_HandDetectionMode", handDetectionModeDefault_);
 
             settingEnabled();
 
@@ -265,20 +208,9 @@ namespace HandMR
             float posYValue = handPositionYDefault_;
             HandPositionYSlider.value = posYValue;
             HandPositionYInputField.text = "" + (int)posYValue;
-            //float handSizeValue = handSizeDefault_;
-            //HandSizeSlider.value = handSizeValue;
-            //HandSizeInputField.text = "" + (int)handSizeValue;
-            //float fisheyeFieldOfView = fisheyeFieldOfViewDefault_;
-            //FisheyeFieldOfViewSlider.value = fisheyeFieldOfView;
-            //FisheyeFieldOfViewInputField.text = "" + (int)fisheyeFieldOfView;
-            //float fisheyeRate = fisheyeRateDefault_;
-            //FisheyeRateSlider.value = fisheyeRate;
-            //FisheyeRateInputField.text = "" + (int)fisheyeRate;
-            //float fisheyeCenter = fisheyeCenterDefault_;
-            //FisheyeCenterSlider.value = fisheyeCenter;
-            //FisheyeCenterInputField.text = "" + (int)fisheyeCenter;
             bool viewHandArea = viewHandAreaDefault_;
             ViewHandAreaToggle.isOn = viewHandArea;
+            HandDetectionModeDropdown.value = handDetectionModeDefault_;
 
             settingEnabled();
         }
@@ -340,70 +272,6 @@ namespace HandMR
         {
             endEditInputField(HandPositionYInputField, HandPositionYSlider);
         }
-
-        /*
-        public void HandSizeSliderChanged(float val)
-        {
-            changeSlider(HandSizeInputField, val);
-        }
-
-        public void HandSizeInputFieldChanged(string val)
-        {
-            changeInputField(HandSizeSlider, val);
-        }
-
-        public void HandSizeInputFieldEndEdit(string val)
-        {
-            endEditInputField(HandSizeInputField, HandSizeSlider);
-        }
-        */
-
-        /*
-        public void FisheyeFieldOfViewSliderChanged(float val)
-        {
-            changeSlider(FisheyeFieldOfViewInputField, val);
-        }
-
-        public void FisheyeFieldOfViewInputFieldChanged(string val)
-        {
-            changeInputField(FisheyeFieldOfViewSlider, val);
-        }
-
-        public void FisheyeFieldOfViewInputFieldEndEdit(string val)
-        {
-            endEditInputField(FisheyeFieldOfViewInputField, FisheyeFieldOfViewSlider);
-        }
-
-        public void FisheyeRateSliderChanged(float val)
-        {
-            changeSlider(FisheyeRateInputField, val);
-        }
-
-        public void FisheyeRateInputFieldChanged(string val)
-        {
-            changeInputField(FisheyeRateSlider, val);
-        }
-
-        public void FisheyeRateInputFieldEndEdit(string val)
-        {
-            endEditInputField(FisheyeRateInputField, FisheyeRateSlider);
-        }
-
-        public void FisheyeCenterSliderChanged(float val)
-        {
-            changeSlider(FisheyeCenterInputField, val);
-        }
-
-        public void FisheyeCenterInputFieldChanged(string val)
-        {
-            changeInputField(FisheyeCenterSlider, val);
-        }
-
-        public void FisheyeCenterInputFieldEndEdit(string val)
-        {
-            endEditInputField(FisheyeCenterInputField, FisheyeCenterSlider);
-        }
-        */
 
         public void HandSizeCalibButton()
         {

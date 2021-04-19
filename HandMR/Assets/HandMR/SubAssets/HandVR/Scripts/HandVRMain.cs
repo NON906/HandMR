@@ -54,6 +54,11 @@ namespace HandMR
                 return height_;
             }
         }
+        public bool BothHand
+        {
+            get;
+            set;
+        } = true;
 
         float[,][] landmarkArray_ = new float[2, 21][];
         double focalLength_;
@@ -97,7 +102,7 @@ namespace HandMR
         [DllImport("__Internal")]
         static extern void multiHandCleanup();
         [DllImport("__Internal")]
-        static extern void multiHandSetup(IntPtr graphName, int width, int height);
+        static extern void multiHandSetup(IntPtr graphName, int width, int height, int hands);
         [DllImport("__Internal")]
         static extern void multiHandSetFrame(IntPtr frameSource, int frameSourceSize);
         [DllImport("__Internal")]
@@ -110,6 +115,8 @@ namespace HandMR
         static extern bool multiHandGetIsUpdated();
         [DllImport("__Internal")]
         static extern int multiHandGetHandednesses(int id);
+        [DllImport("__Internal")]
+        static extern float multiHandGetHandednessesScore(int id);
 
         [DllImport("__Internal")]
         static extern void hand3dInit([In]string filePath);
@@ -136,7 +143,7 @@ namespace HandMR
         [DllImport("multiHand")]
         static extern void multiHandCleanup();
         [DllImport("multiHand")]
-        static extern void multiHandSetup(IntPtr graphName, int width, int height);
+        static extern void multiHandSetup(IntPtr graphName, int width, int height, int hands);
         [DllImport("multiHand")]
         static extern void multiHandSetFrame(IntPtr frameSource, int frameSourceSize);
         [DllImport("multiHand")]
@@ -149,6 +156,8 @@ namespace HandMR
         static extern bool multiHandGetIsUpdated();
         [DllImport("multiHand")]
         static extern int multiHandGetHandednesses(int id);
+        [DllImport("multiHand")]
+        static extern float multiHandGetHandednessesScore(int id);
 
         [DllImport("multiHand")]
         static extern void hand3dInit([In] string filePath);
@@ -243,7 +252,7 @@ namespace HandMR
             filpMaterial_ = new Material(FlipShader);
 
             IntPtr graphName = Marshal.StringToHGlobalAnsi(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/hand_cpu.pbtxt");
-            multiHandSetup(graphName, width_, height_);
+            multiHandSetup(graphName, width_, height_, BothHand ? 2 : 1);
             Marshal.FreeHGlobal(graphName);
 
             multiHandStartRunningGraph();
@@ -330,7 +339,7 @@ namespace HandMR
                 using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
                 using (AndroidJavaObject currentUnityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
                 {
-                    multiHandMain_ = new AndroidJavaObject("online.mumeigames.mediapipe.apps.multihandtrackinggpu.MultiHandMain", currentUnityActivity, width_, height_);
+                    multiHandMain_ = new AndroidJavaObject("online.mumeigames.mediapipe.apps.multihandtrackinggpu.MultiHandMain", currentUnityActivity, width_, height_, BothHand ? 2 : 1);
                 }
 
                 multiHandMain_.Call("startRunningGraph");
@@ -339,7 +348,7 @@ namespace HandMR
 
 #if UNITY_IOS && !UNITY_EDITOR
                 IntPtr graphName = Marshal.StringToHGlobalAnsi("handcputogpu");
-                multiHandSetup(graphName, width_, height_);
+                multiHandSetup(graphName, width_, height_, BothHand ? 2 : 1);
                 Marshal.FreeHGlobal(graphName);
 
                 multiHandStartRunningGraph();
@@ -643,6 +652,97 @@ namespace HandMR
 #endif
 
             return ret;
+        }
+
+        public float GetHandednessesScore(int id)
+        {
+            float ret;
+
+#if UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+            if (!isMultiHandEnabled_)
+            {
+                return -1f;
+            }
+#endif
+
+#if UNITY_ANDROID && !UNITY_EDITOR
+            ret = multiHandMain_.Call<float>("getHandednessesScore", id);
+#elif UNITY_IOS && !UNITY_EDITOR || UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+            ret = multiHandGetHandednessesScore(id);
+#else
+            ret = -1f;
+#endif
+
+            return ret;
+        }
+
+        public float GetHandednessesScoreOnLeft(int id)
+        {
+            float score = GetHandednessesScore(id);
+            if (score < 0f)
+            {
+                return -1f;
+            }
+
+            return GetHandednesses(id) == 0 ? score : 1f - score;
+        }
+
+        public int GetIdFromHandednesses(HandVRSphereHand.EitherHand hand)
+        {
+            float score0 = GetHandednessesScoreOnLeft(0);
+            float score1 = GetHandednessesScoreOnLeft(1);
+
+            if (score0 < 0f && score1 < 0f)
+            {
+                return -1;
+            }
+            else if (!BothHand)
+            {
+                if (score0 < 0f)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            else if (score0 < 0f)
+            {
+                if (hand == HandVRSphereHand.EitherHand.Left && score1 >= 0.5f ||
+                    hand == HandVRSphereHand.EitherHand.Right && score1 < 0.5f)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else if (score1 < 0f)
+            {
+                if (hand == HandVRSphereHand.EitherHand.Left && score0 >= 0.5f ||
+                    hand == HandVRSphereHand.EitherHand.Right && score0 < 0.5f)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                if (hand == HandVRSphereHand.EitherHand.Left && score0 >= score1 ||
+                    hand == HandVRSphereHand.EitherHand.Right && score0 < score1)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
         }
 
         public Vector3 GetHandDirection(int id)

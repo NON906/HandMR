@@ -107,6 +107,22 @@
     {
         "en" : "VR Setting",
         "jp" : "VR設定"
+    },
+    {
+        "en" : "Hand Detection Mode",
+        "jp" : "手の認識"
+    },
+    {
+        "en" : "Both",
+        "jp" : "両手"
+    },
+    {
+        "en" : "Left Only",
+        "jp" : "左手のみ"
+    },
+    {
+        "en" : "Right Only",
+        "jp" : "右手のみ"
     }
 ]
 }

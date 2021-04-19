@@ -61,10 +61,11 @@
     <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/GazeInput.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/License.cs" />
     <Compile Include="Assets/HandMR/SubAssets/Fisheye/Scripts/Fisheye.cs" />
+    <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/VRSettings.cs" />
     <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/HologlaARKitVideo.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandSizeCalib/Scripts/HandSizeCalibMain.cs" />
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/CanCarryObject.cs" />
-    <Compile Include="Assets/HandMR/Settings/SettingFromPlayerPrefs.cs" />
+    <Compile Include="Assets/HandMR/Scripts/SettingFromPlayerPrefs.cs" />
     <Compile Include="Assets/HandMR/3rdParty/Hologla/Scripts/Samples/DanglaMenuSample.cs" />
     <Compile Include="Assets/HandMR/SubAssets/MRHand/Scripts/MRHandFingerLine.cs" />
     <Compile Include="Assets/HandMR/SubAssets/ARVR/Scripts/CameraTarget.cs" />
@@ -92,7 +93,6 @@
     <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/Menu.cs" />
     <Compile Include="Assets/HandMR/SubAssets/ARVR/Scripts/TrackingCameraPosition.cs" />
     <Compile Include="Assets/HandMR/Scripts/HandMRInputModule.cs" />
-    <Compile Include="Assets/HandMR/SubAssets/HandVRSample/Scripts/VRSettings.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets/HandMR/SubAssets/HandVR/Plugins/Windows/multiHand.dll" />

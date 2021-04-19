@@ -12,7 +12,7 @@ namespace HandMR
             Right
         }
 
-        public int Id;
+        public EitherHand ThisEitherHand = EitherHand.Left;
 
         Transform[] fingers_ = new Transform[21];
         bool[] fingerTracking_ = new bool[5];
@@ -32,12 +32,6 @@ namespace HandMR
             get;
             private set;
         }
-
-        public EitherHand ThisEitherHand
-        {
-            get;
-            private set;
-        } = EitherHand.Left;
 
         public bool IsTrackingHand
         {
@@ -74,7 +68,7 @@ namespace HandMR
                 if (posObj != null)
                 {
                     fingers_[posObj.Index] = child;
-                    posObj.Id = Id;
+                    posObj.ThisEitherHand = ThisEitherHand;
                 }
             }
         }
@@ -112,8 +106,11 @@ namespace HandMR
 
             if (IsTrackingHand)
             {
-                HandDirection = handVRMain_.GetHandDirection(Id);
-                ThisEitherHand = handVRMain_.GetHandednesses(Id) == 0 ? EitherHand.Left : EitherHand.Right;
+                int id = handVRMain_.GetIdFromHandednesses(ThisEitherHand);
+                if (id >= 0)
+                {
+                    HandDirection = handVRMain_.GetHandDirection(id);
+                }
             }
         }
 
