@@ -39,6 +39,15 @@ namespace HandMR
 
         void Update()
         {
+            if (handVRMain_ == null)
+            {
+                handVRMain_ = FindObjectOfType<HandVRMain>();
+            }
+            if (handVRMain_ == null)
+            {
+                return;
+            }
+
             int id = handVRMain_.GetIdFromHandednesses(ThisEitherHand);
             if (id < 0)
             {

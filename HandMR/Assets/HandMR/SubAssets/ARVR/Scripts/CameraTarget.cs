@@ -15,6 +15,12 @@ namespace HandMR
         public bool TouchReset;
         public bool BackgroundObjAutoDisable = true;
 
+        public Transform CenterTransform
+        {
+            get;
+            set;
+        } = null;
+
         public bool PlaneDetectEnabled
         {
             get;
@@ -38,12 +44,40 @@ namespace HandMR
             get;
         } = false;
 
+        public static bool IsTakeOver
+        {
+            get;
+            set;
+        } = false;
+        static Vector3 takeOverPosition_;
+        static Quaternion takeOverRotation_;
+        bool takeOverFlag_ = false;
+
         void OnDestroy()
         {
+            if (IsTakeOver)
+            {
+                takeOverPosition_ = transform.position;
+                takeOverRotation_ = transform.rotation;
+            }
+            else
+            {
 #if DOWNLOADED_ARFOUNDATION
-            LoaderUtility.Deinitialize();
-            LoaderUtility.Initialize();
+                LoaderUtility.Deinitialize();
+                LoaderUtility.Initialize();
 #endif
+            }
+        }
+
+        void Awake()
+        {
+            if (IsTakeOver)
+            {
+                poseCenter_ = -takeOverPosition_;
+                poseCenterRotation_ = Quaternion.Euler(0f, -takeOverRotation_.eulerAngles.y, 0f);
+
+                takeOverFlag_ = true;
+            }
         }
 
         void Start()
@@ -60,7 +94,7 @@ namespace HandMR
                 Cameras[loop].cullingMask = 1 << LayerMask.NameToLayer("BackGround");
             }
 
-            if (!PlaneDetectEnabled)
+            if (!PlaneDetectEnabled || takeOverFlag_)
             {
                 // カメラ画像の切り替え
                 disableCameraImage();
@@ -103,8 +137,16 @@ namespace HandMR
             if (!PlaneDetectEnabled)
             {
                 // 移動
-                transform.position = PoseDriverTrans.position;
-                transform.rotation = PoseDriverTrans.rotation;
+                if (CenterTransform != null)
+                {
+                    transform.position = CenterTransform.rotation * PoseDriverTrans.position + CenterTransform.position;
+                    transform.rotation = CenterTransform.rotation * PoseDriverTrans.rotation;
+                }
+                else
+                {
+                    transform.position = PoseDriverTrans.position;
+                    transform.rotation = PoseDriverTrans.rotation;
+                }
 
                 return;
             }
@@ -138,13 +180,17 @@ namespace HandMR
                 {
                     plane_ = newPlane;
 
-                    ResetPosition();
+                    if (!takeOverFlag_)
+                    {
+                        ResetPosition();
 
-                    // カメラ画像の切り替え
-                    disableCameraImage();
+                        // カメラ画像の切り替え
+                        disableCameraImage();
+                    }
+                    takeOverFlag_ = false;
                 }
 
-                if (plane_ == null)
+                if (plane_ == null && !takeOverFlag_)
                 {
                     // カメラ画像の切り替え
                     if (BackgroundObj != null)
@@ -165,8 +211,16 @@ namespace HandMR
             }
 
             // 移動
-            transform.position = Quaternion.Inverse(poseCenterRotation_) * (PoseDriverTrans.position - poseCenter_);
-            transform.rotation = Quaternion.Inverse(poseCenterRotation_) * PoseDriverTrans.rotation;
+            if (CenterTransform != null)
+            {
+                transform.position = CenterTransform.rotation * Quaternion.Inverse(poseCenterRotation_) * (PoseDriverTrans.position - poseCenter_) + CenterTransform.position;
+                transform.rotation = CenterTransform.rotation * Quaternion.Inverse(poseCenterRotation_) * PoseDriverTrans.rotation;
+            }
+            else
+            {
+                transform.position = Quaternion.Inverse(poseCenterRotation_) * (PoseDriverTrans.position - poseCenter_);
+                transform.rotation = Quaternion.Inverse(poseCenterRotation_) * PoseDriverTrans.rotation;
+            }
 #endif
         }
 

@@ -109,7 +109,7 @@ MonoBehaviour:
   FreezePositionX: 0
   FreezePositionY: 0
   FreezePositionZ: 0
-  IsEnabledHandsTracking: 1
+  HandDetectionMode: 0
   SkipDetectFloor: 0
   Hands:
   - {fileID: 4893204174833528067}

@@ -35,12 +35,14 @@ namespace HandMR
         }
 
         public GameObject[] VRBackgroundObjects;
+        public bool VRSkyBox = false;
         public Color VRBackColor;
         public bool FreezePositionX = false;
         public bool FreezePositionY = false;
         public bool FreezePositionZ = false;
         public HandDetection HandDetectionMode = HandDetection.Both;
         public bool SkipDetectFloor = false;
+        public Transform CenterTransform = null;
 
         public SetParentMainCamera[] Hands;
         public GameObject MRObject;
@@ -283,6 +285,8 @@ namespace HandMR
             {
                 FindObjectOfType<HandVRMain>().BothHand = HandDetectionMode == HandDetection.Both;
             }
+
+            GetMainObject().GetComponentInChildren<CameraTarget>().CenterTransform = CenterTransform;
         }
 
         void LateUpdate()
@@ -292,13 +296,21 @@ namespace HandMR
                 foreach (Fisheye fisheye in fisheyes_)
                 {
                     Camera camera = fisheye.GetComponent<Camera>();
-                    camera.clearFlags = CameraClearFlags.SolidColor;
                     if (!VRSubCamera.activeInHierarchy)
                     {
-                        camera.backgroundColor = VRBackColor;
+                        if (VRSkyBox)
+                        {
+                            camera.clearFlags = CameraClearFlags.Skybox;
+                        }
+                        else
+                        {
+                            camera.clearFlags = CameraClearFlags.SolidColor;
+                            camera.backgroundColor = VRBackColor;
+                        }
                     }
                     else
                     {
+                        camera.clearFlags = CameraClearFlags.SolidColor;
                         camera.backgroundColor = Color.black;
                     }
 
@@ -320,6 +332,25 @@ namespace HandMR
                 case Mode.VRSingle:
                 case Mode.AR:
                     ret = ARCamera;
+                    break;
+            }
+
+            return ret;
+        }
+
+        public GameObject GetMainObject()
+        {
+            GameObject ret = null;
+
+            switch (ViewMode)
+            {
+                case Mode.MR:
+                case Mode.VR:
+                    ret = MRObject;
+                    break;
+                case Mode.VRSingle:
+                case Mode.AR:
+                    ret = ARObject;
                     break;
             }
 
