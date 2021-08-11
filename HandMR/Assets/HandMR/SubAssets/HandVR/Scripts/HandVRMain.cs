@@ -71,6 +71,7 @@ namespace HandMR
         int height_ = 0;
         Texture2D texture2D_;
         Material filpMaterial_;
+        bool[] handsFlip_ = new bool[2];
 
 #if DOWNLOADED_ARFOUNDATION
         ARCameraManager cameraManager_;
@@ -588,6 +589,13 @@ namespace HandMR
                     landmarkArray_[id, index][1] = (landmarkArray_[id, index][1] + ShiftY) * -1f;
                     landmarkArray_[id, index][2] += (float)(focalLength_ * mulSize);
                 }
+
+                handsFlip_[id] = false;
+                Vector3 direction = rotationQuaternions_[id] * Vector3.forward;
+                if ((direction.z < 0f) == (GetHandednesses(id) == 0))
+                {
+                    handsFlip_[id] = true;
+                }
             }
         }
 
@@ -678,10 +686,19 @@ namespace HandMR
 
         public float GetHandednessesScoreOnLeft(int id)
         {
-            float score = GetHandednessesScore(id);
-            if (score < 0f)
+            float score;
+
+            if (handsFlip_[id])
             {
-                return -1f;
+                score = 0.4999f;
+            }
+            else
+            {
+                score = GetHandednessesScore(id);
+                if (score < 0f)
+                {
+                    return -1f;
+                }
             }
 
             return GetHandednesses(id) == 0 ? score : 1f - score;
@@ -709,8 +726,9 @@ namespace HandMR
             }
             else if (score0 < 0f)
             {
-                if (hand == HandVRSphereHand.EitherHand.Left && score1 >= 0.5f ||
-                    hand == HandVRSphereHand.EitherHand.Right && score1 < 0.5f)
+                if (score1 >= 0f &&
+                    (hand == HandVRSphereHand.EitherHand.Left && score1 >= 0.5f ||
+                    hand == HandVRSphereHand.EitherHand.Right && score1 < 0.5f))
                 {
                     return 1;
                 }
@@ -748,7 +766,7 @@ namespace HandMR
         public Vector3 GetHandDirection(int id)
         {
             Vector3 ret = rotationQuaternions_[id] * Vector3.forward;
-            if (GetHandednesses(id) != 0)
+            if (GetHandednesses(id) != 0 == !handsFlip_[id])
             {
                 ret = Quaternion.Euler(0f, 180f, 0f) * ret;
             }
@@ -758,7 +776,7 @@ namespace HandMR
         public Quaternion GetHandRotation(int id)
         {
             Quaternion ret = rotationQuaternions_[id];
-            if (GetHandednesses(id) != 0)
+            if (GetHandednesses(id) != 0 == !handsFlip_[id])
             {
                 ret = Quaternion.Euler(0f, 180f, 0f) * ret;
             }
