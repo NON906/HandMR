@@ -64,11 +64,11 @@ namespace HandMR
 
                 if (PlayerPrefs.GetInt("HandMR_PhonePosition", 0) == 0)
                 {
-                    HandVRMainObj.ShiftY = PlayerPrefs.GetFloat("HandMR_HandPositionY", 0f) * 0.001f;
+                    HandVRMainObj.ShiftY = PlayerPrefs.GetFloat("HandMR_HandPositionY", 0f) * -0.001f;
                 }
                 else
                 {
-                    HandVRMainObj.ShiftY = PlayerPrefs.GetFloat("HandMR_HandPositionY", 0f) * -0.001f;
+                    HandVRMainObj.ShiftY = PlayerPrefs.GetFloat("HandMR_HandPositionY", 0f) * 0.001f;
                     LeftButton.localScale = new Vector3(LeftButton.localScale.x, -LeftButton.localScale.y, LeftButton.localScale.z);
                     RightButton.localScale = new Vector3(RightButton.localScale.x, -RightButton.localScale.y, RightButton.localScale.z);
                 }

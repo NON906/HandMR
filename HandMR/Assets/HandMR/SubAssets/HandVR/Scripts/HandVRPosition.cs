@@ -7,6 +7,8 @@ namespace HandMR
 {
     public class HandVRPosition : MonoBehaviour
     {
+        const float DISABLE_TIME = 0.1f;
+
         public int Index;
 
         public HandVRSphereHand.EitherHand ThisEitherHand
@@ -25,6 +27,7 @@ namespace HandMR
         Vector3 position_;
         Rigidbody rigidbody_;
         Renderer renderer_;
+        float currentDisableTime_ = 0f;
 
         void Start()
         {
@@ -51,11 +54,14 @@ namespace HandMR
             int id = handVRMain_.GetIdFromHandednesses(ThisEitherHand);
             if (id < 0)
             {
-                if (renderer_ != null)
-                {
-                    renderer_.enabled = false;
-                }
                 PhysicEnabled = false;
+                if (Time.unscaledTime > currentDisableTime_)
+                {
+                    if (renderer_ != null)
+                    {
+                        renderer_.enabled = false;
+                    }
+                }
                 return;
             }
 
@@ -69,14 +75,18 @@ namespace HandMR
                 PhysicEnabled = true;
 
                 position_ = new Vector3(posVecArray[0], posVecArray[1], posVecArray[2]);
+                currentDisableTime_ = Time.unscaledTime + DISABLE_TIME;
             }
             else
             {
-                if (renderer_ != null)
-                {
-                    renderer_.enabled = false;
-                }
                 PhysicEnabled = false;
+                if (Time.unscaledTime > currentDisableTime_)
+                {
+                    if (renderer_ != null)
+                    {
+                        renderer_.enabled = false;
+                    }
+                }
             }
         }
 
