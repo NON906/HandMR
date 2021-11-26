@@ -87,6 +87,6 @@ D. HologlaSDK-Unity MIT License
 
 Copyright (c) 2019 Hologram Co., Ltd.
 
-E. hand-gesture-recognition-using-mediapipe
+E. hand-gesture-recognition-using-mediapipe Apache2.0
 
 Author: Kazuhito Takahashi
