@@ -216,6 +216,7 @@ namespace HandMR
                 bool grabed = false;
                 if (GrabDetect)
                 {
+#if false
                     grabed = true;
                     bool opened = true;
                     for (int loop = 1; loop < 5; loop++)
@@ -238,6 +239,9 @@ namespace HandMR
                     {
                         handIsOpened = true;
                     }
+#endif
+                    grabed = hand.IsGrab;
+                    handIsOpened = !grabed;
                 }
 
                 Vector3 forward = (hand.GetFinger(8).position - cameraTrans.position).normalized;

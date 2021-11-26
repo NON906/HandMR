@@ -123,6 +123,18 @@
     {
         "en" : "Right Only",
         "jp" : "右手のみ"
+    },
+    {
+        "en" : "Intensity",
+        "jp" : "歪み強度"
+    },
+    {
+        "en" : "Center Position",
+        "jp" : "中心"
+    },
+    {
+        "en" : "Scale",
+        "jp" : "スケール"
     }
 ]
 }

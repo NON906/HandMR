@@ -143,6 +143,7 @@ MonoBehaviour:
   - {fileID: 3580116800796775627}
   - {fileID: 5263093503851777461}
   - {fileID: 88228583885917746}
+  URPMaterial: {fileID: 2100000, guid: 8009a8921bdf36b448deb83c4107b940, type: 2}
 --- !u!1 &7105902829138706899
 GameObject:
   m_ObjectHideFlags: 0

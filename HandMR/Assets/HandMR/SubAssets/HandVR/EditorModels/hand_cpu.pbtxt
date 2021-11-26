@@ -2,13 +2,67 @@ type: "HandCpu"
 
 input_stream: "input_video"
 input_side_packet: "NUM_HANDS:num_hands"
+input_side_packet: "MODEL_COMPLEXITY:model_complexity"
+input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
 output_stream: "LANDMARKS:multi_hand_landmarks"
 output_stream: "HANDEDNESS:multi_handedness"
+output_stream: "ITERABLE:gestures"
 
 node: {
   calculator: "HandLandmarkTrackingCpu"
   input_stream: "IMAGE:input_video"
   input_side_packet: "NUM_HANDS:num_hands"
+  input_side_packet: "MODEL_COMPLEXITY:model_complexity"
+  input_side_packet: "USE_PREV_LANDMARKS:use_prev_landmarks"
   output_stream: "LANDMARKS:multi_hand_landmarks"
   output_stream: "HANDEDNESS:multi_handedness"
+}
+
+node {
+  calculator:    "BeginLoopNormalizedLandmarkListVectorCalculator"
+  input_stream:  "ITERABLE:multi_hand_landmarks"
+  output_stream: "ITEM:input_element"
+  output_stream: "BATCH_END:ext_ts"
+}
+
+node {
+  calculator: "NormalizedLandmarkListToLandmarkListCalculator"
+  input_stream: "NORM:input_element"
+  output_stream: "OUTPUT:landmark_output"
+}
+
+node {
+  calculator: "LandmarksToTensorCalculator"
+  input_stream: "LANDMARKS:landmark_output"
+  output_stream: "TENSORS:input_tensor"
+  options: {
+    [mediapipe.LandmarksToTensorCalculatorOptions.ext] {
+      attributes: [X, Y]
+      flatten: true
+    }
+  }
+}
+
+node {
+  calculator: "InferenceCalculator"
+  input_stream: "TENSORS:input_tensor"
+  output_stream: "TENSORS:output_tensors"
+  options: {
+    [mediapipe.InferenceCalculatorOptions.ext] {
+      model_path: "keypoint_classifier.tflite"
+    }
+  }
+}
+
+node {
+  calculator: "TensorsToClassificationCalculator"
+  input_stream: "TENSORS:output_tensors"
+  output_stream: "CLASSIFICATIONS:gestures_inner"
+}
+
+node {
+  calculator:    "EndLoopClassificationListCalculator"
+  input_stream:  "ITEM:gestures_inner"
+  input_stream:  "BATCH_END:ext_ts"
+  output_stream: "ITERABLE:gestures"
 }

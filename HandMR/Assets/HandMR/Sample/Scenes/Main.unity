@@ -1295,7 +1295,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 8
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &530746569
 Canvas:
   m_ObjectHideFlags: 0
@@ -2134,7 +2134,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 8
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!223 &1048651209
 Canvas:
   m_ObjectHideFlags: 0
@@ -2429,36 +2429,6 @@ PrefabInstance:
       propertyPath: VRBackgroundObjects.Array.data[0]
       value: 
       objectReference: {fileID: 1643802720}
-    - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 1930387069}
-    - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Exit
-      objectReference: {fileID: 0}
-    - target: {fileID: 1465885335130758601, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 1739868430521908024, guid: 0e7c6102d4e3343adbce6fd281bf94aa,
         type: 3}
       propertyPath: m_Name
@@ -2566,6 +2536,44 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dcce829015dbc457db007fa2a703ad1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1503241291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503241284}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01614664b831546d2ae94a42149d80ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MoveRepeatDelay: 0.5
+  m_MoveRepeatRate: 0.1
+  m_ActionsAsset: {fileID: -944628639613478452, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_PointAction: {fileID: -1654692200621890270, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_MoveAction: {fileID: -8784545083839296357, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_SubmitAction: {fileID: 392368643174621059, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_CancelAction: {fileID: 7727032971491509709, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_LeftClickAction: {fileID: 3001919216989983466, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_MiddleClickAction: {fileID: -2185481485913320682, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_RightClickAction: {fileID: -4090225696740746782, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_ScrollWheelAction: {fileID: 6240969308177333660, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_TrackedDevicePositionAction: {fileID: 6564999863303420839, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_TrackedDeviceOrientationAction: {fileID: 7970375526676320489, guid: 6fc778047cba33e48985521a7127e5e6,
+    type: 3}
+  m_DeselectOnBackgroundClick: 1
+  m_PointerBehavior: 0
 --- !u!1 &1511143799
 GameObject:
   m_ObjectHideFlags: 0
@@ -3292,7 +3300,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1930387068}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bd07b98686dde4201833a245ce1f4564, type: 3}
   m_Name: 

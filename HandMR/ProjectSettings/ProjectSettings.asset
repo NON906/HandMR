@@ -633,6 +633,8 @@ PlayerSettings:
   switchNetworkInterfaceManagerInitializeEnabled: 1
   switchPlayerConnectionEnabled: 1
   switchUseNewStyleFilepaths: 0
+  switchUseMicroSleepForYield: 1
+  switchMicroSleepForYieldTime: 25
   ps4NPAgeRating: 12
   ps4NPTitleSecret: 
   ps4NPTrophyPackPath: 
@@ -730,7 +732,7 @@ PlayerSettings:
   scriptingDefineSymbols:
     1: DOWNLOADED_ARFOUNDATION;ENABLE_UNSAFE_CODE
     4: DOWNLOADED_HOLOGLA;DOWNLOADED_ARFOUNDATION;SETTING_PREFAB;ENABLE_UNSAFE_CODE
-    7: DOWNLOADED_HOLOGLA;DOWNLOADED_ARFOUNDATION;SETTING_PREFAB;ENABLE_UNSAFE_CODE
+    7: DOWNLOADED_HOLOGLA;SETTING_PREFAB;ENABLE_UNSAFE_CODE;DOWNLOADED_ARFOUNDATION
   additionalCompilerArguments: {}
   platformArchitecture:
     iPhone: 1

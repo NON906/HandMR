@@ -6,9 +6,13 @@ using System.Runtime.InteropServices;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 using UnityEngine;
+using UnityEngine.XR;
 #if DOWNLOADED_ARFOUNDATION
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
+using UnityEngine.InputSystem.XR;
 #endif
 
 namespace HandMR
@@ -22,9 +26,9 @@ namespace HandMR
         const float INTERVAL_TIME = 0.2f;
         const float DISABLE_TIME = 0.5f;
 #else
-        const float START_DELAY_TIME = 0f;
-        const float INTERVAL_TIME = 0.04f;
-        const float DISABLE_TIME = 0.1f;
+        const float START_DELAY_TIME = 0.1f;
+        const float INTERVAL_TIME = 0.1f;
+        const float DISABLE_TIME = 0.2f;
 #endif
 
         public float ShiftX = 0f;
@@ -59,6 +63,16 @@ namespace HandMR
             get;
             set;
         } = true;
+
+        public enum GestureType
+        {
+            Open,
+            Close,
+            Pointer,
+            Grab,
+            Two,
+            Unknown = -1
+        }
 
         float[,][] landmarkArray_ = new float[2, 21][];
         double focalLength_;
@@ -103,7 +117,7 @@ namespace HandMR
         [DllImport("__Internal")]
         static extern void multiHandCleanup();
         [DllImport("__Internal")]
-        static extern void multiHandSetup(IntPtr graphName, int width, int height, int hands);
+        static extern void multiHandSetup(IntPtr graphName, int width, int height, int hands, int modelComplexity);
         [DllImport("__Internal")]
         static extern void multiHandSetFrame(IntPtr frameSource, int frameSourceSize);
         [DllImport("__Internal")]
@@ -118,6 +132,8 @@ namespace HandMR
         static extern int multiHandGetHandednesses(int id);
         [DllImport("__Internal")]
         static extern float multiHandGetHandednessesScore(int id);
+        [DllImport("__Internal")]
+        static extern float multiHandGetGesture(int id, int index);
 
         [DllImport("__Internal")]
         static extern void hand3dInit([In]string filePath);
@@ -144,7 +160,7 @@ namespace HandMR
         [DllImport("multiHand")]
         static extern void multiHandCleanup();
         [DllImport("multiHand")]
-        static extern void multiHandSetup(IntPtr graphName, int width, int height, int hands);
+        static extern void multiHandSetup(IntPtr graphName, int width, int height, int hands, int modelComplexity);
         [DllImport("multiHand")]
         static extern void multiHandSetFrame(IntPtr frameSource, int frameSourceSize);
         [DllImport("multiHand")]
@@ -159,6 +175,8 @@ namespace HandMR
         static extern int multiHandGetHandednesses(int id);
         [DllImport("multiHand")]
         static extern float multiHandGetHandednessesScore(int id);
+        [DllImport("multiHand")]
+        static extern float multiHandGetGesture(int id, int index);
 
         [DllImport("multiHand")]
         static extern void hand3dInit([In] string filePath);
@@ -253,7 +271,7 @@ namespace HandMR
             filpMaterial_ = new Material(FlipShader);
 
             IntPtr graphName = Marshal.StringToHGlobalAnsi(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/hand_cpu.pbtxt");
-            multiHandSetup(graphName, width_, height_, BothHand ? 2 : 1);
+            multiHandSetup(graphName, width_, height_, BothHand ? 2 : 1, 0);
             Marshal.FreeHGlobal(graphName);
 
             multiHandStartRunningGraph();
@@ -340,7 +358,7 @@ namespace HandMR
                 using (AndroidJavaClass unityPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
                 using (AndroidJavaObject currentUnityActivity = unityPlayer.GetStatic<AndroidJavaObject>("currentActivity"))
                 {
-                    multiHandMain_ = new AndroidJavaObject("online.mumeigames.mediapipe.apps.multihandtrackinggpu.MultiHandMain", currentUnityActivity, width_, height_, BothHand ? 2 : 1);
+                    multiHandMain_ = new AndroidJavaObject("online.mumeigames.mediapipe.apps.multihandtrackinggpu.MultiHandMain", currentUnityActivity, width_, height_, BothHand ? 2 : 1, 0);
                 }
 
                 multiHandMain_.Call("startRunningGraph");
@@ -349,7 +367,7 @@ namespace HandMR
 
 #if UNITY_IOS && !UNITY_EDITOR
                 IntPtr graphName = Marshal.StringToHGlobalAnsi("handcputogpu");
-                multiHandSetup(graphName, width_, height_, BothHand ? 2 : 1);
+                multiHandSetup(graphName, width_, height_, BothHand ? 2 : 1, 0);
                 Marshal.FreeHGlobal(graphName);
 
                 multiHandStartRunningGraph();
@@ -652,6 +670,10 @@ namespace HandMR
 #endif
 
 #if UNITY_ANDROID && !UNITY_EDITOR
+            if (multiHandMain_ == null)
+            {
+                return -1;
+            }
             ret = multiHandMain_.Call<int>("getHandednesses", id);
 #elif UNITY_IOS && !UNITY_EDITOR || UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
             ret = multiHandGetHandednesses(id);
@@ -674,6 +696,10 @@ namespace HandMR
 #endif
 
 #if UNITY_ANDROID && !UNITY_EDITOR
+            if (multiHandMain_ == null)
+            {
+                return -1f;
+            }
             ret = multiHandMain_.Call<float>("getHandednessesScore", id);
 #elif UNITY_IOS && !UNITY_EDITOR || UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
             ret = multiHandGetHandednessesScore(id);
@@ -688,11 +714,13 @@ namespace HandMR
         {
             float score;
 
+            /*
             if (handsFlip_[id])
             {
                 score = 0.4999f;
             }
             else
+            */
             {
                 score = GetHandednessesScore(id);
                 if (score < 0f)
@@ -701,7 +729,7 @@ namespace HandMR
                 }
             }
 
-            return GetHandednesses(id) == 0 ? score : 1f - score;
+            return GetHandednesses(id) == 0 ? 1f - score : score;
         }
 
         public int GetIdFromHandednesses(HandVRSphereHand.EitherHand hand)
@@ -781,6 +809,22 @@ namespace HandMR
                 ret = Quaternion.Euler(0f, 180f, 0f) * ret;
             }
             return ret;
+        }
+
+        public float[] GetGestures(int id)
+        {
+#if UNITY_ANDROID && !UNITY_EDITOR
+            return multiHandMain_.Call<float[]>("getGestures", id);
+#elif UNITY_IOS && !UNITY_EDITOR || UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+            float[] ret = new float[5];
+            for (int loop = 0; loop < 5; loop++)
+            {
+                ret[loop] = multiHandGetGesture(id, loop);
+            }
+            return ret;
+#else
+            return null;
+#endif
         }
 
         void OnDestroy()

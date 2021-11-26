@@ -1,11 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if DOWNLOADED_ARFOUNDATION
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.XR;
+#endif
+using UnityEngine.XR;
 
 namespace HandMR
 {
     public class HandVRSphereHand : MonoBehaviour
     {
+        const bool KEEP_TRACKING_GRABED = true;
+
         public enum EitherHand
         {
             Left,
@@ -18,6 +25,10 @@ namespace HandMR
         bool[] fingerTracking_ = new bool[5];
         bool[] fingerOpened_ = new bool[5];
         HandVRMain handVRMain_;
+        HandMRManager handMRManager_;
+#if DOWNLOADED_ARFOUNDATION
+        HandMRInputDeviceState inputState_ = new HandMRInputDeviceState();
+#endif
 
         public Vector3 HandCenterPosition
         {
@@ -48,6 +59,16 @@ namespace HandMR
             }
         }
 
+        public bool IsGrab
+        {
+            get
+            {
+                var gestures = handVRMain_.GetGestures(handVRMain_.GetIdFromHandednesses(ThisEitherHand));
+                return gestures[(int)HandVRMain.GestureType.Open] < gestures[(int)HandVRMain.GestureType.Close]
+                    || gestures[(int)HandVRMain.GestureType.Open] < gestures[(int)HandVRMain.GestureType.Grab];
+            }
+        }
+
         bool calcFingerOpened(Vector3 rootVec, Vector3 tipVec, float targetCos)
         {
             rootVec.Normalize();
@@ -58,9 +79,26 @@ namespace HandMR
             return cos > targetCos;
         }
 
+        void startInputDevice()
+        {
+#if DOWNLOADED_ARFOUNDATION
+            if (XRController.leftHand == null && ThisEitherHand == EitherHand.Left)
+            {
+                var inputDevice = InputSystem.AddDevice<HandMRInputDevice>();
+                InputSystem.AddDeviceUsage(inputDevice, UnityEngine.InputSystem.CommonUsages.LeftHand);
+            }
+            if (XRController.rightHand == null && ThisEitherHand == EitherHand.Right)
+            {
+                var inputDevice = InputSystem.AddDevice<HandMRInputDevice>();
+                InputSystem.AddDeviceUsage(inputDevice, UnityEngine.InputSystem.CommonUsages.RightHand);
+            }
+#endif
+        }
+
         void Start()
         {
             handVRMain_ = FindObjectOfType<HandVRMain>();
+            handMRManager_ = FindObjectOfType<HandMRManager>();
 
             foreach (Transform child in transform)
             {
@@ -71,6 +109,58 @@ namespace HandMR
                     posObj.ThisEitherHand = ThisEitherHand;
                 }
             }
+
+            startInputDevice();
+        }
+
+        void inputUpdate()
+        {
+#if DOWNLOADED_ARFOUNDATION
+            int id = handVRMain_.GetIdFromHandednesses(ThisEitherHand);
+            if (!IsTrackingHand || id < 0)
+            {
+                if (!KEEP_TRACKING_GRABED || !inputState_.isGrab)
+                {
+                    inputState_.isTracked = false;
+                }
+                InputSystem.QueueStateEvent(ThisEitherHand == EitherHand.Left ? XRController.leftHand : XRController.rightHand, inputState_);
+                return;
+            }
+
+            inputState_.isTracked = true;
+
+            var gestures = handVRMain_.GetGestures(id);
+            inputState_.isGrab = gestures[(int)HandVRMain.GestureType.Open] < gestures[(int)HandVRMain.GestureType.Close]
+                || gestures[(int)HandVRMain.GestureType.Open] < gestures[(int)HandVRMain.GestureType.Grab];
+
+            int gesturesMaxId = 0;
+            float maxValue = 0f;
+            for (int gestureId = 0; gestureId < gestures.Length; gestureId++)
+            {
+                if (maxValue < gestures[gestureId])
+                {
+                    gesturesMaxId = gestureId;
+                    maxValue = gestures[gestureId];
+                }
+            }
+            inputState_.gestures = (uint)1 << gesturesMaxId;
+
+            if (handMRManager_.CenterTransform != null)
+            {
+                inputState_.position = HandCenterPosition - handMRManager_.CenterTransform.position;
+            }
+            else
+            {
+                inputState_.position = HandCenterPosition;
+            }
+
+            //state.rotation = Quaternion.Inverse(handMRManager_.CenterTransform.rotation) * transform.parent.rotation * handVRMain_.GetHandRotation(id);
+            inputState_.rotation = transform.parent.rotation;
+
+            inputState_.trackingState = (int)(InputTrackingState.Position | InputTrackingState.Rotation);
+
+            InputSystem.QueueStateEvent(ThisEitherHand == EitherHand.Left ? XRController.leftHand : XRController.rightHand, inputState_);
+#endif
         }
 
         void Update()
@@ -112,6 +202,8 @@ namespace HandMR
                     HandDirection = handVRMain_.GetHandDirection(id);
                 }
             }
+
+            inputUpdate();
         }
 
         public bool GetFingerTracking(int index)

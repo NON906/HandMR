@@ -240,10 +240,12 @@ namespace HandMR
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+#if DOWNLOADED_ARFOUNDATION
+            if (UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 BackButton();
             }
+#endif
         }
 
         public void BackButton()

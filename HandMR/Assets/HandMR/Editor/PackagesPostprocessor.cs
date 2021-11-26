@@ -272,11 +272,13 @@ namespace HandMR
             bool isChange = false;
 
             isChange |= loadPackage.addPackageManager("com.unity.xr.management", "4.0.1");
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arfoundation", "4.0.12");
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arsubsystems", "4.0.12");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arfoundation", "4.1.7");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arsubsystems", "4.1.7");
 
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arcore", "4.0.12");
-            isChange |= loadPackage.addPackageManager("com.unity.xr.arkit", "4.0.12");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arcore", "4.1.7");
+            isChange |= loadPackage.addPackageManager("com.unity.xr.arkit", "4.1.7");
+
+            isChange |= loadPackage.addPackageManager("com.unity.inputsystem", "1.0.2");
 
             AssetDatabase.Refresh();
             while (string.IsNullOrEmpty(AssetDatabase.AssetPathToGUID("ProjectSettings/ProjectSettings.asset")))
@@ -374,6 +376,11 @@ namespace HandMR
             if (PlayerSettings.GetApiCompatibilityLevel(BuildTargetGroup.iOS) != ApiCompatibilityLevel.NET_4_6)
             {
                 PlayerSettings.SetApiCompatibilityLevel(BuildTargetGroup.iOS, ApiCompatibilityLevel.NET_4_6);
+                isChange = true;
+            }
+            if (string.IsNullOrEmpty(PlayerSettings.iOS.cameraUsageDescription))
+            {
+                PlayerSettings.iOS.cameraUsageDescription = "Using head and hands tracking.";
                 isChange = true;
             }
 
@@ -530,7 +537,7 @@ namespace HandMR
             {
                 var currentPosition = position;
                 currentPosition.width = 350f;
-                currentPosition.height = 500f;
+                currentPosition.height = 600f;
                 position = currentPosition;
 
                 GUILayout.Label("Step 1. Add Packages to PackageManager");
@@ -548,6 +555,8 @@ namespace HandMR
                 GUILayout.Label("Step 3. Setting XR");
                 GUILayout.Label("  1. Open Project Settings -> XR-Plugin Management.");
                 GUILayout.Label("  2. Put check(s) ARCore (for Android) and/or ARKit (for iOS).");
+                GUILayout.Label("  3. Open Project Settings -> Player.");
+                GUILayout.Label("  4. Change 'Active Input Handling' to 'Both'.");
                 if (GUILayout.Button("Open Project Settings"))
                 {
                     EditorApplication.ExecuteMenuItem("Edit/Project Settings...");
@@ -584,23 +593,39 @@ namespace HandMR
                 }
 
                 GUILayout.Label("Step 7. Debug Settings (Optional)");
-                GUILayout.Label("  1. Install 'AR Foundation Editor Remote'.");
+                GUILayout.Label("  1. Install 'AR Foundation Remote 2.0'.");
                 if (GUILayout.Button("Go to Asset Store Page"))
                 {
-                    Application.OpenURL("https://assetstore.unity.com/packages/tools/utilities/ar-foundation-editor-remote-168773");
+                    Application.OpenURL("https://assetstore.unity.com/packages/tools/utilities/ar-foundation-remote-2-0-201106");
                 }
                 GUILayout.Label("  2. Copy model files for debugging.");
                 if (GUILayout.Button("Execute"))
                 {
                     Directory.CreateDirectory("mediapipe/modules/hand_landmark");
-                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/mediapipe/modules/hand_landmark/hand_landmark.tflite",
-                        "mediapipe/modules/hand_landmark/hand_landmark.tflite", true);
-                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/mediapipe/modules/hand_landmark/handedness.txt",
+                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/hand_landmark_lite.tflite",
+                        "mediapipe/modules/hand_landmark/hand_landmark_lite.tflite", true);
+                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/handedness.txt",
                         "mediapipe/modules/hand_landmark/handedness.txt", true);
                     Directory.CreateDirectory("mediapipe/modules/palm_detection");
-                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/mediapipe/modules/palm_detection/palm_detection.tflite",
-                        "mediapipe/modules/palm_detection/palm_detection.tflite", true);
+                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/palm_detection_lite.tflite",
+                        "mediapipe/modules/palm_detection/palm_detection_lite.tflite", true);
+
+                    File.Copy(Application.dataPath + "/HandMR/SubAssets/HandVR/EditorModels/keypoint_classifier.tflite",
+                        "keypoint_classifier.tflite", true);
+
                     Debug.Log("Finish copy files.");
+                }
+
+                GUILayout.Label("Step 8. URP Settings (Optional)");
+                GUILayout.Label("  If you use URP, click button.");
+                if (GUILayout.Button("Execute"))
+                {
+                    LoadPackages loadPackage = new LoadPackages();
+                    loadPackage.addPackageManager("com.unity.render-pipelines.universal", "10.5.1");
+
+                    SetScriptingDefineSymbol("ENABLE_URP");
+
+                    Debug.Log("Setting is finished.");
                 }
 
                 GUILayout.Space(20);

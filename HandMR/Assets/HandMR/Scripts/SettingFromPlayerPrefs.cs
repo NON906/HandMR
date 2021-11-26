@@ -87,12 +87,22 @@ namespace HandMR
             {
                 HandMRManagerObj.ViewModeChange(HandMRManager.Mode.VR);
 
+#if ENABLE_URP
+                FisheyeURP[] fisheyeURPs = HandMRManagerObj.MRObject.GetComponentsInChildren<FisheyeURP>();
+                foreach (FisheyeURP fisheye in fisheyeURPs)
+                {
+                    fisheye.Intensity = PlayerPrefs.GetFloat("HandMR_URP_Intensity", 58f) * 0.01f;
+                    fisheye.CenterPosition = PlayerPrefs.GetFloat("HandMR_FisheyeCenter", 50f) * 0.01f;
+                    fisheye.Scale = PlayerPrefs.GetFloat("HandMR_URP_Scale", 100f) * 0.01f;
+                }
+#else
                 fisheyes_ = HandMRManagerObj.MRObject.GetComponentsInChildren<Fisheye>();
                 foreach (Fisheye fisheye in fisheyes_)
                 {
                     fisheye.Rate = PlayerPrefs.GetFloat("HandMR_FisheyeRate", 58f) * 0.01f;
                     fisheye.Center = PlayerPrefs.GetFloat("HandMR_FisheyeCenter", 50f) * 0.01f;
                 }
+#endif
                 HandMRManagerObj.FieldOfView = PlayerPrefs.GetFloat("HandMR_FisheyeFieldOfView", 90f);
 
                 LeftButton.GetChild(0).GetComponent<Image>().enabled = false;

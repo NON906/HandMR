@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR;
 #if DOWNLOADED_ARFOUNDATION
 using UnityEngine.XR.ARFoundation;
+using UnityEngine.InputSystem;
 #endif
 
 namespace HandMR
@@ -69,6 +71,18 @@ namespace HandMR
             }
         }
 
+        void deviceUpdate()
+        {
+#if DOWNLOADED_ARFOUNDATION
+            var state = new HandMRHMDDeviceState();
+            state.isTracked = IsTracking;
+            state.position = transform.position;
+            state.rotation = transform.rotation;
+            state.trackingState = (int)(InputTrackingState.Position | InputTrackingState.Rotation);
+            InputSystem.QueueStateEvent(HandMRHMDDevice.current, state);
+#endif
+        }
+
         void Awake()
         {
             if (IsTakeOver)
@@ -99,6 +113,13 @@ namespace HandMR
                 // カメラ画像の切り替え
                 disableCameraImage();
             }
+
+#if DOWNLOADED_ARFOUNDATION
+            if (HandMRHMDDevice.current == null)
+            {
+                InputSystem.AddDevice<HandMRHMDDevice>();
+            }
+#endif
         }
 
         void disableCameraImage()
@@ -152,7 +173,8 @@ namespace HandMR
             }
 
 #if DOWNLOADED_ARFOUNDATION
-            if (plane_ == null || (TouchReset && Input.touchCount > 0))
+            bool touched = Pointer.current.press.wasPressedThisFrame;// || Touchscreen.current.primaryTouch.press.wasPressedThisFrame;
+            if (plane_ == null || (TouchReset && touched))
             {
                 // 新しい床の取得
                 plane_ = null;
@@ -213,6 +235,9 @@ namespace HandMR
             // 移動
             if (CenterTransform != null)
             {
+                poseCenterRotation_ *= Quaternion.Inverse(CenterTransform.rotation);
+                CenterTransform.rotation = Quaternion.identity;
+
                 transform.position = CenterTransform.rotation * Quaternion.Inverse(poseCenterRotation_) * (PoseDriverTrans.position - poseCenter_) + CenterTransform.position;
                 transform.rotation = CenterTransform.rotation * Quaternion.Inverse(poseCenterRotation_) * PoseDriverTrans.rotation;
             }
@@ -222,6 +247,7 @@ namespace HandMR
                 transform.rotation = Quaternion.Inverse(poseCenterRotation_) * PoseDriverTrans.rotation;
             }
 #endif
+            deviceUpdate();
         }
 
         // 位置のリセット

@@ -55,6 +55,9 @@ namespace HandMR
         public GameObject RightEyeFrame;
 
         Fisheye[] fisheyes_;
+#if ENABLE_URP
+        FisheyeURP[] fisheyeURPs_;
+#endif
         public float FieldOfView
         {
             get;
@@ -76,6 +79,9 @@ namespace HandMR
         void Start()
         {
             fisheyes_ = MRObject.GetComponentsInChildren<Fisheye>();
+#if ENABLE_URP
+            fisheyeURPs_ = MRObject.GetComponentsInChildren<FisheyeURP>();
+#endif
 
             viewModeChange();
         }
@@ -144,6 +150,13 @@ namespace HandMR
                         cameraTarget.BackgroundObj = VRSubCamera;
                         ResizeBackGroundQuad resizeBackGroundQuad = MRObject.GetComponentInChildren<ResizeBackGroundQuad>();
                         resizeBackGroundQuad.NoticeTextCenter = false;
+#if ENABLE_URP
+                        var volumes = MRObject.GetComponentsInChildren<UnityEngine.Rendering.Volume>();
+                        foreach (var volume in volumes)
+                        {
+                            volume.enabled = true;
+                        }
+#else
                         Fisheye[] fisheyes = MRObject.GetComponentsInChildren<Fisheye>();
                         foreach (Fisheye fisheye in fisheyes)
                         {
@@ -153,6 +166,7 @@ namespace HandMR
                         }
                         LeftEyeFrame.SetActive(false);
                         RightEyeFrame.SetActive(false);
+#endif
 
                         Canvas[] canvases = FindObjectsOfType<Canvas>();
                         foreach (Canvas canvas in canvases)
@@ -276,9 +290,10 @@ namespace HandMR
 
             if (HandDetectionMode == HandDetection.None)
             {
-                if (!Hands[0].gameObject.activeSelf)
+                var handVRMain = FindObjectOfType<HandVRMain>();
+                if (!Hands[0].gameObject.activeSelf && handVRMain != null)
                 {
-                    FindObjectOfType<HandVRMain>().gameObject.SetActive(false);
+                    handVRMain.gameObject.SetActive(false);
                 }
             }
             else
@@ -293,7 +308,11 @@ namespace HandMR
         {
             if (ViewMode == Mode.VR)
             {
-                foreach (Fisheye fisheye in fisheyes_)
+#if ENABLE_URP
+                foreach (Behaviour fisheye in fisheyeURPs_)
+#else
+                foreach (Behaviour fisheye in fisheyes_)
+#endif
                 {
                     Camera camera = fisheye.GetComponent<Camera>();
                     if (!VRSubCamera.activeInHierarchy)

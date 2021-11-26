@@ -150,7 +150,7 @@ namespace HandMR
 
         void Start()
         {
-            XRSettings.enabled = false;
+            //XRSettings.enabled = false;
 
             settingDefaultValues();
 
@@ -186,6 +186,7 @@ namespace HandMR
             saveValues();
 
             SceneManager.LoadScene("Main");
+            //SceneManager.LoadScene("WorldInteractionDemo");
         }
 
         public void LicenseButton()
@@ -217,10 +218,12 @@ namespace HandMR
 
         void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Escape))
+#if DOWNLOADED_ARFOUNDATION
+            if (UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame)
             {
                 ExitButton();
             }
+#endif
         }
 
         public void GoogleModeDropdownChanged(int val)
@@ -302,7 +305,11 @@ namespace HandMR
         public void VRSettingsButtonClick()
         {
             saveValues();
+#if ENABLE_URP
+            SceneManager.LoadScene("VRSettingsURP");
+#else
             SceneManager.LoadScene("VRSettings");
+#endif
         }
     }
 }

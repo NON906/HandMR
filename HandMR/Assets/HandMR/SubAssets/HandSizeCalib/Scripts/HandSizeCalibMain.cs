@@ -20,7 +20,7 @@ namespace HandMR
 
         bool captureButtonIsClicked_ = false;
 
-#if UNITY_ANDROID
+#if UNITY_ANDROID && !UNITY_EDITOR
         [DllImport("hand3d")]
         static extern void handSizeCalibFindHomography(float x0, float y0,
             float x1, float y1,
@@ -29,7 +29,7 @@ namespace HandMR
             float size);
         [DllImport("hand3d")]
         static extern void handSizeCalibTransform(ref float x, ref float y);
-#elif UNITY_IOS
+#elif UNITY_IOS && !UNITY_EDITOR
         [DllImport("__Internal")]
         static extern void handSizeCalibFindHomography(float x0, float y0,
             float x1, float y1,
@@ -37,6 +37,15 @@ namespace HandMR
             float x3, float y3,
             float size);
         [DllImport("__Internal")]
+        static extern void handSizeCalibTransform(ref float x, ref float y);
+#elif UNITY_EDITOR_WIN || UNITY_EDITOR_OSX
+        [DllImport("multiHand")]
+        static extern void handSizeCalibFindHomography(float x0, float y0,
+            float x1, float y1,
+            float x2, float y2,
+            float x3, float y3,
+            float size);
+        [DllImport("multiHand")]
         static extern void handSizeCalibTransform(ref float x, ref float y);
 #else
         static void handSizeCalibFindHomography(float x0, float y0,

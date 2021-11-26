@@ -122,6 +122,7 @@ namespace HandMR
                     {
                         bool grabed = true;
                         bool opened = true;
+#if false
                         for (int loop = 1; loop < 5; loop++)
                         {
                             if (sphereHand.GetFingerOpened(loop))
@@ -138,6 +139,9 @@ namespace HandMR
                             grabed = true;
                             opened = false;
                         }
+#endif
+                        grabed = sphereHand.IsGrab;
+                        opened = !grabed;
 
                         if (!isGrab_[handId] && grabed)
                         {
