@@ -23,6 +23,8 @@ unitypackageファイルは[こちら](https://github.com/NON906/HandMR/releases
 
 3. Assets/HandMR/PrefabsにあるHandMRManagerをシーン上に配置
 
+4. （必要であれば）HandMRManagerURPにSettingFromPlayerPrefsをアタッチ
+
 <div style="page-break-before:always"></div>
 
 最新バージョンで、新しいInput System（及びURP）に対応いたしました。  
@@ -40,22 +42,11 @@ unitypackageファイルは[こちら](https://github.com/NON906/HandMR/releases
 
 5. WorldInteractionDemoシーンを開く
 
-6. シーンにあるXRRigDemo/CameraOffset/Main Cameraを無効にする
+6. Assets/HandMR/PrefabsにあるHandMRManagerURPとHandAreaをシーンに追加
 
-7. Assets/HandMR/PrefabsにあるHandMRManagerURPとHandAreaをシーンに追加
+7. Assets/Samples/XR Interaction Toolkit/1.0.0-pre.6/Default Input Actions/XRI Default Input Actions.inputactionsをAssets/InputActions/HandMR XRI Default Input Actions.inputactionsを参考に変更
 
-8. XRRigDemoにある以下の設定を、全てMain Cameraから、7.で配置したHandMRManagerURPにあるMRObject/HologlaCameraParent/HologlaCameraに変更
-- XRRig→Camera GameObject
-- ContinuousMoveProvider→Forward Source
-- LocomotionSchemeManager→Head Forward Source
-
-9. HandMRManagerURPのHandMRManager→Center TransformをXRRigDemo/CameraOffsetに設定
-
-10. XRRigDemo/CameraOffsetの位置を(0, 0, 0)に設定
-
-11. Assets/Samples/XR Interaction Toolkit/1.0.0-pre.6/Default Input Actions/XRI Default Input Actions.inputactionsをAssets/InputActions/HandMR XRI Default Input Actions.inputactionsを参考に変更
-
-12. （必要であれば）HandMRManagerURPにSettingFromPlayerPrefsをアタッチ
+8. （必要であれば）HandMRManagerURPにSettingFromPlayerPrefsをアタッチ
 
 <div style="page-break-before:always"></div>
 

@@ -76,7 +76,14 @@ namespace HandMR
 #if DOWNLOADED_ARFOUNDATION
             var state = new HandMRHMDDeviceState();
             state.isTracked = IsTracking;
-            state.position = transform.position;
+            if (CenterTransform != null)
+            {
+                state.position = transform.position - CenterTransform.position;
+            }
+            else
+            {
+                state.position = transform.position;
+            }
             state.rotation = transform.rotation;
             state.trackingState = (int)(InputTrackingState.Position | InputTrackingState.Rotation);
             InputSystem.QueueStateEvent(HandMRHMDDevice.current, state);

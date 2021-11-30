@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using Hologla;
+using UnityEngine.XR.Management;
 
 namespace HandMR
 {
@@ -58,6 +59,7 @@ namespace HandMR
 #if ENABLE_URP
         FisheyeURP[] fisheyeURPs_;
 #endif
+
         public float FieldOfView
         {
             get;
@@ -66,6 +68,28 @@ namespace HandMR
 
         void Awake()
         {
+            if (XRGeneralSettings.Instance == null ||
+                !XRGeneralSettings.Instance.Manager.activeLoader.name.StartsWith("AR"))
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+
+            if (Camera.main != null)
+            {
+                Camera mainCamera = Camera.main;
+                CenterTransform = mainCamera.transform.parent;
+                CenterTransform.localPosition =
+                    new Vector3(CenterTransform.localPosition.x, 0f, CenterTransform.localPosition.z);
+                mainCamera.tag = "Untagged";
+                mainCamera.enabled = false;
+                var listener = mainCamera.GetComponent<AudioListener>();
+                if (listener != null)
+                {
+                    listener.enabled = false;
+                }
+            }
+
             if (SkipDetectFloor)
             {
                 var quad = MRObject.GetComponentInChildren<ResizeBackGroundQuad>();
@@ -92,6 +116,8 @@ namespace HandMR
             {
                 case Mode.MR:
                     {
+                        MRCamera.tag = "MainCamera";
+
                         MRObject.SetActive(true);
                         ARObject.SetActive(false);
                         foreach (SetParentMainCamera hand in Hands)
@@ -125,6 +151,8 @@ namespace HandMR
                     break;
                 case Mode.VR:
                     {
+                        MRCamera.tag = "MainCamera";
+
                         MRObject.SetActive(true);
                         MRObject.GetComponentInChildren<HologlaCameraManager>().SwitchViewMode(HologlaCameraManager.ViewMode.VR);
                         ARObject.SetActive(false);
@@ -180,6 +208,8 @@ namespace HandMR
                     break;
                 case Mode.VRSingle:
                     {
+                        ARCamera.tag = "MainCamera";
+
                         MRObject.SetActive(false);
                         ARObject.SetActive(true);
                         foreach (SetParentMainCamera hand in Hands)
@@ -213,6 +243,8 @@ namespace HandMR
                     break;
                 case Mode.AR:
                     {
+                        ARCamera.tag = "MainCamera";
+
                         MRObject.SetActive(false);
                         ARObject.SetActive(true);
                         foreach (SetParentMainCamera hand in Hands)

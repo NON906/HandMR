@@ -32,11 +32,22 @@ namespace HandMR
             if (MainCameraTransform != null)
             {
                 targetTransformParent_.parent = MainCameraTransform;
+                targetTransform_.parent = targetTransformParent_;
             }
             else
             {
-                targetTransformParent_.parent = Camera.main.transform;
+                StartCoroutine(setMainCamera());
             }
+        }
+
+        IEnumerator setMainCamera()
+        {
+            while (Camera.main == null)
+            {
+                yield return null;
+            }
+
+            targetTransformParent_.parent = Camera.main.transform;
             targetTransform_.parent = targetTransformParent_;
         }
 
@@ -60,6 +71,11 @@ namespace HandMR
 
         public void StartGrab(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
         {
+            if (targetTransformParent_ == null)
+            {
+                return;
+            }
+
             if (grabHands_.Count == 0)
             {
                 material_.color = GrabColor;
@@ -74,11 +90,21 @@ namespace HandMR
 
         public void StayGrab(HandVRSphereHand.EitherHand hand, Vector3 centerPosition)
         {
+            if (targetTransformParent_ == null)
+            {
+                return;
+            }
+
             targetTransformParent_.position = centerPosition;
         }
 
         public void EndGrab(HandVRSphereHand.EitherHand hand)
         {
+            if (targetTransformParent_ == null)
+            {
+                return;
+            }
+
             grabHands_.Remove(hand);
             if (grabHands_.Count == 0)
             {

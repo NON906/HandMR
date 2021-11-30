@@ -35,6 +35,11 @@ namespace HandMR
 
         void Update()
         {
+            if (handMRManager_ == null)
+            {
+                return;
+            }
+
             renderEnabled_ = false;
             foreach (var hand in handMRManager_.Hands)
             {
@@ -61,6 +66,11 @@ namespace HandMR
 
         void LateUpdate()
         {
+            if (handMRManager_ == null)
+            {
+                return;
+            }
+
             if (colorAlpha_ > 0f)
             {
                 Transform cameraTrans = handMRManager_.GetCameraTransform();

@@ -20,6 +20,8 @@ Asset Store page is [here](https://assetstore.unity.com/packages/slug/181940).
 
 3. Placement Assets/HandMR/Prefabs/HandMRManager.prefab on scene.
 
+4. Attach SettingFromPlayerPrefs to HandMRManagerURP (Optional).
+
 <div style="page-break-before:always"></div>
 
 New version is support new Input System (and URP).  
@@ -37,20 +39,11 @@ The following is how to use it in the XR-Interaction-Toolkit sample.
 
 5. Open WorldInteractionDemo scene.
 
-6. Disable XRRigDemo/CameraOffset/Main Camera.
+6. Add HandMRManagerURP prefab and HandArea prefab (In Assets/HandMR/Prefabs) to scene.
 
-7. Add HandMRManagerURP prefab and HandArea prefab (In Assets/HandMR/Prefabs) to scene.
+7. Setting 'Assets/Samples/XR Interaction Toolkit/1.0.0-pre.6/Default Input Actions/XRI Default Input Actions.inputactions' (sample: 'Assets/InputActions/HandMR XRI Default Input Actions.inputactions').
 
-8. Change the following on XRRigDemo from 'Main Camera' to 'HandMRManagerURP/MRObject/HologlaCameraParent/HologlaCamera' (be added in 7.).
-- XRRig->Camera GameObject
-- ContinuousMoveProvider->Forward Source
-- LocomotionSchemeManager->Head Forward Source
-
-9. Setting 'HandMRManagerURP->HandMRManager->Center Transform' to 'XRRigDemo/CameraOffset'.
-
-10. Setting 'Assets/Samples/XR Interaction Toolkit/1.0.0-pre.6/Default Input Actions/XRI Default Input Actions.inputactions' (sample: 'Assets/InputActions/HandMR XRI Default Input Actions.inputactions').
-
-11. Attach SettingFromPlayerPrefs to HandMRManagerURP (Optional).
+8. Attach SettingFromPlayerPrefs to HandMRManagerURP (Optional).
 
 <div style="page-break-before:always"></div>
 

@@ -57,9 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\ResetButtonUI.cs" />
+    <Compile Include="Assets\HandMR\SubAssets\ForInputManager\Scripts\HandMRInputDevice.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\License.cs" />
     <Compile Include="Assets\HandMR\SubAssets\Fisheye\Scripts\Fisheye.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\VRSettings.cs" />
+    <Compile Include="Assets\HandMR\SubAssets\MRUtil\Scripts\BackButtonForIOS.cs" />
     <Compile Include="Assets\HandMR\3rdParty\Hologla\Scripts\HologlaARKitVideo.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandSizeCalib\Scripts\HandSizeCalibMain.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\CanCarryObject.cs" />
@@ -72,12 +74,14 @@
     <Compile Include="Assets\HandMR\3rdParty\Hologla\Scripts\HologlaCameraManager.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandArea\Scripts\HandArea.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\BackButtonExit.cs" />
+    <Compile Include="Assets\HandMR\SubAssets\Fisheye\Scripts\FisheyeURP.cs" />
     <Compile Include="Assets\HandMR\3rdParty\Hologla\Scripts\LaunchScene.cs" />
     <Compile Include="Assets\HandMR\SubAssets\ARVR\Scripts\ResizeBackGroundQuad.cs" />
     <Compile Include="Assets\HandMR\3rdParty\Hologla\Animation\SystemMenu\DanglaMenuIn.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\SizeSliderUI.cs" />
     <Compile Include="Assets\HandMR\Scripts\HandMRManager.cs" />
     <Compile Include="Assets\HandMR\SubAssets\ARVR\Scripts\TrackingCameraPosition.cs" />
+    <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\VRSettingsURP.cs" />
     <Compile Include="Assets\HandMR\Scripts\HandMRInputModule.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandVR\Scripts\HandVRPosition.cs" />
     <Compile Include="Assets\HandMR\3rdParty\Hologla\Scripts\GazeInput.cs" />
@@ -93,10 +97,6 @@
     <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\IControlObject.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandSizeCalib\Scripts\HandSizeCalibMarker.cs" />
     <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\Menu.cs" />
-    <Compile Include="Assets\HandMR\SubAssets\Fisheye\Scripts\FisheyeURP.cs" />
-    <Compile Include="Assets\HandMR\SubAssets\ForInputManager\Scripts\HandMRInputDevice.cs" />
-    <Compile Include="Assets\HandMR\SubAssets\MRUtil\Scripts\BackButtonForIOS.cs" />
-    <Compile Include="Assets\HandMR\SubAssets\HandVRSample\Scripts\VRSettingsURP.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\HandMR\SubAssets\HandVR\Plugins\Windows\multiHand.dll" />
@@ -711,17 +711,23 @@
     <Reference Include="UnityEditor.UI">
       <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.PlasticSCM.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
+    <Reference Include="Unity.InputSystem">
+      <HintPath>Library\ScriptAssemblies\Unity.InputSystem.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.PlasticSCM.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.SpatialTracking">
       <HintPath>Library\ScriptAssemblies\UnityEngine.SpatialTracking.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.EditorCoroutines.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.EditorCoroutines.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.XR.LegacyInputHelpers">
       <HintPath>Library\ScriptAssemblies\UnityEngine.XR.LegacyInputHelpers.dll</HintPath>
@@ -749,12 +755,6 @@
     </Reference>
     <Reference Include="Unity.XR.ARFoundation">
       <HintPath>Library\ScriptAssemblies\Unity.XR.ARFoundation.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InputSystem">
-      <HintPath>Library\ScriptAssemblies\Unity.InputSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.EditorCoroutines.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.EditorCoroutines.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
