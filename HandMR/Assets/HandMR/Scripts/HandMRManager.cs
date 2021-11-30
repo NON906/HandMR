@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR;
 using Hologla;
+#if DOWNLOADED_ARFOUNDATION
 using UnityEngine.XR.Management;
+#endif
 
 namespace HandMR
 {
@@ -68,12 +70,14 @@ namespace HandMR
 
         void Awake()
         {
+#if DOWNLOADED_ARFOUNDATION
             if (XRGeneralSettings.Instance == null ||
                 !XRGeneralSettings.Instance.Manager.activeLoader.name.StartsWith("AR"))
             {
                 gameObject.SetActive(false);
                 return;
             }
+#endif
 
             if (Camera.main != null)
             {
