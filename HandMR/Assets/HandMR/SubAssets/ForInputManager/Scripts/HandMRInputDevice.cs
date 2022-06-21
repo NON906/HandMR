@@ -42,6 +42,9 @@ namespace HandMR
         [InputControl(name = "gestureGrab", layout = "Button", bit = 3)]
         [InputControl(name = "gestureTwo", layout = "Button", bit = 4)]
         public uint gestures;
+
+        [InputControl(name = "gesturePointerPosition", layout = "Vector3")]
+        public Vector3 gesturePointerPosition;
     }
 
     [InputControlLayout(commonUsages = new[] { "LeftHand", "RightHand" }, displayName = "HandMR", stateType = typeof(HandMRInputDeviceState))]
@@ -56,6 +59,7 @@ namespace HandMR
         public ButtonControl gesturePointer { get; private set; }
         public ButtonControl gestureGrab { get; private set; }
         public ButtonControl gestureTwo { get; private set; }
+        public Vector3Control gesturePointerPosition { get; private set; }
 
         protected override void FinishSetup()
         {
@@ -67,6 +71,7 @@ namespace HandMR
             gesturePointer = GetChildControl<ButtonControl>("gesturePointer");
             gestureGrab = GetChildControl<ButtonControl>("gestureGrab");
             gestureTwo = GetChildControl<ButtonControl>("gestureTwo");
+            gesturePointerPosition = GetChildControl<Vector3Control>("gesturePointerPosition");
         }
 
         static HandMRInputDevice()

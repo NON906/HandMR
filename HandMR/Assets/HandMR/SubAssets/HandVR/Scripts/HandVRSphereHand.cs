@@ -12,6 +12,7 @@ namespace HandMR
     public class HandVRSphereHand : MonoBehaviour
     {
         const bool KEEP_TRACKING_GRABED = true;
+        const float BASE_ANGLE = -5f;
 
         public enum EitherHand
         {
@@ -20,6 +21,22 @@ namespace HandMR
         }
 
         public EitherHand ThisEitherHand = EitherHand.Left;
+
+        bool isSetDefaultRotation_ = false;
+        Quaternion defaultRotation_;
+        public Quaternion DefaultRotation
+        {
+            get
+            {
+                if (!isSetDefaultRotation_)
+                {
+                    defaultRotation_ = GetComponentInParent<HandMRManager>().DefaultRotation;
+                    isSetDefaultRotation_ = true;
+                }
+
+                return defaultRotation_;
+            }
+        }
 
         Transform[] fingers_ = new Transform[21];
         bool[] fingerTracking_ = new bool[5];
@@ -148,14 +165,38 @@ namespace HandMR
             if (handMRManager_.CenterTransform != null)
             {
                 inputState_.position = HandCenterPosition - handMRManager_.CenterTransform.position;
+                inputState_.gesturePointerPosition = fingers_[8].position - handMRManager_.CenterTransform.position;
             }
             else
             {
                 inputState_.position = HandCenterPosition;
+                inputState_.gesturePointerPosition = fingers_[8].position;
             }
+            inputState_.position = Quaternion.Inverse(DefaultRotation) * inputState_.position;
 
-            //state.rotation = Quaternion.Inverse(handMRManager_.CenterTransform.rotation) * transform.parent.rotation * handVRMain_.GetHandRotation(id);
-            inputState_.rotation = transform.parent.rotation;
+            if (!handMRManager_.IsLockHandRotation)
+            {
+                if (inputState_.gestures == 1)
+                {
+                    if (ThisEitherHand == EitherHand.Left)
+                    {
+                        inputState_.rotation = transform.parent.rotation * handVRMain_.GetHandRotation(id);
+                        inputState_.rotation = Quaternion.Inverse(DefaultRotation) * inputState_.rotation;
+                        inputState_.rotation *= Quaternion.Euler(0f, BASE_ANGLE, 0f);
+                    }
+                    else
+                    {
+                        inputState_.rotation = transform.parent.rotation * handVRMain_.GetHandRotation(id);
+                        inputState_.rotation = Quaternion.Inverse(DefaultRotation) * inputState_.rotation;
+                        inputState_.rotation *= Quaternion.Euler(0f, -BASE_ANGLE, 0f);
+                    }
+                }
+            }
+            else
+            {
+                inputState_.rotation = transform.parent.rotation;
+                inputState_.rotation = Quaternion.Inverse(DefaultRotation) * inputState_.rotation;
+            }
 
             inputState_.trackingState = (int)(InputTrackingState.Position | InputTrackingState.Rotation);
 

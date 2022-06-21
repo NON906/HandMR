@@ -8,6 +8,7 @@ namespace HandMR
     {
         public float Size = 0.8f;
         public float ColorAlphaChangeSpeed = 0.1f;
+        public Transform ParentForScale;
 
         HandVRMain handVRMain_;
         HandMRManager handMRManager_;
@@ -106,7 +107,14 @@ namespace HandMR
 
                     float height = Mathf.Tan(handVRMain_.FixedFieldOfView * Mathf.Deg2Rad * 0.5f) * zLength * Size;
                     float width = height * handVRMain_.Width / handVRMain_.Height;
-                    transform.localScale = new Vector3(width, height, 1f);
+                    if (ParentForScale != null)
+                    {
+                        transform.localScale = new Vector3(width * ParentForScale.lossyScale.x, height * ParentForScale.lossyScale.y, 1f);
+                    }
+                    else
+                    {
+                        transform.localScale = new Vector3(width, height, 1f);
+                    }
 
                     Vector3 localPos = new Vector3(handVRMain_.ShiftX, handVRMain_.ShiftY, zLength);
                     transform.position = cameraTrans.TransformPoint(localPos);

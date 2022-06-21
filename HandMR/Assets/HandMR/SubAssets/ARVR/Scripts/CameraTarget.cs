@@ -17,11 +17,34 @@ namespace HandMR
         public bool TouchReset;
         public bool BackgroundObjAutoDisable = true;
 
+        bool isSetDefaultRotation_ = false;
+        Quaternion defaultRotation_;
+        public Quaternion DefaultRotation
+        {
+            get
+            {
+                if (!isSetDefaultRotation_)
+                {
+                    defaultRotation_ = GetComponentInParent<HandMRManager>().DefaultRotation;
+                    isSetDefaultRotation_ = true;
+                }
+
+                return defaultRotation_;
+            }
+        }
+
+        Transform centerTransform_ = null;
         public Transform CenterTransform
         {
-            get;
-            set;
-        } = null;
+            get
+            {
+                return centerTransform_;
+            }
+            set
+            {
+                centerTransform_ = value;
+            }
+        }
 
         public bool PlaneDetectEnabled
         {
@@ -79,12 +102,13 @@ namespace HandMR
             if (CenterTransform != null)
             {
                 state.position = transform.position - CenterTransform.position;
+                state.rotation = transform.rotation * Quaternion.Inverse(CenterTransform.rotation);
             }
             else
             {
                 state.position = transform.position;
+                state.rotation = transform.rotation;
             }
-            state.rotation = transform.rotation;
             state.trackingState = (int)(InputTrackingState.Position | InputTrackingState.Rotation);
             InputSystem.QueueStateEvent(HandMRHMDDevice.current, state);
 #endif
@@ -242,8 +266,8 @@ namespace HandMR
             // 移動
             if (CenterTransform != null)
             {
-                poseCenterRotation_ *= Quaternion.Inverse(CenterTransform.rotation);
-                CenterTransform.rotation = Quaternion.identity;
+                poseCenterRotation_ *= DefaultRotation * Quaternion.Inverse(CenterTransform.rotation);
+                CenterTransform.rotation = DefaultRotation;
 
                 transform.position = CenterTransform.rotation * Quaternion.Inverse(poseCenterRotation_) * (PoseDriverTrans.position - poseCenter_) + CenterTransform.position;
                 transform.rotation = CenterTransform.rotation * Quaternion.Inverse(poseCenterRotation_) * PoseDriverTrans.rotation;

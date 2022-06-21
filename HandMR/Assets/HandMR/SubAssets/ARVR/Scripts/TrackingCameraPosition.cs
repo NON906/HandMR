@@ -32,24 +32,24 @@ namespace HandMR
                 Vector3 targetPosition = Target.transform.position;
                 if (handMRManager_.FreezePositionX)
                 {
-                    targetPosition.x = transform.localPosition.x;
+                    targetPosition.x = transform.position.x;
                 }
                 if (handMRManager_.FreezePositionY)
                 {
-                    targetPosition.y = transform.localPosition.y;
+                    targetPosition.y = transform.position.y;
                 }
                 if (handMRManager_.FreezePositionZ)
                 {
-                    targetPosition.z = transform.localPosition.z;
+                    targetPosition.z = transform.position.z;
                 }
-                transform.localPosition = targetPosition;
-                transform.localRotation = Target.transform.rotation;
+                transform.position = targetPosition;
+                transform.rotation = Target.transform.rotation;
                 collider_.enabled = true;
             }
             else if (Target.IsTracking)
             {
-                transform.localRotation = Target.transform.rotation;
-                Vector3 targetForce = (Target.transform.position - transform.localPosition) / Time.fixedDeltaTime;
+                transform.rotation = Target.transform.rotation;
+                Vector3 targetForce = (Target.transform.position - transform.position) / Time.fixedDeltaTime;
                 if (handMRManager_.FreezePositionX)
                 {
                     targetForce.x = 0f;

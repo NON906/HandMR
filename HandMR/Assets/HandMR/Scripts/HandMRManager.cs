@@ -45,7 +45,26 @@ namespace HandMR
         public bool FreezePositionZ = false;
         public HandDetection HandDetectionMode = HandDetection.Both;
         public bool SkipDetectFloor = false;
-        public Transform CenterTransform = null;
+        public Transform CenterTransform
+        {
+            get;
+            set;
+        } = null;
+        public Vector3 DefaultPosition;
+        [SerializeField]
+        Vector3 defaultRotation;
+        public Quaternion DefaultRotation
+        {
+            get
+            {
+                return Quaternion.Euler(defaultRotation);
+            }
+            set
+            {
+                defaultRotation = value.eulerAngles;
+            }
+        }
+        public bool IsLockHandRotation = true;
 
         public SetParentMainCamera[] Hands;
         public GameObject MRObject;
@@ -83,8 +102,8 @@ namespace HandMR
             {
                 Camera mainCamera = Camera.main;
                 CenterTransform = mainCamera.transform.parent;
-                CenterTransform.localPosition =
-                    new Vector3(CenterTransform.localPosition.x, 0f, CenterTransform.localPosition.z);
+                CenterTransform.position = DefaultPosition; //new Vector3(DefaultPosition.x, 0f, DefaultPosition.z);
+                mainCamera.transform.position = DefaultPosition;
                 mainCamera.tag = "Untagged";
                 mainCamera.enabled = false;
                 var listener = mainCamera.GetComponent<AudioListener>();
@@ -92,6 +111,10 @@ namespace HandMR
                 {
                     listener.enabled = false;
                 }
+            }
+            else if (CenterTransform != null)
+            {
+                CenterTransform.position = DefaultPosition; //new Vector3(DefaultPosition.x, CenterTransform.position.y, DefaultPosition.z);
             }
 
             if (SkipDetectFloor)
@@ -102,6 +125,9 @@ namespace HandMR
                 MRObject.GetComponentInChildren<CameraTarget>().PlaneDetectEnabled = false;
                 ARObject.GetComponentInChildren<CameraTarget>().PlaneDetectEnabled = false;
             }
+
+            MRObject.GetComponentInChildren<CameraTarget>().CenterTransform = CenterTransform;
+            ARObject.GetComponentInChildren<CameraTarget>().CenterTransform = CenterTransform;
         }
 
         void Start()
@@ -337,7 +363,7 @@ namespace HandMR
                 FindObjectOfType<HandVRMain>().BothHand = HandDetectionMode == HandDetection.Both;
             }
 
-            GetMainObject().GetComponentInChildren<CameraTarget>().CenterTransform = CenterTransform;
+            //GetMainObject().GetComponentInChildren<CameraTarget>().CenterTransform = CenterTransform;
         }
 
         void LateUpdate()

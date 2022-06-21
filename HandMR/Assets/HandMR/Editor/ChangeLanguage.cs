@@ -134,11 +134,17 @@ namespace HandMR
                 var texts = UnityEngine.Object.FindObjectsOfType<Text>();
                 foreach (var text in texts)
                 {
-                    var sentence = languageSentences.SingleOrDefault(x => x.Before == text.text);
-                    if (sentence != null)
+                    try
                     {
-                        text.text = sentence.After;
-                        PrefabUtility.RecordPrefabInstancePropertyModifications(text);
+                        var sentence = languageSentences.SingleOrDefault(x => x.Before == text.text);
+                        if (sentence != null)
+                        {
+                            text.text = sentence.After;
+                            PrefabUtility.RecordPrefabInstancePropertyModifications(text);
+                        }
+                    }
+                    catch (InvalidOperationException)
+                    {
                     }
                 }
 

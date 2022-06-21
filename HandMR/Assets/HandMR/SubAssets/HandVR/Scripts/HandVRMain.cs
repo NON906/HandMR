@@ -26,7 +26,7 @@ namespace HandMR
         const float INTERVAL_TIME = 0.2f;
         const float DISABLE_TIME = 0.5f;
 #else
-        const float START_DELAY_TIME = 0.1f;
+        const float START_DELAY_TIME = 5f; //0.1f;
         const float INTERVAL_TIME = 0.1f;
         const float DISABLE_TIME = 0.2f;
 #endif
@@ -336,7 +336,8 @@ namespace HandMR
                 {
                     return;
                 }
-                nextUpdateFrameTime_ += INTERVAL_TIME;
+                //nextUpdateFrameTime_ += INTERVAL_TIME;
+                nextUpdateFrameTime_ = Time.realtimeSinceStartup + INTERVAL_TIME;
             }
 
             if (!cameraManager_.TryAcquireLatestCpuImage(out XRCpuImage image))
@@ -545,7 +546,14 @@ namespace HandMR
                     continue;
                 }
 
-                rotationQuaternions_[id] = Quaternion.Euler(0f, 0f, 180f) * rotationQuaternion((float)rx, (float)ry, (float)rz);
+                if (id == 0)
+                {
+                    rotationQuaternions_[id] = Quaternion.Euler(0f, 0f, 180f) * rotationQuaternion((float)-rx, (float)ry, (float)rz);
+                }
+                else
+                {
+                    rotationQuaternions_[id] = Quaternion.Euler(0f, 0f, 180f) * rotationQuaternion((float)rx, (float)ry, (float)rz);
+                }
 
                 landmarkArray_[id, 0] = new float[] { (float)x, (float)y, (float)z };
 
